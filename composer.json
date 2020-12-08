@@ -1,4 +1,5 @@
 {
+	"name": "xeops/iiko-exchange",
 	"type": "project",
 	"license": "proprietary",
 	"require": {
