@@ -26,7 +26,10 @@ class Exchange implements ExchangeNodeInterface
 	protected array $engines;
 	protected array $schedules;
 
-	use ExchangeNodeTrait;
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as public nodeJsonSerialize;
+	}
 
 	public function __construct(string $code)
 	{
@@ -44,8 +47,8 @@ class Exchange implements ExchangeNodeInterface
 			}
 		}, $this->getEngines());
 
-		return [
-			static::FIELD_CODE => $this->getCode(),
+		return $this->nodeJsonSerialize() + [
+
 			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => array_values($requests)],
 			static::FIELD_LOADER => $this->getLoader(),
 			static::FIELD_ENGINES => $this->getEngines(),

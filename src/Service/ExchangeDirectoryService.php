@@ -8,6 +8,7 @@ use iikoExchangeBundle\Exchange\Exchange;
 
 class ExchangeDirectoryService
 {
+	/** @var Exchange[] */
 	protected array $exchanges = [];
 
 	public function addExchange(Exchange $exchange)
