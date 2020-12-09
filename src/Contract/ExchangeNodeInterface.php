@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Contract;
+namespace iikoExchange\Contract;
 
 
 interface ExchangeNodeInterface extends \JsonSerializable

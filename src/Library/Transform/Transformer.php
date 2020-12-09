@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Library\Transform;
+namespace iikoExchange\Library\Transform;
 
 
 class Transformer

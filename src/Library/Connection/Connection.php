@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iikoExchangeBundle\Connection;
+namespace iikoExchange\Connection;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use iikoExchangeBundle\Contract\ExchangeNodeInterface;
-use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
-use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
-use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchange\Contract\ExchangeNodeInterface;
+use iikoExchange\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchange\ExtensionTrait\ConfigurableExtensionTrait;
+use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
 
 class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {

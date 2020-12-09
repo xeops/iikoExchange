@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\ExtensionTrait;
+namespace iikoExchange\ExtensionTrait;
 
 
 trait ConfigurableExtensionTrait

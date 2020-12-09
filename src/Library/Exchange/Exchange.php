@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iikoExchangeBundle\Exchange;
+namespace iikoExchange\Exchange;
 
 
-use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchange\Contract\ExchangeNodeInterface;
 
-use iikoExchangeBundle\Engine\Engine;
-use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Provider\Provider;
+use iikoExchange\Engine\Engine;
+use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchange\Library\Provider\Provider;
 
 class Exchange implements ExchangeNodeInterface
 {
@@ -41,10 +41,10 @@ class Exchange implements ExchangeNodeInterface
 		}, $this->getEngines());
 
 		return [
-			self::FIELD_CODE => $this->getCode(),
-			self::FIELD_EXTRACTOR => $this->getExtractor() + [Engine::FIELD_REQUEST => $requests],
-			self::FIELD_LOADER => $this->getLoader(),
-			self::FIELD_ENGINES => $this->getEngines()
+			static::FIELD_CODE => $this->getCode(),
+			static::FIELD_EXTRACTOR => $this->getExtractor() + [Engine::FIELD_REQUEST => $requests],
+			static::FIELD_LOADER => $this->getLoader(),
+			static::FIELD_ENGINES => $this->getEngines()
 		];
 	}
 

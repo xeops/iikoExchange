@@ -1,0 +1,4 @@
+services:
+    exchange.directory:
+        class:  iikoExchange\Service\ExchangeDirectoryService
+        arguments: []

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Library\Mapping;
+namespace iikoExchange\Library\Mapping;
 
 
 class Mapping

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Format;
+namespace iikoExchange\Format;
 
 
 class Formatter

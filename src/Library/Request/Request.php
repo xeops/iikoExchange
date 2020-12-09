@@ -1,11 +1,11 @@
 <?php
 
 
-namespace iikoExchangeBundle\Library\Request;
+namespace iikoExchange\Library\Request;
 
 
-use iikoExchangeBundle\Contract\ExchangeNodeInterface;
-use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchange\Contract\ExchangeNodeInterface;
+use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
 use Psr\Http\Message\RequestInterface;
 
 class Request implements ExchangeNodeInterface

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Contract\Extensions;
+namespace iikoExchange\Contract\Extensions;
 
 
 interface ConfigurableExtensionInterface
