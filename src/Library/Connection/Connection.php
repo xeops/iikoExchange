@@ -12,8 +12,19 @@ use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
-	use ExchangeNodeTrait;
-	use ConfigurableExtensionTrait;
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as public nodeJsonSerialize;
+	}
+	use ConfigurableExtensionTrait
+	{
+		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
+	}
+
+	public function __construct(string $code)
+	{
+		$this->code = $code;
+	}
 
 	public function getClient(): ClientInterface
 	{
@@ -22,9 +33,6 @@ class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterfac
 
 	public function jsonSerialize()
 	{
-		return [
-			self::FIELD_CODE => $this->getCode(),
-			self::FIELD_CONFIGURATION => $this->exposeConfiguration()
-		];
+		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 }

@@ -6,13 +6,18 @@ namespace iikoExchangeBundle\Library\Provider;
 
 use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class Provider implements ExchangeNodeInterface
 {
 	const FIELD_CONNECTION = 'connection';
 
-	use ExchangeNodeTrait;
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as public nodeJsonSerialize;
+	}
+
 
 	protected Connection $connection;
 
@@ -33,9 +38,6 @@ class Provider implements ExchangeNodeInterface
 
 	public function jsonSerialize()
 	{
-		return [
-			self::FIELD_CODE => $this->getCode(),
-			self::FIELD_CONNECTION => $this->getConnection()
-		];
+		return $this->nodeJsonSerialize() + [self::FIELD_CONNECTION => $this->getConnection()];
 	}
 }

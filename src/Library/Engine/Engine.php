@@ -5,18 +5,27 @@ namespace iikoExchangeBundle\Engine;
 
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Format\Formatter;
 use iikoExchangeBundle\Library\Request\Request;
 use iikoExchangeBundle\Library\Transform\Transformer;
 
-class Engine implements ExchangeNodeInterface
+class Engine implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	const FIELD_REQUEST = 'requests';
 	const FIELD_TRANSFORMER = 'transformer';
 	const FIELD_FORMATTER = 'formatter';
 
-	use ExchangeNodeTrait;
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as public nodeJsonSerialize;
+	}
+	use ConfigurableExtensionTrait
+	{
+		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
+	}
 
 	/** @var Request[] */
 	protected array $requests;
@@ -30,12 +39,45 @@ class Engine implements ExchangeNodeInterface
 
 	public function jsonSerialize()
 	{
-		return [
-			self::FIELD_CODE => $this->getCode(),
-			self::FIELD_TRANSFORMER => $this->getTransformer(),
-			self::FIELD_FORMATTER => $this->getFormatter()
-		];
+		return
+			$this->nodeJsonSerialize() +
+			$this->configJsonSerialize() +
+			[
+				self::FIELD_TRANSFORMER => $this->getTransformer(),
+				self::FIELD_FORMATTER => $this->getFormatter()
+			];
 	}
+
+	/**
+	 * @param Request[] $requests
+	 * @return Engine
+	 */
+	public function setRequests(array $requests): Engine
+	{
+		$this->requests = $requests;
+		return $this;
+	}
+
+	/**
+	 * @param Transformer $transformer
+	 * @return Engine
+	 */
+	public function setTransformer(Transformer $transformer): Engine
+	{
+		$this->transformer = $transformer;
+		return $this;
+	}
+
+	/**
+	 * @param Formatter $formatter
+	 * @return Engine
+	 */
+	public function setFormatter(Formatter $formatter): Engine
+	{
+		$this->formatter = $formatter;
+		return $this;
+	}
+
 
 	/**
 	 * @return Request[]

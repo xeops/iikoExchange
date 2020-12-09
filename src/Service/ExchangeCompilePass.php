@@ -24,7 +24,7 @@ class ExchangeCompilePass implements CompilerPassInterface
 
 		foreach ($taggedServices as $id => $tags) {
 			// add the transport service to the ChainTransport service
-			$definition->addMethodCall('addTransport', array(new Reference($id)));
+			$definition->addMethodCall('addExchange', array(new Reference($id)));
 		}
 	}
 }

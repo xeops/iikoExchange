@@ -19,4 +19,9 @@ class ExchangeDirectoryService
 	{
 		return $this->exchanges;
 	}
+
+	public function getExchangeByCode(string $code) : Exchange
+	{
+		return $this->getCollection()[$code];
+	}
 }

@@ -14,6 +14,7 @@ class Exchange implements ExchangeNodeInterface
 {
 
 	const FIELD_EXTRACTOR = 'extractor';
+	const FIELD_PROVIDER = 'provider';
 	const FIELD_LOADER = 'loader';
 	const FIELD_ENGINES = 'engines';
 
@@ -32,17 +33,17 @@ class Exchange implements ExchangeNodeInterface
 	public function jsonSerialize()
 	{
 		$requests = [];
-		array_map(function (Engine $engine) use ($requests)
+		array_map(function (Engine $engine) use (&$requests)
 		{
 			foreach ($engine->getRequests() as $request)
 			{
-				$requests[$request->getCode()] = $request;
+				$requests[$request->getCode()] = $request->jsonSerialize();
 			}
 		}, $this->getEngines());
 
 		return [
 			static::FIELD_CODE => $this->getCode(),
-			static::FIELD_EXTRACTOR => $this->getExtractor() + [Engine::FIELD_REQUEST => $requests],
+			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => $requests],
 			static::FIELD_LOADER => $this->getLoader(),
 			static::FIELD_ENGINES => $this->getEngines()
 		];

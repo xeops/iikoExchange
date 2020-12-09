@@ -12,4 +12,11 @@ trait ConfigurableExtensionTrait
 
 		];
 	}
+
+	public function jsonSerialize()
+	{
+		return [
+			self::FIELD_CONFIGURATION => $this->exposeConfiguration()
+		];
+	}
 }
