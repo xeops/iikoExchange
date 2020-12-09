@@ -19,6 +19,7 @@ class Exchange implements ExchangeNodeInterface
 	const FIELD_LOADER = 'loader';
 	const FIELD_ENGINES = 'engines';
 	const FIELD_SCHEDULES = 'schedules';
+	const FIELD_MAPPING = 'mapping';
 
 	protected Provider $extractor;
 	protected Provider $loader;
@@ -38,22 +39,29 @@ class Exchange implements ExchangeNodeInterface
 
 	public function jsonSerialize()
 	{
-		$requests = [];
-		array_map(function (Engine $engine) use (&$requests)
+		$requests = $mappings = [];
+
+		array_map(function (Engine $engine) use (&$requests, &$mappings)
 		{
 			foreach ($engine->getRequests() as $request)
 			{
 				$requests[$request->getCode()] = $request->jsonSerialize();
 			}
+			foreach ($engine->getTransformer()->getMappings() as $mapping)
+			{
+				$mappings[$mapping->getCode()] = $mapping;
+			}
 		}, $this->getEngines());
+
 
 		return $this->nodeJsonSerialize() + [
 
-			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => array_values($requests)],
-			static::FIELD_LOADER => $this->getLoader(),
-			static::FIELD_ENGINES => $this->getEngines(),
-			static::FIELD_SCHEDULES => $this->getSchedules()
-		];
+				static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => array_values($requests)],
+				static::FIELD_LOADER => $this->getLoader(),
+				static::FIELD_ENGINES => $this->getEngines(),
+				static::FIELD_MAPPING => $mappings,
+				static::FIELD_SCHEDULES => $this->getSchedules()
+			];
 	}
 
 	/**

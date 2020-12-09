@@ -12,7 +12,14 @@ class ConfigItemString implements ExchangeNodeInterface
 	const FIELD_TYPE = 'type';
 	const FIELD_VALUE = 'value';
 
-	protected $value;
+	protected ?string $value = null;
+
+	public function __construct(string $code, ?string $value = null)
+	{
+		$this->code = $code;
+		$this->value = $value;
+	}
+
 
 	use ExchangeNodeTrait
 	{
@@ -44,6 +51,6 @@ class ConfigItemString implements ExchangeNodeInterface
 
 	public function jsonSerialize()
 	{
-		return $this->nodeJsonSerialize();
+		return $this->nodeJsonSerialize() + [self::FIELD_TYPE => $this->getType(), self::FIELD_VALUE => $this->getValue()];
 	}
 }
