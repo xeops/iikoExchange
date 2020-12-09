@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iikoExchange\Engine;
+namespace iikoExchangeBundle\Engine;
 
 
-use iikoExchange\Contract\ExchangeNodeInterface;
-use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchange\Format\Formatter;
-use iikoExchange\Library\Request\Request;
-use iikoExchange\Library\Transform\Transformer;
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchangeBundle\Format\Formatter;
+use iikoExchangeBundle\Library\Request\Request;
+use iikoExchangeBundle\Library\Transform\Transformer;
 
 class Engine implements ExchangeNodeInterface
 {

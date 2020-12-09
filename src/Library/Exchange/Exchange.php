@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iikoExchange\Exchange;
+namespace iikoExchangeBundle\Exchange;
 
 
-use iikoExchange\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 
-use iikoExchange\Engine\Engine;
-use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchange\Library\Provider\Provider;
+use iikoExchangeBundle\Engine\Engine;
+use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchangeBundle\Library\Provider\Provider;
 
 class Exchange implements ExchangeNodeInterface
 {

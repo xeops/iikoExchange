@@ -1,12 +1,12 @@
 <?php
 
 
-namespace iikoExchange\Library\Provider;
+namespace iikoExchangeBundle\Library\Provider;
 
 
-use iikoExchange\Connection\Connection;
-use iikoExchange\Contract\ExchangeNodeInterface;
-use iikoExchange\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class Provider implements ExchangeNodeInterface
 {

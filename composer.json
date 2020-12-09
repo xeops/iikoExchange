@@ -27,7 +27,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"iikoExchange\\": [
+			"iikoExchangeBundle\\": [
 				"src/",
 				"src/Library"
 			]

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace iikoExchange\Service;
+namespace iikoExchangeBundle\Service;
 
 
-use iikoExchange\Exchange\Exchange;
+use iikoExchangeBundle\Exchange\Exchange;
 
 class ExchangeDirectoryService
 {

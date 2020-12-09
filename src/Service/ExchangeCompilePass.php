@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchange\Service;
+namespace iikoExchangeBundle\Service;
 
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

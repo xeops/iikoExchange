@@ -1,4 +1,4 @@
 services:
     exchange.directory:
-        class:  iikoExchange\Service\ExchangeDirectoryService
+        class:  iikoExchangeBundle\Service\ExchangeDirectoryService
         arguments: []

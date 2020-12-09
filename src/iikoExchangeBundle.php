@@ -1,10 +1,10 @@
 <?php
 
 
-namespace iikoExchange;
+namespace iikoExchangeBundle;
 
 
-use iikoExchange\Service\ExchangeCompilePass;
+use iikoExchangeBundle\Service\ExchangeCompilePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
