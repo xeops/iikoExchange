@@ -46,7 +46,7 @@ class Exchange implements ExchangeNodeInterface
 
 		return [
 			static::FIELD_CODE => $this->getCode(),
-			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => $requests],
+			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => array_values($requests)],
 			static::FIELD_LOADER => $this->getLoader(),
 			static::FIELD_ENGINES => $this->getEngines(),
 			static::FIELD_SCHEDULES => $this->getSchedules()
