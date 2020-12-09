@@ -9,6 +9,7 @@ use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Engine\Engine;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Library\Provider\Provider;
+use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 class Exchange implements ExchangeNodeInterface
 {
@@ -17,11 +18,13 @@ class Exchange implements ExchangeNodeInterface
 	const FIELD_PROVIDER = 'provider';
 	const FIELD_LOADER = 'loader';
 	const FIELD_ENGINES = 'engines';
+	const FIELD_SCHEDULES = 'schedules';
 
 	protected Provider $extractor;
 	protected Provider $loader;
 	/** @var Engine[] */
 	protected array $engines;
+	protected array $schedules;
 
 	use ExchangeNodeTrait;
 
@@ -45,7 +48,8 @@ class Exchange implements ExchangeNodeInterface
 			static::FIELD_CODE => $this->getCode(),
 			static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [Engine::FIELD_REQUEST => $requests],
 			static::FIELD_LOADER => $this->getLoader(),
-			static::FIELD_ENGINES => $this->getEngines()
+			static::FIELD_ENGINES => $this->getEngines(),
+			static::FIELD_SCHEDULES => $this->getSchedules()
 		];
 	}
 
@@ -100,6 +104,24 @@ class Exchange implements ExchangeNodeInterface
 	public function setEngines(array $engines): Exchange
 	{
 		$this->engines = $engines;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSchedules(): array
+	{
+		return $this->schedules;
+	}
+
+	/**
+	 * @param array $schedules
+	 * @return Exchange
+	 */
+	public function setSchedules(array $schedules): Exchange
+	{
+		$this->schedules = $schedules;
 		return $this;
 	}
 
