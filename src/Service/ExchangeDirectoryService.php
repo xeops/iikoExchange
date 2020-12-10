@@ -4,14 +4,14 @@
 namespace iikoExchangeBundle\Service;
 
 
-use iikoExchangeBundle\Exchange\Exchange;
+use iikoExchangeBundle\Exchange\AbstractExchangeBuilder;
 
 class ExchangeDirectoryService
 {
-	/** @var Exchange[] */
+	/** @var AbstractExchangeBuilder[] */
 	protected array $exchanges = [];
 
-	public function addExchange(Exchange $exchange)
+	public function addExchange(AbstractExchangeBuilder $exchange)
 	{
 		$this->exchanges[$exchange->getCode()] = $exchange;
 	}
@@ -21,7 +21,7 @@ class ExchangeDirectoryService
 		return $this->exchanges;
 	}
 
-	public function getExchangeByCode(string $code) : Exchange
+	public function getExchangeByCode(string $code) : AbstractExchangeBuilder
 	{
 		return $this->getCollection()[$code];
 	}

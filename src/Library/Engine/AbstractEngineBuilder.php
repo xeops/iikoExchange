@@ -12,7 +12,7 @@ use iikoExchangeBundle\Format\Formatter;
 use iikoExchangeBundle\Library\Request\Request;
 use iikoExchangeBundle\Library\Transform\Transformer;
 
-class Engine implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class AbstractEngineBuilder implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	const FIELD_REQUEST = 'requests';
 	const FIELD_TRANSFORMER = 'transformer';
@@ -50,9 +50,9 @@ class Engine implements ExchangeNodeInterface, ConfigurableExtensionInterface
 
 	/**
 	 * @param Request[] $requests
-	 * @return Engine
+	 * @return AbstractEngineBuilder
 	 */
-	public function setRequests(array $requests): Engine
+	public function setRequests(array $requests): AbstractEngineBuilder
 	{
 		$this->requests = $requests;
 		return $this;
@@ -60,9 +60,9 @@ class Engine implements ExchangeNodeInterface, ConfigurableExtensionInterface
 
 	/**
 	 * @param Transformer $transformer
-	 * @return Engine
+	 * @return AbstractEngineBuilder
 	 */
-	public function setTransformer(Transformer $transformer): Engine
+	public function setTransformer(Transformer $transformer): AbstractEngineBuilder
 	{
 		$this->transformer = $transformer;
 		return $this;
@@ -70,9 +70,9 @@ class Engine implements ExchangeNodeInterface, ConfigurableExtensionInterface
 
 	/**
 	 * @param Formatter $formatter
-	 * @return Engine
+	 * @return AbstractEngineBuilder
 	 */
-	public function setFormatter(Formatter $formatter): Engine
+	public function setFormatter(Formatter $formatter): AbstractEngineBuilder
 	{
 		$this->formatter = $formatter;
 		return $this;
