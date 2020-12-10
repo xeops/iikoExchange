@@ -1,4 +1,13 @@
 services:
     exchange.directory:
-        class:  iikoExchangeBundle\Service\ExchangeDirectoryService
-        arguments: []
+        class: iikoExchangeBundle\Service\ExchangeDirectoryService
+
+    exchange.engine.data_manager:
+        class: iikoExchangeBundle\Service\ExchangeEngineDataManager
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }
+
+    exchange.process_manager:
+        class: iikoExchangeBundle\Service\ExchangeProcessManagerService
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }

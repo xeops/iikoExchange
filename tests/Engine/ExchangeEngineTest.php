@@ -2,7 +2,7 @@
 
 namespace App\Tests\Engine;
 
-use iikoExchangeBundle\Engine\Event\ExchangeEngineProcessEvent;
+use iikoExchangeBundle\Engine\Event\ExchangeEngineRunEvent;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
 use iikoExchangeBundle\Exchange\Exchange;
@@ -20,10 +20,10 @@ class ExchangeEngineTest extends TestCase
 		$mock
 			->expects($this->once())
 			->method('dispatch')
-			->withConsecutive([$this->equalTo(ExchangeEngineProcessEvent::NAME), $this->isInstanceOf(ExchangeEngineProcessEvent::class)]);
+			->withConsecutive([$this->equalTo(ExchangeEngineRunEvent::NAME), $this->isInstanceOf(ExchangeEngineRunEvent::class)]);
 
 		$engine = new ExchangeEngine('__code__', $mock);
 
-		$engine->process($exchange);
+		$engine->run($exchange);
 	}
 }

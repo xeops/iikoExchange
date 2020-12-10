@@ -8,9 +8,9 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineProcessEvent extends Event
+class ExchangeEngineLoadEvent extends Event
 {
-	const NAME = 'exchange.engine.process';
+	const NAME = 'exchange.engine.load';
 	/**
 	 * @var Exchange
 	 */
@@ -19,11 +19,13 @@ class ExchangeEngineProcessEvent extends Event
 	 * @var ExchangeEngine
 	 */
 	private ExchangeEngine $exchangeEngine;
+	private $data;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine)
+	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, $data)
 	{
 		$this->exchange = $exchange;
 		$this->exchangeEngine = $exchangeEngine;
+		$this->data = $data;
 	}
 
 	/**
@@ -35,16 +37,6 @@ class ExchangeEngineProcessEvent extends Event
 	}
 
 	/**
-	 * @param Exchange $exchange
-	 * @return ExchangeEngineProcessEvent
-	 */
-	public function setExchange(Exchange $exchange): ExchangeEngineProcessEvent
-	{
-		$this->exchange = $exchange;
-		return $this;
-	}
-
-	/**
 	 * @return ExchangeEngine
 	 */
 	public function getExchangeEngine(): ExchangeEngine
@@ -53,13 +45,11 @@ class ExchangeEngineProcessEvent extends Event
 	}
 
 	/**
-	 * @param ExchangeEngine $exchangeEngine
-	 * @return ExchangeEngineProcessEvent
+	 * @return mixed
 	 */
-	public function setExchangeEngine(ExchangeEngine $exchangeEngine): ExchangeEngineProcessEvent
+	public function getData()
 	{
-		$this->exchangeEngine = $exchangeEngine;
-		return $this;
+		return $this->data;
 	}
 
 

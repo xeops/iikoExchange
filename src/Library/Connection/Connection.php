@@ -5,10 +5,13 @@ namespace iikoExchangeBundle\Connection;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\RequestOptions;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use Psr\Http\Message\ResponseInterface;
 
 class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
@@ -34,5 +37,10 @@ class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterfac
 	public function jsonSerialize()
 	{
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
+	}
+
+	public function sendRequest(Request $request) : ResponseInterface
+	{
+		return $this->getClient()->send($request);
 	}
 }

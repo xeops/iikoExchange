@@ -25,7 +25,7 @@ class ExchangeProcessEventTrigger
 		foreach ($event->getExchange()->getEngines() as $engine)
 		{
 			$this->logger->debug('Exchange start engine', ['exchange' => $event->getExchange()->getCode(), 'engine' => $engine->getCode()]);
-			$engine->process($event->getExchange());
+			$engine->run($event->getExchange());
 		}
 
 	}

@@ -4,13 +4,14 @@
 namespace iikoExchangeBundle\Library\Request;
 
 
+use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class Request implements ExchangeNodeInterface, ConfigurableExtensionInterface
+class DataSourceRequest implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	use ExchangeNodeTrait
 	{
@@ -26,7 +27,7 @@ class Request implements ExchangeNodeInterface, ConfigurableExtensionInterface
 		$this->code = $code;
 	}
 
-	public function getRequest(): RequestInterface
+	public function getRequest(): Request
 	{
 
 	}
@@ -34,5 +35,15 @@ class Request implements ExchangeNodeInterface, ConfigurableExtensionInterface
 	public function jsonSerialize()
 	{
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
+	}
+
+	public function processResponse(string $data)
+	{
+
+	}
+
+	public function processError(ResponseInterface $error)
+	{
+
 	}
 }

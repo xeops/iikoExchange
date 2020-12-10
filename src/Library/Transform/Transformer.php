@@ -6,11 +6,14 @@ namespace iikoExchangeBundle\Library\Transform;
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Engine\ExchangeEngine;
+use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Library\Mapping\Mapping;
+use iikoExchangeBundle\Library\Request\DataSourceRequest;
 
-class Transformer implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class Transformer implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	const FIELD_MAPPING = 'mapping';
 
@@ -48,5 +51,7 @@ class Transformer implements ExchangeNodeInterface, ConfigurableExtensionInterfa
 	{
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
+
+	abstract public function transform(Exchange $exchange, ExchangeEngine $exchangeEngine, $data);
 
 }

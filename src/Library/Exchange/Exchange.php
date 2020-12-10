@@ -5,11 +5,12 @@ namespace iikoExchangeBundle\Exchange;
 
 
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
+use iikoExchangeBundle\ExtensionTrait\UniqueExtensionTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Exchange extends AbstractExchangeBuilder
 {
-
+	use UniqueExtensionTrait;
 	/**
 	 * @var EventDispatcherInterface
 	 */

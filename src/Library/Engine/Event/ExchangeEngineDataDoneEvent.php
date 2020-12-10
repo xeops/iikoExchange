@@ -8,9 +8,9 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineProcessEvent extends Event
+class ExchangeEngineDataDoneEvent extends Event
 {
-	const NAME = 'exchange.engine.process';
+	const NAME = 'exchange.engine.dataDone';
 	/**
 	 * @var Exchange
 	 */
@@ -36,9 +36,9 @@ class ExchangeEngineProcessEvent extends Event
 
 	/**
 	 * @param Exchange $exchange
-	 * @return ExchangeEngineProcessEvent
+	 * @return ExchangeEngineDataDoneEvent
 	 */
-	public function setExchange(Exchange $exchange): ExchangeEngineProcessEvent
+	public function setExchange(Exchange $exchange): ExchangeEngineDataDoneEvent
 	{
 		$this->exchange = $exchange;
 		return $this;
@@ -54,13 +54,11 @@ class ExchangeEngineProcessEvent extends Event
 
 	/**
 	 * @param ExchangeEngine $exchangeEngine
-	 * @return ExchangeEngineProcessEvent
+	 * @return ExchangeEngineDataDoneEvent
 	 */
-	public function setExchangeEngine(ExchangeEngine $exchangeEngine): ExchangeEngineProcessEvent
+	public function setExchangeEngine(ExchangeEngine $exchangeEngine): ExchangeEngineDataDoneEvent
 	{
 		$this->exchangeEngine = $exchangeEngine;
 		return $this;
 	}
-
-
 }

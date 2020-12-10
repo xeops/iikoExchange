@@ -7,6 +7,8 @@ namespace iikoExchangeBundle\Format;
 use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Engine\ExchangeEngine;
+use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
@@ -26,7 +28,7 @@ class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
 		$this->code = $code;
 	}
 
-	public function getRequest(): Request
+	public function getRequest(Exchange $exchange, ExchangeEngine $exchangeEngine, $data): Request
 	{
 
 	}

@@ -9,7 +9,7 @@ use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Format\Formatter;
-use iikoExchangeBundle\Library\Request\Request;
+use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Transform\Transformer;
 
 abstract class AbstractEngineBuilder implements ExchangeNodeInterface, ConfigurableExtensionInterface
@@ -27,7 +27,7 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
 	}
 
-	/** @var Request[] */
+	/** @var DataSourceRequest[] */
 	protected array $requests;
 	protected Transformer $transformer;
 	protected Formatter $formatter;
@@ -49,7 +49,7 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 	}
 
 	/**
-	 * @param Request[] $requests
+	 * @param DataSourceRequest[] $requests
 	 * @return AbstractEngineBuilder
 	 */
 	public function setRequests(array $requests): AbstractEngineBuilder
@@ -80,7 +80,7 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 
 
 	/**
-	 * @return Request[]
+	 * @return DataSourceRequest[]
 	 */
 	public function getRequests(): array
 	{

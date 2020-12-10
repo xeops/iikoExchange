@@ -38,13 +38,6 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 		$this->unique = md5(mt_rand() . $code);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getUnique(): string
-	{
-		return $this->unique;
-	}
 
 	public function jsonSerialize()
 	{

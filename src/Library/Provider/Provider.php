@@ -4,10 +4,12 @@
 namespace iikoExchangeBundle\Library\Provider;
 
 
+use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
+use iikoExchangeBundle\Library\Request\DataSourceRequest;
 
 class Provider implements ExchangeNodeInterface
 {
@@ -39,5 +41,20 @@ class Provider implements ExchangeNodeInterface
 	public function jsonSerialize()
 	{
 		return $this->nodeJsonSerialize() + [self::FIELD_CONNECTION => $this->getConnection()];
+	}
+
+	public function sendRequest(Request $request)
+	{
+		$response = $this->connection->sendRequest($request);
+
+		if ($response->getStatusCode() >= 300)
+		{
+			return $response->getBody()->__toString();
+		}
+		else
+		{
+			// no need log, because connection must do that
+			throw new \Exception($response->getStatusCode() >= 300 ? $response->getStatusCode() : 500);
+		}
 	}
 }
