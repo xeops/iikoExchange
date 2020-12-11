@@ -22,7 +22,7 @@ class Exchange extends AbstractExchangeBuilder
 		$this->eventDispatcher = $eventDispatcher;
 	}
 
-	public function process()
+	public final function process()
 	{
 		$this->eventDispatcher->dispatch(ExchangeProcessEvent::NAME, new ExchangeProcessEvent($this));
 	}

@@ -18,27 +18,39 @@ services:
     exchange.trigger.process:
         class: iikoExchangeBundle\Exchange\Trigger\ExchangeProcessEventTrigger
         arguments: [ "@logger" ]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent::NAME, method: onProcess, priority: 0 }
     exchange.trigger.engine_done:
         class: iikoExchangeBundle\Exchange\Trigger\ExchangeEngineDoneEventTrigger
         arguments: [ "@exchange.process_manager", "@event_dispatcher" ]
-
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent::NAME, method: onEngineDone, priority: 0 }
     #           ENGINE
     exchange.engine.trigger.load:
         class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineLoadEventTrigger
         arguments: [ "@event_dispatcher" ]
-
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineLoadEvent::NAME, method: onLoad, priority: 0 }
     exchange.engine.trigger.process:
         class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineProcessEventTrigger
         arguments: [ "@exchange.engine.data_manager" ]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineProcessEvent::NAME, method: onEngineProcess, priority: 0 }
 
     exchange.engine.trigger.run:
         class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineRunEventTrigger
         arguments: [ "@event_dispatcher" ]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineRunEvent::NAME, method: onExchangeEngineRun, priority: 0 }
 
     exchange.engine.trigger.send:
         class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineSendRequestEventTrigger
         arguments: [ "@exchange.engine.data_manager", "@event_dispatcher" ]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineSendRequestEvent::NAME, method: onSendRequest, priority: 0 }
 
     exchange.engine.trigger.transform:
         class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineTransformEventTrigger
         arguments: [ "@event_dispatcher" ]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineTransformDataEvent::NAME, method: onTransform, priority: 0 }

@@ -13,6 +13,7 @@ trait UniqueExtensionTrait
 	 */
 	public function getUniq(): string
 	{
+		$this->uniq ??= $this->generateUniq();
 		return $this->uniq;
 	}
 

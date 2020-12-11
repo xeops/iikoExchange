@@ -24,6 +24,7 @@ abstract class AbstractTransformer implements ExchangeNodeInterface, Configurabl
 	{
 		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
 	}
+
 	/** @var MappingInterface[] */
 	protected array $mappings;
 
@@ -56,5 +57,10 @@ abstract class AbstractTransformer implements ExchangeNodeInterface, Configurabl
 	protected function getMappingValue(string $mappingCode, $identifiers, $valueCode)
 	{
 		return $this->mappings[$mappingCode]->getValue($identifiers, $valueCode);
+	}
+
+	public function getChildNodes(): array
+	{
+		return $this->getMappings();
 	}
 }

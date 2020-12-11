@@ -9,6 +9,7 @@ use iikoExchangeBundle\Exchange\Exchange;
 
 class ExchangeEngineDoneEvent
 {
+	const NAME = 'exchange.engine.done';
 	/**
 	 * @var Exchange
 	 */

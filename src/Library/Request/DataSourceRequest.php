@@ -27,7 +27,7 @@ abstract class DataSourceRequest implements ExchangeNodeInterface, ConfigurableE
 		$this->code = $code;
 	}
 
-	abstract public function getRequest(): Request;
+	abstract public function getRequest();
 
 	public function jsonSerialize()
 	{

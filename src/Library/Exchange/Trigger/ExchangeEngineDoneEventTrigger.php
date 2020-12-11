@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Exchange\Trigger;
 
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent;
+use iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent;
 use iikoExchangeBundle\Service\ExchangeProcessManagerService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -28,9 +29,9 @@ class ExchangeEngineDoneEventTrigger
 	public function onEngineDone(ExchangeEngineDoneEvent $event)
 	{
 		$this->processManager->engineDone($event->getExchange(), $event->getExchangeEngine());
-		if($this->processManager->isAllEngineDone($event->getExchange()))
+		if ($this->processManager->isAllEngineDone($event->getExchange()))
 		{
-
+			$this->eventDispatcher->dispatch(ExchangeDoneEvent::NAME, new ExchangeDoneEvent($event->getExchange()));
 		}
 	}
 }

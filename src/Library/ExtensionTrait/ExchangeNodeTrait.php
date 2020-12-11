@@ -46,4 +46,9 @@ trait ExchangeNodeTrait
 		];
 	}
 
+	public function getChildNodes() : array
+	{
+		return [];
+	}
+
 }

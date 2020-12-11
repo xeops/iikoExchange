@@ -24,12 +24,12 @@ class ExchangeEngine extends AbstractEngineBuilder
 		$this->dispatcher = $dispatcher;
 	}
 
-	public function run(Exchange $exchange)
+	public final function run(Exchange $exchange)
 	{
 		$this->dispatcher->dispatch(ExchangeEngineRunEvent::NAME, new ExchangeEngineRunEvent($exchange, $this));
 	}
 
-	public function process(Exchange $exchange)
+	public final function process(Exchange $exchange)
 	{
 		$this->dispatcher->dispatch(ExchangeEngineProcessEvent::NAME, new ExchangeEngineProcessEvent($exchange, $this));
 	}

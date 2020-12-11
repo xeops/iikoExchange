@@ -103,4 +103,9 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 		return $this->formatter;
 	}
 
+	public function getChildNodes(): array
+	{
+		return array_merge($this->getRequests() , [$this->getFormatter(), $this->getTransformer()]);
+	}
+
 }

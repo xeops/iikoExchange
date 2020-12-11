@@ -11,4 +11,6 @@ interface ExchangeNodeInterface extends \JsonSerializable
 	const FIELD_DESCRIPTION = 'description';
 
 	public function getCode(): string;
+
+	public function getChildNodes(): array;
 }

@@ -138,5 +138,9 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 		return $this;
 	}
 
+	public function getChildNodes(): array
+	{
+		return array_merge($this->getSchedules() , $this->getEngines() , [$this->getLoader(), $this->getExtractor()]);
+	}
 
 }
