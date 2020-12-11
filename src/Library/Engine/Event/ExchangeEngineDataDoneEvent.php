@@ -35,30 +35,10 @@ class ExchangeEngineDataDoneEvent extends Event
 	}
 
 	/**
-	 * @param Exchange $exchange
-	 * @return ExchangeEngineDataDoneEvent
-	 */
-	public function setExchange(Exchange $exchange): ExchangeEngineDataDoneEvent
-	{
-		$this->exchange = $exchange;
-		return $this;
-	}
-
-	/**
 	 * @return ExchangeEngine
 	 */
 	public function getExchangeEngine(): ExchangeEngine
 	{
 		return $this->exchangeEngine;
-	}
-
-	/**
-	 * @param ExchangeEngine $exchangeEngine
-	 * @return ExchangeEngineDataDoneEvent
-	 */
-	public function setExchangeEngine(ExchangeEngine $exchangeEngine): ExchangeEngineDataDoneEvent
-	{
-		$this->exchangeEngine = $exchangeEngine;
-		return $this;
 	}
 }

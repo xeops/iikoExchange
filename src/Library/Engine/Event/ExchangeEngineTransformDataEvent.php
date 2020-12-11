@@ -20,13 +20,12 @@ class ExchangeEngineTransformDataEvent extends Event
 	 * @var ExchangeEngine
 	 */
 	private ExchangeEngine $exchangeEngine;
-	private $data;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, $data)
+
+	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine)
 	{
 		$this->exchange = $exchange;
 		$this->exchangeEngine = $exchangeEngine;
-		$this->data = $data;
 	}
 
 	/**
@@ -44,14 +43,5 @@ class ExchangeEngineTransformDataEvent extends Event
 	{
 		return $this->exchangeEngine;
 	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getData()
-	{
-		return $this->data;
-	}
-
 
 }

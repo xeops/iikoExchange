@@ -6,14 +6,17 @@ namespace iikoExchangeBundle\ExtensionTrait;
 
 trait UniqueExtensionTrait
 {
-	protected string $uniq;
+	protected ?string $uniq = null;
 
 	/**
 	 * @return string
 	 */
 	public function getUniq(): string
 	{
-		$this->uniq ??= $this->generateUniq();
+		if (!$this->uniq)
+		{
+			$this->generateUniq();
+		}
 		return $this->uniq;
 	}
 
