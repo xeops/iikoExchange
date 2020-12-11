@@ -6,14 +6,13 @@ namespace iikoExchangeBundle\Library\Transform;
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\Mapping\MappingInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Mapping\Mapping;
-use iikoExchangeBundle\Library\Request\DataSourceRequest;
 
-abstract class Transformer implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class AbstractTransformer implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	const FIELD_MAPPING = 'mapping';
 
@@ -25,7 +24,7 @@ abstract class Transformer implements ExchangeNodeInterface, ConfigurableExtensi
 	{
 		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
 	}
-
+	/** @var MappingInterface[] */
 	protected array $mappings;
 
 	public function __construct(string $code)
@@ -33,14 +32,14 @@ abstract class Transformer implements ExchangeNodeInterface, ConfigurableExtensi
 		$this->code = $code;
 	}
 
-	public function addMapping(Mapping $mapping): self
+	public function addMapping(MappingInterface $mapping): self
 	{
 		$this->mappings[$mapping->getCode()] = $mapping;
 		return $this;
 	}
 
 	/**
-	 * @return Mapping[]
+	 * @return MappingInterface[]
 	 */
 	public function getMappings(): array
 	{
@@ -54,4 +53,8 @@ abstract class Transformer implements ExchangeNodeInterface, ConfigurableExtensi
 
 	abstract public function transform(Exchange $exchange, ExchangeEngine $exchangeEngine, $data);
 
+	protected function getMappingValue(string $mappingCode, $identifiers, $valueCode)
+	{
+		return $this->mappings[$mappingCode]->getValue($identifiers, $valueCode);
+	}
 }

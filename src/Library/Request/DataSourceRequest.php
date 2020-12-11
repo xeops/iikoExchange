@@ -11,7 +11,7 @@ use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use Psr\Http\Message\ResponseInterface;
 
-class DataSourceRequest implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class DataSourceRequest implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	use ExchangeNodeTrait
 	{
@@ -27,23 +27,13 @@ class DataSourceRequest implements ExchangeNodeInterface, ConfigurableExtensionI
 		$this->code = $code;
 	}
 
-	public function getRequest(): Request
-	{
-
-	}
+	abstract public function getRequest(): Request;
 
 	public function jsonSerialize()
 	{
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 
-	public function processResponse(string $data)
-	{
+	abstract public function processResponse(string $data);
 
-	}
-
-	public function processError(ResponseInterface $error)
-	{
-
-	}
 }

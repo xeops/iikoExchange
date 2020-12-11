@@ -10,7 +10,7 @@ use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Format\Formatter;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
-use iikoExchangeBundle\Library\Transform\Transformer;
+use iikoExchangeBundle\Library\Transform\AbstractTransformer;
 
 abstract class AbstractEngineBuilder implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
@@ -29,7 +29,7 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 
 	/** @var DataSourceRequest[] */
 	protected array $requests;
-	protected Transformer $transformer;
+	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
 
 	public function __construct(string $code)
@@ -59,10 +59,10 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 	}
 
 	/**
-	 * @param Transformer $transformer
+	 * @param AbstractTransformer $transformer
 	 * @return AbstractEngineBuilder
 	 */
-	public function setTransformer(Transformer $transformer): AbstractEngineBuilder
+	public function setTransformer(AbstractTransformer $transformer): AbstractEngineBuilder
 	{
 		$this->transformer = $transformer;
 		return $this;
@@ -88,9 +88,9 @@ abstract class AbstractEngineBuilder implements ExchangeNodeInterface, Configura
 	}
 
 	/**
-	 * @return Transformer
+	 * @return AbstractTransformer
 	 */
-	public function getTransformer(): Transformer
+	public function getTransformer(): AbstractTransformer
 	{
 		return $this->transformer;
 	}

@@ -3,6 +3,7 @@
 
 namespace iikoExchangeBundle;
 
+define('IIKO', 'iiko');
 
 use iikoExchangeBundle\Service\ExchangeCompilePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

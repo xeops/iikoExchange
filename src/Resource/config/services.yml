@@ -11,3 +11,34 @@ services:
         class: iikoExchangeBundle\Service\ExchangeProcessManagerService
         tags:
             - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }
+
+
+    # TRIGGERS
+    #           EXCHANGE
+    exchange.trigger.process:
+        class: iikoExchangeBundle\Exchange\Trigger\ExchangeProcessEventTrigger
+        arguments: [ "@logger" ]
+    exchange.trigger.engine_done:
+        class: iikoExchangeBundle\Exchange\Trigger\ExchangeEngineDoneEventTrigger
+        arguments: [ "@exchange.process_manager", "@event_dispatcher" ]
+
+    #           ENGINE
+    exchange.engine.trigger.load:
+        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineLoadEventTrigger
+        arguments: [ "@event_dispatcher" ]
+
+    exchange.engine.trigger.process:
+        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineProcessEventTrigger
+        arguments: [ "@exchange.engine.data_manager" ]
+
+    exchange.engine.trigger.run:
+        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineRunEventTrigger
+        arguments: [ "@event_dispatcher" ]
+
+    exchange.engine.trigger.send:
+        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineSendRequestEventTrigger
+        arguments: [ "@exchange.engine.data_manager", "@event_dispatcher" ]
+
+    exchange.engine.trigger.transform:
+        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineTransformEventTrigger
+        arguments: [ "@event_dispatcher" ]
