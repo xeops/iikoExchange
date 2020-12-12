@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Engine\Trigger;
+namespace iikoExchangeBundle\Library\Request\EventTrigger;
 
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineDataDoneEvent;

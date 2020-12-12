@@ -29,8 +29,4 @@ class ExchangeEngine extends AbstractEngineBuilder
 		$this->dispatcher->dispatch(ExchangeEngineRunEvent::NAME, new ExchangeEngineRunEvent($exchange, $this));
 	}
 
-	public final function process(Exchange $exchange)
-	{
-		$this->dispatcher->dispatch(ExchangeEngineProcessEvent::NAME, new ExchangeEngineProcessEvent($exchange, $this));
-	}
 }

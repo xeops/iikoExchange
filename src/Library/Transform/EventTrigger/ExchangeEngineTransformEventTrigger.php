@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Engine\Trigger;
+namespace iikoExchangeBundle\Library\Transform\EventTrigger;
 
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineLoadEvent;

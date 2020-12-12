@@ -6,8 +6,9 @@ namespace iikoExchangeBundle\Engine\Event;
 
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
+use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineDoneEvent
+class ExchangeEngineDoneEvent extends Event
 {
 	const NAME = 'exchange.engine.done';
 	/**
