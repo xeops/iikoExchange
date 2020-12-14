@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Exchange;
 
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Library\Provider\Provider;
@@ -43,18 +44,16 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 	{
 		$requests = $mappings = [];
 
-		array_map(function (ExchangeEngine $engine) use (&$requests, &$mappings)
+		array_map(function (ExchangeEngine $engine) use (&$requests)
 		{
 			foreach ($engine->getRequests() as $request)
 			{
 				$requests[$request->getCode()] = $request->jsonSerialize();
 			}
-			foreach ($engine->getTransformer()->getMappings() as $mapping)
-			{
-				$mappings[$mapping->getCode()] = $mapping;
-			}
+
 		}, $this->getEngines());
 
+		$this->serialiseMappingExtension($this, $mappings);
 
 		return $this->nodeJsonSerialize() + [
 
@@ -64,6 +63,21 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 				static::FIELD_MAPPING => array_values($mappings),
 				static::FIELD_SCHEDULES => $this->getSchedules()
 			];
+	}
+
+	protected function serialiseMappingExtension(ExchangeNodeInterface $exchangeNode, array &$mappings)
+	{
+		if ($exchangeNode instanceof WithMappingExtensionInterface)
+		{
+			foreach ($exchangeNode->getMapping() as $mapping)
+			{
+				$mappings[$mapping->getCode()] = $mapping;
+			}
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			$this->serialiseMappingExtension($childNode, $mappings);
+		}
 	}
 
 	/**
@@ -140,7 +154,7 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 
 	public function getChildNodes(): array
 	{
-		return array_merge($this->getSchedules() , $this->getEngines() , [$this->getLoader(), $this->getExtractor()]);
+		return array_merge($this->getSchedules(), $this->getEngines(), [$this->getLoader(), $this->getExtractor()]);
 	}
 
 }

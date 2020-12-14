@@ -4,7 +4,7 @@
 namespace iikoExchangeBundle\ExtensionTrait;
 
 
-trait WithPeriodTrait
+trait WithPeriodExtensionTrait
 {
 	protected $period;
 

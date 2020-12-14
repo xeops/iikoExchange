@@ -5,14 +5,14 @@ namespace iikoExchangeBundle\ExtensionHelper;
 
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
-use iikoExchangeBundle\Contract\Extensions\WithPeriodInterface;
+use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 
 class PeriodicalExtensionHelper
 {
 	public static function setPeriodForExchangeNode(ExchangeNodeInterface $exchangeNode, $period)
 	{
-		if ($exchangeNode instanceof WithPeriodInterface)
+		if ($exchangeNode instanceof WithPeriodExtensionInterface)
 		{
 			$exchangeNode->setPeriod($period);
 		}
@@ -24,7 +24,7 @@ class PeriodicalExtensionHelper
 
 	public static function extractPeriod(ExchangeNodeInterface $exchangeNode)
 	{
-		if ($exchangeNode instanceof WithPeriodInterface)
+		if ($exchangeNode instanceof WithPeriodExtensionInterface)
 		{
 			return $exchangeNode->getPeriod();
 		}

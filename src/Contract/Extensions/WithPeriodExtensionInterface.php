@@ -4,7 +4,7 @@
 namespace iikoExchangeBundle\Contract\Extensions;
 
 
-interface WithPeriodInterface
+interface WithPeriodExtensionInterface
 {
 	public function setPeriod($period);
 

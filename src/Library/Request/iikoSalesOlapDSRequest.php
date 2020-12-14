@@ -4,13 +4,13 @@
 namespace iikoExchangeBundle\Library\Request;
 
 
-use iikoExchangeBundle\Contract\Extensions\WithPeriodInterface;
-use iikoExchangeBundle\ExtensionTrait\WithPeriodTrait;
+use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
+use iikoExchangeBundle\ExtensionTrait\WithPeriodExtensionTrait;
 use iikoExchangeBundle\Library\Request\iiko\Report\iikoReportFilter;
 
-abstract class iikoSalesOlapDSRequest extends DataSourceRequest implements WithPeriodInterface
+abstract class iikoSalesOlapDSRequest extends DataSourceRequest implements WithPeriodExtensionInterface
 {
-	use WithPeriodTrait;
+	use WithPeriodExtensionTrait;
 
 	const TYPE_SALES = "SALES";
 	const TYPE_TRANSACTIONS = "TRANSACTIONS";
