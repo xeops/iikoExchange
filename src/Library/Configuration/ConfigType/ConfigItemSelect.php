@@ -6,6 +6,8 @@ namespace iikoExchangeBundle\Configuration\ConfigType;
 
 class ConfigItemSelect extends AbstractConfigItem
 {
+	const FIELD_OPTION_SET_CODE = 'option_set';
+
 	protected string $optionSetCode;
 
 	/**
@@ -26,5 +28,10 @@ class ConfigItemSelect extends AbstractConfigItem
 	public function validate($value): bool
 	{
 		return true;
+	}
+
+	public function jsonSerialize()
+	{
+		return parent::jsonSerialize() + [self::FIELD_OPTION_SET_CODE => $this->optionSetCode];
 	}
 }

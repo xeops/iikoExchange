@@ -55,3 +55,9 @@ services:
         arguments: [ "@event_dispatcher", "@exchange.engine.data_manager" ]
         tags:
             - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineTransformDataEvent::NAME, method: onTransform, priority: 0 }
+
+    exchange.engine.trigger.format:
+        class: iikoExchangeBundle\Format\EventTrigger\ExchangeFormatStageEventTrigger
+        arguments: ["@event_dispatcher"]
+        tags:
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineFormatEvent::NAME, method: onFormat, priority: 0 }

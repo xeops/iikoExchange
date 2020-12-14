@@ -6,6 +6,8 @@ namespace iikoExchangeBundle\ExtensionTrait;
 
 trait UniqueExtensionTrait
 {
+	protected ?int $id = null;
+
 	protected ?string $uniq = null;
 
 	/**
@@ -46,6 +48,14 @@ trait UniqueExtensionTrait
 			mt_rand(0, 65535)));
 
 		return $this;
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public function getId(): ?int
+	{
+		return $this->id;
 	}
 
 }

@@ -28,9 +28,9 @@ class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
 		$this->code = $code;
 	}
 
-	public function getRequest(Exchange $exchange, ExchangeEngine $exchangeEngine, $data): Request
+	public function getFormattedData(Exchange $exchange, $data)
 	{
-
+		return $data;
 	}
 
 	public function jsonSerialize()

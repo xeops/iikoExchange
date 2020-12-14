@@ -6,44 +6,39 @@ namespace iikoExchangeBundle\Engine\Event;
 
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
-use iikoExchangeBundle\Library\Provider\Provider;
+use iikoExchangeBundle\Format\Formatter;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineLoadEvent extends Event
+class ExchangeEngineFormatEvent extends Event
 {
-	const NAME = 'exchange.engine.load';
+	const NAME = 'exchange.engine.format';
 	/**
 	 * @var Exchange
 	 */
 	private Exchange $exchange;
+
+
+	private $data;
 	/**
 	 * @var ExchangeEngine
 	 */
-	private ExchangeEngine $exchangeEngine;
+	private ExchangeEngine $engine;
 
-	private $data;
-
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, $data)
+	public function __construct(Exchange $exchange, ExchangeEngine $engine, $data)
 	{
 		$this->exchange = $exchange;
-		$this->exchangeEngine = $exchangeEngine;
 		$this->data = $data;
+		$this->engine = $engine;
 	}
 
-	/**
-	 * @return Exchange
-	 */
 	public function getExchange(): Exchange
 	{
 		return $this->exchange;
 	}
 
-	/**
-	 * @return ExchangeEngine
-	 */
-	public function getExchangeEngine(): ExchangeEngine
+	public function getFormatter(): Formatter
 	{
-		return $this->exchangeEngine;
+		return $this->engine->getFormatter();
 	}
 
 	/**
@@ -54,5 +49,11 @@ class ExchangeEngineLoadEvent extends Event
 		return $this->data;
 	}
 
-
+	/**
+	 * @return ExchangeEngine
+	 */
+	public function getEngine(): ExchangeEngine
+	{
+		return $this->engine;
+	}
 }
