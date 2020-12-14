@@ -4,12 +4,14 @@
 namespace iikoExchangeBundle\ExtensionTrait;
 
 
+use iikoExchangeBundle\Contract\Extensions\CalendarPeriodInterface;
+
 trait WithPeriodExtensionTrait
 {
 	protected $period;
 
 	/**
-	 * @return mixed
+	 * @return CalendarPeriodInterface
 	 */
 	public function getPeriod()
 	{
@@ -17,7 +19,7 @@ trait WithPeriodExtensionTrait
 	}
 
 	/**
-	 * @param mixed $period
+	 * @param CalendarPeriodInterface $period
 	 */
 	public function setPeriod($period): void
 	{

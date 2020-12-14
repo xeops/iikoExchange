@@ -29,6 +29,6 @@ trait ConfigurableExtensionTrait
 
 	protected function getConfigValue(string $configCode)
 	{
-		return $this->config[$configCode];
+		return $this->config[$configCode] ?? 'N/A';
 	}
 }

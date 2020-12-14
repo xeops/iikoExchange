@@ -10,7 +10,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Exchange extends AbstractExchangeBuilder
 {
-	use UniqueExtensionTrait;
 	/**
 	 * @var EventDispatcherInterface
 	 */

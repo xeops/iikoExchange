@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Library\Mapping;
+namespace iikoExchangeBundle\Mapping;
 
 
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
@@ -35,33 +35,6 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 
 	protected \SplFixedArray $collection;
 
-	/**
-	 * @inheritDoc
-	 */
-	public function setCollection(array $collection): void
-	{
-		$this->collection = \SplFixedArray::fromArray($collection, false);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getValue($identifiers, $valueCode, bool $throwNotFound = true)
-	{
-		$identifiers = array($identifiers);
-		foreach ($this->collection as $item)
-		{
-			if (!array_diff_assoc($item[self::FIELD_IDENTIFIERS], $identifiers) && array_key_exists($valueCode, $item[self::FIELD_VALUES]))
-			{
-				return $item[self::FIELD_VALUES][$valueCode];
-			}
-		}
-		if ($throwNotFound)
-		{
-			throw new \Exception("mapping not found");
-		}
-		return null;
-	}
 
 
 	protected bool $fullTable = false;
