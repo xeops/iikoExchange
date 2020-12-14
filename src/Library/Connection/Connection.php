@@ -3,15 +3,11 @@
 
 namespace iikoExchangeBundle\Connection;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use Psr\Http\Message\ResponseInterface;
 
 abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
@@ -36,6 +32,10 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 
+	/**
+	 * @param mixed $request
+	 * @return mixed
+	 */
 	abstract public function sendRequest($request);
 
 	public function exposeConfiguration(): array

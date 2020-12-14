@@ -20,9 +20,8 @@ trait WithMappingExtensionTrait
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	protected function getMappingValue(string $mappingCode, $identifiers, string $valueCode, ?bool $throwNotFound = true)
+	protected function getMappingValue(string $mappingCode, array $identifiers, string $valueCode, ?bool $throwNotFound = true)
 	{
-		$identifiers = array($identifiers);
 		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
 		{
 			if (!array_diff_assoc($item[MappingInterface::FIELD_IDENTIFIERS], $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
@@ -31,7 +30,7 @@ trait WithMappingExtensionTrait
 			}
 		}
 
-		return "mapping not found";
+		return "mapping not found for " . implode("," , $identifiers);
 	}
 
 	/**

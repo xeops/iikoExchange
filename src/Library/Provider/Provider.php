@@ -44,19 +44,14 @@ class Provider implements ExchangeNodeInterface
 	public function sendRequest($request)
 	{
 		$response = $this->connection->sendRequest($request);
-
 		if ($response->getStatusCode() >= 300)
 		{
-			return $response->getBody()->__toString();
-		}
-		else
-		{
-			// no need log, because connection must do that
 			throw new \Exception($response->getStatusCode() >= 300 ? $response->getStatusCode() : 500);
 		}
+		return $response->getBody()->__toString();
 	}
 
-	public function getChildNodes() : array
+	public function getChildNodes(): array
 	{
 		return [$this->getConnection()];
 	}
