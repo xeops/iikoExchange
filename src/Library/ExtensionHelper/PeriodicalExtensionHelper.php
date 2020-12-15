@@ -30,12 +30,28 @@ class PeriodicalExtensionHelper
 		}
 		foreach ($exchangeNode->getChildNodes() as $childNode)
 		{
-			$restaurant = static::extractPeriod($childNode);
-			if ($restaurant)
+			$period = static::extractPeriod($childNode);
+			if ($period)
 			{
-				return null;
+				return $period;
 			}
 		}
 		return null;
+	}
+
+	public static function isNeedPeriod(ExchangeNodeInterface $exchangeNode)
+	{
+		if ($exchangeNode instanceof WithPeriodExtensionInterface)
+		{
+			return true;
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			if (static::isNeedPeriod($childNode))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

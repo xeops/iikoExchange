@@ -33,9 +33,25 @@ class WithRestaurantExtensionHelper
 			$restaurant = static::extractRestaurant($childNode);
 			if ($restaurant)
 			{
-				return null;
+				return $restaurant;
 			}
 		}
 		return null;
+	}
+
+	public static function isNeedRestaurant(ExchangeNodeInterface $exchangeNode)
+	{
+		if ($exchangeNode instanceof WithRestaurantExtensionInterface)
+		{
+			return true;
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			if (static::isNeedRestaurant($childNode))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
