@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Configuration\ConfigType;
 
 class ConfigItemSelect extends AbstractConfigItem
 {
-	const FIELD_OPTION_SET_CODE = 'option_set';
+	const FIELD_OPTION_SET_CODE = 'option_set_code';
 
 	protected string $optionSetCode;
 
