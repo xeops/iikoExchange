@@ -13,6 +13,9 @@ use iikoExchangeBundle\Library\Provider\Provider;
 abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 {
 
+	const FIELD_ID = 'id';
+	const FIELD_UNIQUE = 'unique';
+
 	protected ?int $id = null;
 
 	protected ?string $uniq = null;
