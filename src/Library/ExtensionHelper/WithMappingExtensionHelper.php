@@ -6,28 +6,35 @@ namespace iikoExchangeBundle\ExtensionHelper;
 
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
-use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\Mapping\MappingInterface;
 
 /**
  * Class WithMappingExtensionHelper
  * @package iikoExchangeBundle\ExtensionHelper
- * @deprecated not maintained
  */
 class WithMappingExtensionHelper
 {
-	public static function setMappingForExchangeNode(ExchangeNodeInterface $exchangeNode, string $mappingCode, array $mappingCollection)
+	public static function searchMappingInExchange(string $searchCode, ExchangeNodeInterface $exchangeNode): ?MappingInterface
 	{
 		if ($exchangeNode instanceof WithMappingExtensionInterface)
 		{
-			if (array_key_exists($mappingCode, $exchangeNode->getMapping()))
+			foreach ($exchangeNode->getMapping() as $mapping)
 			{
-				$exchangeNode->setMappingValues($mappingCode, $mappingCollection);
+				if ($mapping->getCode() === $searchCode)
+				{
+					return $mapping;
+				}
 			}
 		}
 		foreach ($exchangeNode->getChildNodes() as $childNode)
 		{
-			static::setMappingForExchangeNode($childNode, $mappingCode, $mappingCollection);
+			$mapping = self::searchMappingInExchange($searchCode, $childNode);
+			if ($mapping)
+			{
+				return $mapping;
+			}
 		}
+		return null;
 	}
 
 }
