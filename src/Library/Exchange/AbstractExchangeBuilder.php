@@ -9,6 +9,7 @@ use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Library\Provider\Provider;
+use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 {
@@ -195,7 +196,7 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 	}
 
 	/**
-	 * @return array
+	 * @return ScheduleCron[]
 	 */
 	public function getSchedules(): array
 	{

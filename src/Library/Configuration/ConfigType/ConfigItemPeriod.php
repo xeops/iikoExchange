@@ -4,6 +4,11 @@
 namespace iikoExchangeBundle\Configuration\ConfigType;
 
 
+use AppBundle\Service\Calendar\CalendarPeriodDay;
+use AppBundle\Service\Calendar\CalendarPeriodMonth;
+use AppBundle\Service\Calendar\CalendarPeriodWeek;
+use AppBundle\Service\Calendar\CalendarPeriodYear;
+
 class ConfigItemPeriod extends AbstractConfigItem
 {
 	public function __construct(string $code, ?string $value = null, $required = true)
@@ -52,14 +57,6 @@ class ConfigItemPeriod extends AbstractConfigItem
 		]);
 	}
 
-	/**
-	 * @param \DateTime $dateTime
-	 * @return array ["from" => \DateTime, "to" => \DateTime]
-	 */
-	public function getDates(\DateTime $dateTime): array
-	{
-
-	}
 
 	public function jsonSerialize()
 	{
