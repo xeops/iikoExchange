@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Library\Schedule;
 
 
+use iikoExchangeBundle\Configuration\ConfigType\ConfigItemCronExpression;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
@@ -11,6 +12,17 @@ use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class ScheduleCron implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
+	const CONFIG_ITEM_VALUE = 'value';
+
+	const CODE = 'SCHEDULE_CRON';
+
+
+	public function __construct()
+	{
+		$this->code = self::CODE;
+	}
+
+
 	use ExchangeNodeTrait
 	{
 		ExchangeNodeTrait::jsonSerialize as public nodeJsonSerialize;
@@ -20,15 +32,11 @@ class ScheduleCron implements ExchangeNodeInterface, ConfigurableExtensionInterf
 		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
 	}
 
-	public function __construct(string $code)
-	{
-		$this->code = $code;
-	}
 
 	public function exposeConfiguration(): array
 	{
 		return [
-			'value' => "* * * * *"
+			new ConfigItemCronExpression(self::CONFIG_ITEM_VALUE, "0 7 * * *")
 		];
 	}
 
