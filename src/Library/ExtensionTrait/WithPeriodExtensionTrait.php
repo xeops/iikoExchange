@@ -10,6 +10,8 @@ trait WithPeriodExtensionTrait
 {
 	protected $period;
 
+	protected bool $breakByDays = true;
+
 	/**
 	 * @return CalendarPeriodInterface
 	 */
@@ -24,5 +26,10 @@ trait WithPeriodExtensionTrait
 	public function setPeriod($period): void
 	{
 		$this->period = $period;
+	}
+
+	public function byDays(): bool
+	{
+		return $this->breakByDays;
 	}
 }

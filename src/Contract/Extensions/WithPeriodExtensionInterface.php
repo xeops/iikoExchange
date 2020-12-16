@@ -18,4 +18,6 @@ interface WithPeriodExtensionInterface
 	 * @return CalendarPeriodInterface
 	 */
 	public function getPeriod();
+
+	public function byDays() : bool;
 }
