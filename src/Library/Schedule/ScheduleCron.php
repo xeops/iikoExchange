@@ -12,14 +12,14 @@ use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class ScheduleCron implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
-	const CONFIG_ITEM_VALUE = 'value';
+	const CONFIG_ITEM_VALUE = 'expression';
 
 	const CODE = 'SCHEDULE_CRON';
 
 
 	public function __construct()
 	{
-		$this->code = self::CODE;
+		$this->code = static::CODE;
 	}
 
 
