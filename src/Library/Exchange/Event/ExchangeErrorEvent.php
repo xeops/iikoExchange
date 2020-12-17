@@ -8,17 +8,19 @@ use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeDoneEvent extends Event implements ExchangeEventInterface
+class ExchangeErrorEvent extends Event implements ExchangeEventInterface
 {
-	const NAME = 'exchange.done';
+	const NAME = 'exchange.error';
 	/**
 	 * @var Exchange
 	 */
 	private Exchange $exchange;
+	private \Exception $exception;
 
-	public function __construct(Exchange $exchange)
+	public function __construct(Exchange $exchange, \Exception $exception)
 	{
 		$this->exchange = $exchange;
+		$this->exception = $exception;
 	}
 
 	/**
@@ -28,4 +30,13 @@ class ExchangeDoneEvent extends Event implements ExchangeEventInterface
 	{
 		return $this->exchange;
 	}
+
+	/**
+	 * @return \Exception
+	 */
+	public function getException(): \Exception
+	{
+		return $this->exception;
+	}
+
 }

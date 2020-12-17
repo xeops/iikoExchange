@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\ExtensionTrait;
 
 
 use iikoExchangeBundle\Contract\Mapping\MappingInterface;
+use iikoExchangeBundle\Exception\MappingNotFoundException;
 
 trait WithMappingExtensionTrait
 {
@@ -16,11 +17,10 @@ trait WithMappingExtensionTrait
 	 * @param string $mappingCode
 	 * @param array|string|int|float $identifiers associative array, ex. ['PayType' => 'Visa', 'Tax Type' => 'Not Vat']
 	 * @param string $valueCode collection might have many values in each row, you should specify what value you want
-	 * @param bool $throwNotFound if true - throw NotMappingFound exception
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	protected function getMappingValue(string $mappingCode, array $identifiers, string $valueCode, ?bool $throwNotFound = true)
+	protected function getMappingValue(string $mappingCode, array $identifiers, string $valueCode)
 	{
 		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
 		{
@@ -30,7 +30,7 @@ trait WithMappingExtensionTrait
 			}
 		}
 
-		return "mapping not found for " . implode("," , $identifiers);
+		throw new MappingNotFoundException($mappingCode, $identifiers);
 	}
 
 	/**

@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Exchange;
 
 
+use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
@@ -11,11 +12,8 @@ use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Library\Provider\Provider;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
-abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
+abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
-
-	const FIELD_ID = 'id';
-	const FIELD_UNIQUE = 'unique';
 
 	protected ?int $id = null;
 
@@ -75,13 +73,6 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 		return $this;
 	}
 
-
-	const FIELD_EXTRACTOR = 'extractor';
-	const FIELD_PROVIDER = 'provider';
-	const FIELD_LOADER = 'loader';
-	const FIELD_ENGINES = 'engines';
-	const FIELD_SCHEDULES = 'schedules';
-	const FIELD_MAPPING = 'mapping';
 
 	protected Provider $extractor;
 	protected Provider $loader;
@@ -151,9 +142,9 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 
 	/**
 	 * @param Provider $extractor
-	 * @return AbstractExchangeBuilder
+	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Provider $extractor): AbstractExchangeBuilder
+	public function setExtractor(Provider $extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
@@ -169,9 +160,9 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 
 	/**
 	 * @param Provider $loader
-	 * @return AbstractExchangeBuilder
+	 * @return ExchangeInterface
 	 */
-	public function setLoader(Provider $loader): AbstractExchangeBuilder
+	public function setLoader(Provider $loader): ExchangeInterface
 	{
 		$this->loader = $loader;
 		return $this;
@@ -187,9 +178,9 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 
 	/**
 	 * @param array $engines
-	 * @return AbstractExchangeBuilder
+	 * @return ExchangeInterface
 	 */
-	public function setEngines(array $engines): AbstractExchangeBuilder
+	public function setEngines(array $engines): ExchangeInterface
 	{
 		$this->engines = $engines;
 		return $this;
@@ -205,9 +196,9 @@ abstract class AbstractExchangeBuilder implements ExchangeNodeInterface
 
 	/**
 	 * @param array $schedules
-	 * @return AbstractExchangeBuilder
+	 * @return ExchangeInterface
 	 */
-	public function setSchedules(array $schedules): AbstractExchangeBuilder
+	public function setSchedules(array $schedules): ExchangeInterface
 	{
 		$this->schedules = $schedules;
 		return $this;

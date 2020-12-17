@@ -4,12 +4,13 @@
 namespace iikoExchangeBundle\Engine\Event;
 
 
+use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Format\Formatter;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineFormatEvent extends Event
+class ExchangeEngineFormatEvent extends Event  implements ExchangeEventInterface
 {
 	const NAME = 'exchange.engine.format';
 	/**

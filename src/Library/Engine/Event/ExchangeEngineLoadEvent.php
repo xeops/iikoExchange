@@ -4,12 +4,13 @@
 namespace iikoExchangeBundle\Engine\Event;
 
 
+use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Provider\Provider;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineLoadEvent extends Event
+class ExchangeEngineLoadEvent extends Event  implements ExchangeEventInterface
 {
 	const NAME = 'exchange.engine.load';
 	/**

@@ -25,7 +25,7 @@ class ExchangeEngineDataManager
 		{
 			foreach ($engine->getRequests() as $request)
 			{
-				if (!$this->cacheExistForEngine($exchange, $request))
+				if (!$this->cacheExistForRequest($exchange, $request))
 				{
 					return false;
 				}
@@ -59,7 +59,7 @@ class ExchangeEngineDataManager
 		return $this->cache[$this->getKey($exchange, $request)] ?? null;
 	}
 
-	protected function cacheExistForEngine(Exchange $exchange, DataSourceRequest $request)
+	protected function cacheExistForRequest(Exchange $exchange, DataSourceRequest $request)
 	{
 		return array_key_exists($this->getKey($exchange, $request), $this->cache);
 	}

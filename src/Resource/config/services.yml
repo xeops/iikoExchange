@@ -13,6 +13,7 @@ services:
             - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }
 
 
+
     # TRIGGERS
     #           EXCHANGE
     exchange.trigger.process:

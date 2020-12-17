@@ -4,10 +4,11 @@
 namespace iikoExchangeBundle\Exchange\Event;
 
 
+use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeProcessEvent extends Event
+class ExchangeProcessEvent extends Event implements ExchangeEventInterface
 {
 	const NAME = 'exchange.process';
 

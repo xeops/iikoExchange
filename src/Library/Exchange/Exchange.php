@@ -4,8 +4,8 @@
 namespace iikoExchangeBundle\Exchange;
 
 
+use iikoExchangeBundle\Exchange\Event\ExchangeErrorEvent;
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
-use iikoExchangeBundle\ExtensionTrait\UniqueExtensionTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Exchange extends AbstractExchangeBuilder
@@ -21,8 +21,13 @@ class Exchange extends AbstractExchangeBuilder
 		$this->eventDispatcher = $eventDispatcher;
 	}
 
-	public final function process()
+	public function process()
 	{
 		$this->eventDispatcher->dispatch(ExchangeProcessEvent::NAME, new ExchangeProcessEvent($this));
+	}
+
+	public function error(\Exception $exception)
+	{
+		$this->eventDispatcher->dispatch(ExchangeErrorEvent::NAME, new ExchangeErrorEvent($this, $exception));
 	}
 }

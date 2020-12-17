@@ -4,11 +4,12 @@
 namespace iikoExchangeBundle\Engine\Event;
 
 
+use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineDataDoneEvent extends Event
+class ExchangeEngineDataDoneEvent extends Event implements ExchangeEventInterface
 {
 	const NAME = 'exchange.engine.dataDone';
 	/**
