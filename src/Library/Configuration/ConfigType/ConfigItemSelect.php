@@ -8,6 +8,12 @@ class ConfigItemSelect extends AbstractConfigItem
 {
 	const FIELD_OPTION_SET_CODE = 'option_set_code';
 
+	public function __construct(string $code, string $optionSetCode, ?string $value = null, $required = true)
+	{
+		parent::__construct($code, $value, $required);
+		$this->optionSetCode = $optionSetCode;
+	}
+
 	protected string $optionSetCode;
 
 	/**

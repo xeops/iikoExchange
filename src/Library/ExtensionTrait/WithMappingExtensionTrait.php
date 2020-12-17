@@ -63,4 +63,14 @@ trait WithMappingExtensionTrait
 	{
 		return $this->mapping;
 	}
+
+	public function getUniqMappingIdentifiers(string $mappingCode, string $identifier)
+	{
+		$result = [];
+		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
+		{
+			$result[] = $item[MappingInterface::FIELD_IDENTIFIERS][$identifier];
+		}
+		return array_unique($result);
+	}
 }

@@ -29,6 +29,10 @@ trait ConfigurableExtensionTrait
 
 	protected function getConfigValue(string $configCode)
 	{
-		return $this->config[$configCode] ?? 'N/A';
+		if (!array_key_exists($configCode, $this->config))
+		{
+			throw new \Exception("CONFIG NOT FOUND {$configCode}");
+		}
+		return $this->config[$configCode];
 	}
 }
