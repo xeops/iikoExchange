@@ -11,7 +11,7 @@ services:
         class: iikoExchangeBundle\Service\ExchangeProcessManagerService
         tags:
             - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent::NAME, method: engineDone, priority: 0 }
+            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent::NAME, method: engineDone, priority: 10 }
 
 
     # TRIGGERS

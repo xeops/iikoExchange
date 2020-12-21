@@ -28,7 +28,6 @@ class ExchangeEngineDoneEventTrigger
 
 	public function onEngineDone(ExchangeEngineDoneEvent $event)
 	{
-		$this->processManager->engineDone($event->getExchange(), $event->getExchangeEngine());
 		if ($this->processManager->isAllEngineDone($event->getExchange()))
 		{
 			$this->eventDispatcher->dispatch(ExchangeDoneEvent::NAME, new ExchangeDoneEvent($event->getExchange()));
