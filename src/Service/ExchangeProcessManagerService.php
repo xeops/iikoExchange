@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Service;
 
 
+use iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent;
 use iikoExchangeBundle\Exchange\Exchange;
@@ -12,9 +13,9 @@ class ExchangeProcessManagerService
 {
 	private array $cache;
 
-	public function engineDone(Exchange $exchange, ExchangeEngine $exchangeEngine): void
+	public function engineDone(ExchangeEngineDoneEvent $engineDoneEvent): void
 	{
-		$this->saveStatusInCache($exchange, $exchangeEngine);
+		$this->saveStatusInCache($engineDoneEvent->getExchange(), $engineDoneEvent->getExchangeEngine());
 	}
 
 	public function isAllEngineDone(Exchange $exchange): bool
