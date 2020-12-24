@@ -12,11 +12,11 @@ class FtpConnection extends Connection
 {
 	const CODE = "FTP_CONNECTION";
 
-	const CONFIG_HOST = 'HOST';
-	const CONFIG_PORT = 'PORT';
+	const CONFIG_HOST = 'CONFIG_HOST';
+	const CONFIG_PORT = 'CONFIG_PORT';
 
-	const CONFIG_USERNAME = 'USERNAME';
-	const CONFIG_PASSWORD = 'PASSWORD';
+	const CONFIG_USERNAME = 'CONFIG_USERNAME';
+	const CONFIG_PASSWORD = 'CONFIG_PASSWORD';
 
 
 	public function sendRequest($handle)

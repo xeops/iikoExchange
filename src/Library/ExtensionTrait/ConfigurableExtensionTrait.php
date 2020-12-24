@@ -8,6 +8,17 @@ trait ConfigurableExtensionTrait
 {
 	protected array $config;
 
+	protected ?array $exposedConfig = null;
+
+	public function getConfiguration(): array
+	{
+		if (null === $this->exposedConfig)
+		{
+			$this->exposedConfig = $this->exposeConfiguration();
+		}
+		return $this->exposedConfig;
+	}
+
 	public function exposeConfiguration(): array
 	{
 		return [
@@ -18,7 +29,7 @@ trait ConfigurableExtensionTrait
 	public function jsonSerialize()
 	{
 		return [
-			self::FIELD_CONFIGURATION => $this->exposeConfiguration()
+			self::FIELD_CONFIGURATION => $this->getConfiguration()
 		];
 	}
 

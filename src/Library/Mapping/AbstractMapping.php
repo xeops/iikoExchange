@@ -35,6 +35,28 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 
 	protected \SplFixedArray $collection;
 
+	protected ?array $exposedValues = null;
+	protected ?array $exposedIdentifiers = null;
+
+
+	public function getExposedValues(): ?array
+	{
+		if(null == $this->exposedValues)
+		{
+			$this->exposedValues = $this->exposeValues();
+		}
+		return $this->exposedValues;
+	}
+
+	public function getExposedIdentifiers(): ?array
+	{
+		if(null === $this->exposedIdentifiers)
+		{
+			$this->exposedIdentifiers = $this->exposeIdentifiers();
+		}
+		return $this->exposedIdentifiers;
+	}
+
 
 
 	protected bool $fullTable = false;
@@ -45,8 +67,8 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize() + $this->restaurantJsonSerialize() +
 			[
 				self::FIELD_FULL_TABLE => $this->fullTable,
-				self::FIELD_VALUES => $this->exposeValues(),
-				self::FIELD_IDENTIFIERS => $this->exposeIdentifiers()
+				self::FIELD_VALUES => $this->getExposedValues(),
+				self::FIELD_IDENTIFIERS => $this->getExposedIdentifiers()
 			];
 	}
 }

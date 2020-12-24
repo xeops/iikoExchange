@@ -10,7 +10,7 @@ class ScheduleCronWithPeriod extends ScheduleCron
 {
 	const CODE = 'SCHEDULE_CRON_PERIOD';
 
-	const CONFIG_ITEM_PERIOD = 'period';
+	const CONFIG_ITEM_PERIOD = 'CONFIG_PERIOD';
 
 
 	public function exposeConfiguration(): array

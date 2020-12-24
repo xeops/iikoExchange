@@ -13,4 +13,12 @@ interface ExchangeNodeInterface extends \JsonSerializable
 	public function getCode(): string;
 
 	public function getChildNodes(): array;
+
+	public function setName(string $name);
+
+	public function setDescription(string $description);
+
+	public function getName();
+
+	public function getDescription();
 }

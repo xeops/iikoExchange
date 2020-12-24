@@ -3,7 +3,11 @@
 
 namespace iikoExchangeBundle\ExtensionTrait;
 
-
+/**
+ * Trait ExchangeNodeTrait
+ * @package iikoExchangeBundle\ExtensionTrait
+ * @depends ExchangeNodeInterface
+ */
 trait ExchangeNodeTrait
 {
 
@@ -50,5 +54,23 @@ trait ExchangeNodeTrait
 	{
 		return [];
 	}
+
+	/**
+	 * @param string $name
+	 */
+	public function setName(string $name): void
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * @param string $description
+	 */
+	public function setDescription(string $description): void
+	{
+		$this->description = $description;
+	}
+
+
 
 }

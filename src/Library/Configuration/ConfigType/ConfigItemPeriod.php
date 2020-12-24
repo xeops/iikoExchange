@@ -30,7 +30,7 @@ class ConfigItemPeriod extends AbstractConfigItem
 	//TODO constants
 	const FIELD_PERIOD_TYPES = ['hour', 'day', 'week', 'month', 'year'];
 
-	protected string $diffType = 'last';
+	protected string $diffType = 'previous';
 	protected int $count = 1;
 	protected string $periodType = 'day';
 
