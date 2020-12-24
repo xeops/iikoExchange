@@ -15,6 +15,7 @@ use iikoExchangeBundle\ExtensionTrait\WithRestaurantExtensionTrait;
 
 abstract class AbstractMapping implements MappingInterface, WithRestaurantExtensionInterface
 {
+
 	public function __construct(string $code)
 	{
 		$this->code = $code;
@@ -57,16 +58,24 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 		return $this->exposedIdentifiers;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isFullTable(): bool
+	{
+		return false;
+	}
 
 
-	protected bool $fullTable = false;
+
+
 
 
 	public function jsonSerialize()
 	{
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize() + $this->restaurantJsonSerialize() +
 			[
-				self::FIELD_FULL_TABLE => $this->fullTable,
+				self::FIELD_FULL_TABLE => $this->isFullTable(),
 				self::FIELD_VALUES => $this->getExposedValues(),
 				self::FIELD_IDENTIFIERS => $this->getExposedIdentifiers()
 			];
