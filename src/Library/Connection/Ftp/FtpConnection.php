@@ -5,6 +5,8 @@ namespace iikoExchangeBundle\Connection\Ftp;
 
 
 use GuzzleHttp\Psr7\Response;
+use iikoExchangeBundle\Configuration\ConfigType\ConfigItemInt;
+use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Connection\Connection;
 
@@ -69,9 +71,9 @@ class FtpConnection extends Connection
 	{
 		return [
 			new ConfigItemString(self::CONFIG_HOST),
-			new ConfigItemString(self::CONFIG_PORT),
+			new ConfigItemInt(self::CONFIG_PORT),
 			new ConfigItemString(self::CONFIG_USERNAME),
-			new ConfigItemString(self::CONFIG_PASSWORD),
+			new ConfigItemPassword(self::CONFIG_PASSWORD),
 		];
 	}
 
