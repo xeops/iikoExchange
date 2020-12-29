@@ -20,13 +20,23 @@ trait WithMappingExtensionTrait
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	protected function getMappingValue(string $mappingCode, array $identifiers, string $valueCode)
+	public function getMappingValue(string $mappingCode, array $identifiers, string $valueCode)
 	{
 		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
 		{
 			if (!array_diff_assoc($item[MappingInterface::FIELD_IDENTIFIERS], $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
 			{
-				return $item[MappingInterface::FIELD_VALUES][$valueCode];
+				$value =  $item[MappingInterface::FIELD_VALUES][$valueCode];
+
+				if(is_string($value))
+				{
+					foreach ($identifiers as $identifierCode => $identifierValue)
+					{
+						 $value = strtr($value, ["%$identifierCode%" => $identifierValue]);
+					}
+				}
+
+				return $value;
 			}
 		}
 
