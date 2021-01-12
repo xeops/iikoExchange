@@ -40,4 +40,12 @@ class ConfigItemSelect extends AbstractConfigItem
 	{
 		return parent::jsonSerialize() + [self::FIELD_OPTION_SET_CODE => $this->optionSetCode];
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getOptionSetCode(): string
+	{
+		return $this->optionSetCode;
+	}
 }
