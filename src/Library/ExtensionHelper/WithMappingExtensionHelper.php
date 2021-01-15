@@ -37,7 +37,7 @@ class WithMappingExtensionHelper
 		return null;
 	}
 
-	public function extractMapping(ExchangeNodeInterface $exchangeNode)
+	public static function extractMapping(ExchangeNodeInterface $exchangeNode)
 	{
 		$mappingList = [];
 
@@ -51,7 +51,7 @@ class WithMappingExtensionHelper
 		}
 		foreach ($exchangeNode->getChildNodes() as $childNode)
 		{
-			$mappingList = array_merge($mappingList, $this->extractMapping($childNode));
+			$mappingList = array_merge($mappingList, self::extractMapping($childNode));
 		}
 
 		return $mappingList;
