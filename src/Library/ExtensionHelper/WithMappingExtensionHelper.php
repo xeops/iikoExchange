@@ -37,4 +37,24 @@ class WithMappingExtensionHelper
 		return null;
 	}
 
+	public function extractMapping(ExchangeNodeInterface $exchangeNode)
+	{
+		$mappingList = [];
+
+		if($exchangeNode instanceof WithMappingExtensionInterface)
+		{
+			foreach ($exchangeNode->getMapping() as $mapping)
+			{
+				$mappingList[$mapping->getCode()] = $mapping;
+			}
+
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			$mappingList = array_merge($mappingList, $this->extractMapping($childNode));
+		}
+
+		return $mappingList;
+	}
+
 }
