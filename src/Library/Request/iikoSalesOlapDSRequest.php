@@ -14,6 +14,7 @@ abstract class iikoSalesOlapDSRequest extends DataSourceRequest implements WithP
 
 	const TYPE_SALES = "SALES";
 	const TYPE_TRANSACTIONS = "TRANSACTIONS";
+	const TYPE_DELIVERIES = "DELIVERIES";
 
 	/**
 	 * @return iikoSalesOlapDSRequest
