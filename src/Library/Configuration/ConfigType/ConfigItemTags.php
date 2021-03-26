@@ -4,7 +4,7 @@
 namespace iikoExchangeBundle\Configuration\ConfigType;
 
 
-class ConfigItemTags  extends AbstractConfigItem
+class ConfigItemTags extends AbstractConfigItem
 {
 
 	public function getType()
@@ -15,5 +15,10 @@ class ConfigItemTags  extends AbstractConfigItem
 	public function validate($value): bool
 	{
 		return is_array($value);
+	}
+
+	public function getValue()
+	{
+		return $this->value ?? [];
 	}
 }
