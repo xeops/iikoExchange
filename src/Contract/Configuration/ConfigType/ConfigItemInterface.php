@@ -22,6 +22,7 @@ interface ConfigItemInterface extends ExchangeNodeInterface
 	const TYPE_MAPPING = 'mapping';
 	const TYPE_PERIOD = 'period';
 	const TYPE_CRON = 'cron';
+	const TYPE_TAGS = 'tags';
 
 	public function getType();
 
