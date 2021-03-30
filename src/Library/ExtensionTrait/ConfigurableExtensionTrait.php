@@ -4,6 +4,8 @@
 namespace iikoExchangeBundle\ExtensionTrait;
 
 
+use iikoExchangeBundle\Exception\ConfigNotFoundException;
+
 trait ConfigurableExtensionTrait
 {
 	protected array $config;
@@ -42,7 +44,7 @@ trait ConfigurableExtensionTrait
 	{
 		if (!array_key_exists($configCode, $this->config))
 		{
-			throw new \Exception("CONFIG NOT FOUND {$configCode}");
+			throw new ConfigNotFoundException($configCode);
 		}
 		return $this->config[$configCode];
 	}

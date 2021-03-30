@@ -4,7 +4,9 @@
 namespace iikoExchangeBundle\Exception;
 
 
-class MappingNotFoundException extends \Exception
+use iikoExchangeBundle\Contract\Exception\ExchangeExceptionInterface;
+
+class MappingNotFoundException extends \Exception implements ExchangeExceptionInterface
 {
 
 	protected array $identifiers;
