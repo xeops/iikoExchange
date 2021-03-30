@@ -19,6 +19,6 @@ class ConfigItemTags extends AbstractConfigItem
 
 	public function getValue()
 	{
-		return $this->value ?? [];
+		return (array)($this->value ?? []);
 	}
 }
