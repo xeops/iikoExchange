@@ -47,7 +47,7 @@ class FtpConnection extends Connection
 
 		if (!$result)
 		{
-			throw new \Exception();
+			throw new \Exception('File was not uploaded.');
 		}
 
 		return new Response(200, [], 'ok');

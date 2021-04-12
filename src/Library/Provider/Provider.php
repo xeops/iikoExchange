@@ -7,6 +7,7 @@ namespace iikoExchangeBundle\Library\Provider;
 use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Exception\ConnectionException;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
 class Provider implements ExchangeNodeInterface
@@ -43,10 +44,16 @@ class Provider implements ExchangeNodeInterface
 
 	public function sendRequest($request)
 	{
-		$response = $this->connection->sendRequest($request);
+		try
+		{
+			$response = $this->connection->sendRequest($request);
+		}catch (\Exception $exception)
+		{
+			throw new ConnectionException($exception->getMessage());
+		}
 		if ($response->getStatusCode() >= 300)
 		{
-			throw new \Exception($response->getStatusCode() >= 300 ? $response->getStatusCode() : 500);
+			throw new ConnectionException($response->getBody()->getContents());
 		}
 		return $response->getBody()->__toString();
 	}

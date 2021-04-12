@@ -3,6 +3,7 @@
 
 namespace iikoExchangeBundle\Connection;
 
+use GuzzleHttp\Psr7\Response;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
@@ -34,7 +35,7 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 
 	/**
 	 * @param mixed $request
-	 * @return mixed
+	 * @return Response
 	 */
 	abstract public function sendRequest($request);
 
