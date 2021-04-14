@@ -14,6 +14,7 @@ use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
+	protected ?int $moduleId = null;
 
 	protected ?int $id = null;
 
@@ -209,4 +210,19 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return array_merge($this->getSchedules(), $this->getEngines(), [$this->getLoader(), $this->getExtractor()]);
 	}
 
+	/**
+	 * @param int|null $moduleId
+	 */
+	public function setModuleId(?int $moduleId): void
+	{
+		$this->moduleId = $moduleId;
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public function getModuleId(): ?int
+	{
+		return $this->moduleId;
+	}
 }
