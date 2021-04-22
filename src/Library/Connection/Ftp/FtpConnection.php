@@ -26,7 +26,7 @@ class FtpConnection extends Connection
 
 	public function sendRequest($handle)
 	{
-		if($this->getConfigValue(self::CONFIG_TYPE))
+		if($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
 		{
 			return (new SftpConnection($this->code))->sendRequest($handle);
 		}
@@ -77,7 +77,7 @@ class FtpConnection extends Connection
 	public function exposeConfiguration(): array
 	{
 		return [
-			new ConfigItemSelect(self::CONFIG_TYPE, 'FTP_TYPE', 'FTP', true),
+			new ConfigItemSelect(self::CONFIG_TYPE, 'FTP_TYPE', 'SFTP', true),
 			new ConfigItemString(self::CONFIG_HOST),
 			new ConfigItemInt(self::CONFIG_PORT),
 			new ConfigItemString(self::CONFIG_USERNAME),
