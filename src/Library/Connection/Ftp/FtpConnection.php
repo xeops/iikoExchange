@@ -5,8 +5,10 @@ namespace iikoExchangeBundle\Connection\Ftp;
 
 
 use GuzzleHttp\Psr7\Response;
+use iikoExchangeBundle\Configuration\ConfigType\AbstractConfigItem;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemInt;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
+use iikoExchangeBundle\Configuration\ConfigType\ConfigItemSelect;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Connection\Connection;
 
@@ -15,6 +17,7 @@ class FtpConnection extends Connection
 	const CODE = "FTP_CONNECTION";
 
 	const CONFIG_HOST = 'CONFIG_HOST';
+	const CONFIG_TYPE = 'CONFIG_TYPE';
 	const CONFIG_PORT = 'CONFIG_PORT';
 
 	const CONFIG_USERNAME = 'CONFIG_USERNAME';
@@ -23,6 +26,10 @@ class FtpConnection extends Connection
 
 	public function sendRequest($handle)
 	{
+		if($this->getConfigValue(self::CONFIG_TYPE))
+		{
+			return (new SftpConnection($this->code))->sendRequest($handle);
+		}
 		if (!is_resource($handle))
 		{
 			throw new \Exception("Request must be resource type");
@@ -70,6 +77,7 @@ class FtpConnection extends Connection
 	public function exposeConfiguration(): array
 	{
 		return [
+			new ConfigItemSelect(self::CONFIG_TYPE, 'FTP_TYPE', 'FTP', true),
 			new ConfigItemString(self::CONFIG_HOST),
 			new ConfigItemInt(self::CONFIG_PORT),
 			new ConfigItemString(self::CONFIG_USERNAME),
