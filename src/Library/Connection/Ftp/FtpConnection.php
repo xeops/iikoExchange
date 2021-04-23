@@ -11,6 +11,7 @@ use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemSelect;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Exception\ConnectionException;
 
 class FtpConnection extends Connection
 {
@@ -65,11 +66,11 @@ class FtpConnection extends Connection
 		$connection = ftp_connect($this->getConfigValue(self::CONFIG_HOST));
 		if (!$connection)
 		{
-			throw new \Exception();
+			throw new ConnectionException("Unable to connect to {$this->getConfigValue(self::CONFIG_HOST)}");
 		}
 		if (!ftp_login($connection, $this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
 		{
-			throw new \Exception();
+			throw new ConnectionException("Unable to auth to {$this->getConfigValue(self::CONFIG_HOST)}");
 		}
 		return $connection;
 	}

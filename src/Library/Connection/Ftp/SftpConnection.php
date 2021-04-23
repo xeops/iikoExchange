@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Connection\Ftp;
 
 
 use GuzzleHttp\Psr7\Response;
+use iikoExchangeBundle\Exception\ConnectionException;
 
 class SftpConnection extends FtpConnection
 {
@@ -46,11 +47,11 @@ class SftpConnection extends FtpConnection
 		$connection = ssh2_connect($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT));
 		if (!$connection)
 		{
-			throw new \Exception();
+			throw new ConnectionException("Unable to connect to {$this->getConfigValue(self::CONFIG_HOST)}");
 		}
 		if (!ssh2_auth_password($connection, $this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
 		{
-			throw new \Exception();
+			throw new ConnectionException("Unable to auth to {$this->getConfigValue(self::CONFIG_HOST)}");
 		}
 		return $connection;
 	}
