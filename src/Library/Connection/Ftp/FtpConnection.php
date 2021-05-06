@@ -43,6 +43,7 @@ class FtpConnection extends Connection
 		unset($fileInfo[array_key_last($fileInfo)]);
 
 		$connection = $this->login();
+		ftp_pasv($connection, true);
 		$path = implode(DIRECTORY_SEPARATOR, $fileInfo);
 		if (!ftp_chdir($connection, $path))
 		{
