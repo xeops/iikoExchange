@@ -36,7 +36,7 @@ class SftpConnection extends FtpConnection
 
 		if (!$result)
 		{
-			throw new \Exception('File was not uploaded.');
+			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
 		}
 
 		return new Response(200, [], 'ok');
