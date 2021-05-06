@@ -33,7 +33,7 @@ class FtpConnection extends Connection
 		}
 		if (!is_resource($handle))
 		{
-			throw new \Exception("Request must be resource type");
+			throw new ConnectionException("Request must be resource type");
 		}
 		$meta = stream_get_meta_data($handle);
 
@@ -46,7 +46,7 @@ class FtpConnection extends Connection
 		$path = implode(DIRECTORY_SEPARATOR, $fileInfo);
 		if (!ftp_chdir($connection, $path))
 		{
-			throw new \Exception();
+			throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
 		}
 
 		$result = ftp_fput($connection, $fileName, $handle);
@@ -55,7 +55,7 @@ class FtpConnection extends Connection
 
 		if (!$result)
 		{
-			throw new \Exception('File was not uploaded.');
+			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
 		}
 
 		return new Response(200, [], 'ok');
