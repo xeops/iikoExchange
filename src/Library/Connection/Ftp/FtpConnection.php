@@ -43,11 +43,14 @@ class FtpConnection extends Connection
 		unset($fileInfo[array_key_last($fileInfo)]);
 
 		$connection = $this->login();
-		ftp_pasv($connection, true);
+		@ftp_pasv($connection, true);
 		$path = implode(DIRECTORY_SEPARATOR, $fileInfo);
 		if (!ftp_chdir($connection, $path))
 		{
-			throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
+			if(!ftp_mkdir($connection, $path))
+			{
+				throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
+			}
 		}
 
 		$result = ftp_fput($connection, $fileName, $handle);
@@ -64,7 +67,7 @@ class FtpConnection extends Connection
 
 	protected function login()
 	{
-		$connection = ftp_connect($this->getConfigValue(self::CONFIG_HOST));
+		$connection = ftp_connect($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT));
 		if (!$connection)
 		{
 			throw new ConnectionException("Unable to connect to {$this->getConfigValue(self::CONFIG_HOST)}");
