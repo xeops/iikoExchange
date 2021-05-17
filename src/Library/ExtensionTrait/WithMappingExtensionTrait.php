@@ -9,9 +9,9 @@ use iikoExchangeBundle\Exception\MappingNotFoundException;
 
 trait WithMappingExtensionTrait
 {
-	protected array $mapping;
+	protected array $mapping = [];
 	/** @var MappingInterface[] */
-	protected array $mappingValues;
+	protected array $mappingValues = [];
 
 	/**
 	 * @param string $mappingCode

@@ -54,10 +54,10 @@ trait ConfigurableExtensionTrait
 		{
 			throw new ConfigNotFoundException($configCode);
 		}
-		if (!array_key_exists($configCode, $this->config) && $parameter->getRequired() !== false)
+		if (!array_key_exists($configCode, $this->config) && $parameter->getRequired() !== false && empty($parameter->getValue()))
 		{
 			throw new ConfigNotFoundException($configCode);
 		}
-		return $this->config[$configCode] ?? null;
+		return $this->config[$configCode] ?? $parameter->getValue();
 	}
 }
