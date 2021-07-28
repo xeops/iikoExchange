@@ -29,7 +29,9 @@ class FtpConnection extends Connection
 	{
 		if($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
 		{
-			return (new SftpConnection($this->code))->sendRequest($handle);
+			$connection =  new SftpConnection($this->code);
+			$connection->setConfigCollection($this->config);
+			return $connection->sendRequest($handle);
 		}
 		if (!is_resource($handle))
 		{
