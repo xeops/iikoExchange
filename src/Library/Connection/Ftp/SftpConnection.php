@@ -6,9 +6,11 @@ namespace iikoExchangeBundle\Connection\Ftp;
 
 use GuzzleHttp\Psr7\Response;
 use iikoExchangeBundle\Exception\ConnectionException;
+use phpseclib\Net\SFTP;
 
 class SftpConnection extends FtpConnection
 {
+	protected SFTP $ftp;
 
 	const CODE = 'SFTP_CONNECTION';
 
@@ -18,25 +20,34 @@ class SftpConnection extends FtpConnection
 		{
 			throw new \Exception("Request must be resource type");
 		}
-		$meta = stream_get_meta_data($handle);
+		$this->login();
 
+		$meta = stream_get_meta_data($handle);
 		$fileInfo = explode(DIRECTORY_SEPARATOR, str_replace(sys_get_temp_dir(), "", $meta['uri']));
 
 		$fileName = $fileInfo[array_key_last($fileInfo)];
 		unset($fileInfo[array_key_last($fileInfo)]);
 
-		$connection = $this->login();
+		$remoteFile = implode(DIRECTORY_SEPARATOR, $fileInfo) . "/" . $fileName;
 
-		$path = ssh2_sftp_realpath(ssh2_sftp($connection), implode(DIRECTORY_SEPARATOR, $fileInfo) . "/" . $fileName);
+		$this->ftp->setTimeout(90);
 
-		$result = ssh2_scp_send($connection, $meta['uri'], $path);
+		$dirname = dirname($remoteFile);
+		if (! $this->ftp->chdir($dirname))
+		{
+			$this->ftp->mkdir($dirname, -1, true);
+		}
+
+		$isSend = $this->ftp->put($remoteFile, $meta['uri'], $this->ftp::SOURCE_LOCAL_FILE);
+
+		$this->ftp->setTimeout(10);
 
 		fclose($handle);
 		unlink($meta['uri']);
 
-		if (!$result)
+		if (!$isSend)
 		{
-			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
+			throw new ConnectionException(error_get_last()['message'] ?? 'File was not uploaded.');
 		}
 
 		return new Response(200, [], 'ok');
@@ -44,16 +55,11 @@ class SftpConnection extends FtpConnection
 
 	protected function login()
 	{
-		$connection = ssh2_connect($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT));
-		if (!$connection)
-		{
-			throw new ConnectionException("Unable to connect to {$this->getConfigValue(self::CONFIG_HOST)}");
-		}
-		if (!ssh2_auth_password($connection, $this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
-		{
-			throw new ConnectionException("Unable to auth to {$this->getConfigValue(self::CONFIG_HOST)}");
-		}
-		return $connection;
+		$this->ftp = new SFTP($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT), 10);
+
+		$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD));
+
+		return $this->ftp;
 	}
 
 

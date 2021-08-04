@@ -12,7 +12,8 @@
 		"ext-json": "*",
 		"ext-simplexml": "*",
 		"ext-ftp": "*",
-		"ext-ssh2": "*"
+		"ext-ssh2": "*",
+		"phpseclib/phpseclib": "~2.0"
 	},
 	"require-dev": {
 		"phpunir/phpunit": "9.1.4",
