@@ -58,7 +58,7 @@ class FtpConnection extends Connection
 		$result = ftp_fput($connection, $fileName, $handle);
 
 		fclose($handle);
-
+		ftp_close($connection);
 		if (!$result)
 		{
 			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
