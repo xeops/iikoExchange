@@ -7,7 +7,7 @@ namespace iikoExchangeBundle\Exchange\Trigger;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent;
 use iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent;
 use iikoExchangeBundle\Service\ExchangeProcessManagerService;
-use SymfonyContractsventDispatchervent;DispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ExchangeEngineDoneEventTrigger
 {

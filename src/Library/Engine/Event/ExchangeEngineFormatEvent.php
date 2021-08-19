@@ -8,7 +8,7 @@ use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Format\Formatter;
-use SymfonyContractsventDispatchervent;;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ExchangeEngineFormatEvent extends Event  implements ExchangeEventInterface
 {

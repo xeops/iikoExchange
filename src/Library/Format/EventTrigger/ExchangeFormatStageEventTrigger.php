@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Format\EventTrigger;
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineFormatEvent;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineLoadEvent;
-use SymfonyContractsventDispatchervent;DispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ExchangeFormatStageEventTrigger
 {

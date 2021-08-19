@@ -7,7 +7,7 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
 use iikoExchangeBundle\Exchange\Exchange;
 use PHPUnit\Framework\TestCase;
-use SymfonyContractsventDispatchervent;Dispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ExchangeEngineTest extends TestCase
 {

@@ -8,7 +8,7 @@ use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Provider\Provider;
-use SymfonyContractsventDispatchervent;;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ExchangeEngineLoadEvent extends Event  implements ExchangeEventInterface
 {

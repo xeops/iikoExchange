@@ -10,7 +10,7 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Service\ExchangeEngineDataManager;
-use SymfonyContractsventDispatchervent;DispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ExchangeEngineSendRequestEventTrigger
 {
