@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Engine\Trigger;
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineLoadEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use SymfonyContractsventDispatchervent;DispatcherInterface;
 
 class ExchangeEngineLoadEventTrigger
 {

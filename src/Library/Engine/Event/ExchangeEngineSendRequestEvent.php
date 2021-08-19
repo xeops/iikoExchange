@@ -8,7 +8,7 @@ use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
-use Symfony\Component\EventDispatcher\Event;
+use SymfonyContractsventDispatchervent;;
 
 class ExchangeEngineSendRequestEvent extends Event  implements ExchangeEventInterface
 {

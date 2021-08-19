@@ -7,7 +7,7 @@ namespace iikoExchangeBundle\Engine\Event;
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
-use Symfony\Component\EventDispatcher\Event;
+use SymfonyContractsventDispatchervent;;
 
 class ExchangeEngineRunEvent extends Event  implements ExchangeEventInterface
 {

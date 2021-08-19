@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Engine;
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineRunEvent;
 use iikoExchangeBundle\Exchange\Exchange;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use SymfonyContractsventDispatchervent;DispatcherInterface;
 
 
 class ExchangeEngine extends AbstractEngineBuilder

@@ -7,7 +7,7 @@ namespace iikoExchangeBundle\Library\Transform\EventTrigger;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineFormatEvent;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineTransformDataEvent;
 use iikoExchangeBundle\Service\ExchangeEngineDataManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use SymfonyContractsventDispatchervent;DispatcherInterface;
 
 class ExchangeEngineTransformEventTrigger
 {

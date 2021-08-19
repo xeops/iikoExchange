@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Engine\Trigger;
 
 use iikoExchangeBundle\Engine\Event\ExchangeEngineDataDoneEvent;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineTransformDataEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use SymfonyContractsventDispatchervent;DispatcherInterface;
 
 class ExchangeEngineDataDoneEventTrigger
 {

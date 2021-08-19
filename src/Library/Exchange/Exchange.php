@@ -6,7 +6,7 @@ namespace iikoExchangeBundle\Exchange;
 
 use iikoExchangeBundle\Exchange\Event\ExchangeErrorEvent;
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use SymfonyContractsventDispatchervent;DispatcherInterface;
 
 class Exchange extends AbstractExchangeBuilder
 {
