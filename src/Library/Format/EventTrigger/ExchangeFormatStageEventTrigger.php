@@ -24,6 +24,6 @@ class ExchangeFormatStageEventTrigger
 	public function onFormat(ExchangeEngineFormatEvent $event)
 	{
 		$data = $event->getFormatter()->getFormattedData($event->getExchange(), $event->getData());
-		$this->dispatcher->dispatch(ExchangeEngineLoadEvent::NAME, new ExchangeEngineLoadEvent($event->getExchange(), $event->getEngine(), $data));
+		$this->dispatcher->dispatch(new ExchangeEngineLoadEvent($event->getExchange(), $event->getEngine(), $data), ExchangeEngineLoadEvent::NAME);
 	}
 }

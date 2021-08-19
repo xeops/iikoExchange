@@ -36,7 +36,7 @@ class ExchangeEngineRunEventTrigger
 	{
 		foreach ($requests as $dataSourceRequest)
 		{
-			$this->dispatcher->dispatch(ExchangeEngineSendRequestEvent::NAME, new ExchangeEngineSendRequestEvent($exchange, $dataSourceRequest));
+			$this->dispatcher->dispatch(new ExchangeEngineSendRequestEvent($exchange, $dataSourceRequest), ExchangeEngineSendRequestEvent::NAME);
 		}
 	}
 }

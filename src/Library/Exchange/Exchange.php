@@ -23,11 +23,11 @@ class Exchange extends AbstractExchangeBuilder
 
 	public function process()
 	{
-		$this->eventDispatcher->dispatch(ExchangeProcessEvent::NAME, new ExchangeProcessEvent($this));
+		$this->eventDispatcher->dispatch(new ExchangeProcessEvent($this), ExchangeProcessEvent::NAME);
 	}
 
 	public function error(\Exception $exception)
 	{
-		$this->eventDispatcher->dispatch(ExchangeErrorEvent::NAME, new ExchangeErrorEvent($this, $exception));
+		$this->eventDispatcher->dispatch(new ExchangeErrorEvent($this, $exception), ExchangeErrorEvent::NAME);
 	}
 }

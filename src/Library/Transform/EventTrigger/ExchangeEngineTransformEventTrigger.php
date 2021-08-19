@@ -30,7 +30,7 @@ class ExchangeEngineTransformEventTrigger
 	{
 		$data = $event->getExchangeEngine()->getTransformer()->transform($event->getExchange(), $event->getExchangeEngine(), $this->dataManager->getCachedDataForEngine($event->getExchange(), $event->getExchangeEngine()));
 
-		$this->dispatcher->dispatch(ExchangeEngineFormatEvent::NAME, new ExchangeEngineFormatEvent($event->getExchange(), $event->getExchangeEngine(), $data));
+		$this->dispatcher->dispatch(new ExchangeEngineFormatEvent($event->getExchange(), $event->getExchangeEngine(), $data), ExchangeEngineFormatEvent::NAME);
 	}
 
 

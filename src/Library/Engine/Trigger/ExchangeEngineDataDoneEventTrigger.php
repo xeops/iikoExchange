@@ -22,6 +22,6 @@ class ExchangeEngineDataDoneEventTrigger
 
 	public function onDataFull(ExchangeEngineDataDoneEvent $event)
 	{
-		$this->dispatcher->dispatch(ExchangeEngineTransformDataEvent::NAME, new ExchangeEngineTransformDataEvent($event->getExchange(), $event->getExchangeEngine()));
+		$this->dispatcher->dispatch(new ExchangeEngineTransformDataEvent($event->getExchange(), $event->getExchangeEngine()), ExchangeEngineTransformDataEvent::NAME);
 	}
 }

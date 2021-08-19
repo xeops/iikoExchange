@@ -24,7 +24,7 @@ class ExchangeEngineLoadEventTrigger
 	{
 		$event->getExchange()->getLoader()->sendRequest($event->getData());
 
-		$this->dispatcher->dispatch(ExchangeEngineDoneEvent::NAME, new ExchangeEngineDoneEvent($event->getExchange(), $event->getExchangeEngine()));
+		$this->dispatcher->dispatch(new ExchangeEngineDoneEvent($event->getExchange(), $event->getExchangeEngine()), ExchangeEngineDoneEvent::NAME);
 	}
 
 }

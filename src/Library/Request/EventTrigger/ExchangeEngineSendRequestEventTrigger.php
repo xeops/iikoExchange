@@ -55,7 +55,7 @@ class ExchangeEngineSendRequestEventTrigger
 
 	protected function dispatchEngineLoadAllData(Exchange $exchange, ExchangeEngine $exchangeEngine)
 	{
-		$this->dispatcher->dispatch(ExchangeEngineDataDoneEvent::NAME, new ExchangeEngineDataDoneEvent($exchange, $exchangeEngine));
+		$this->dispatcher->dispatch(new ExchangeEngineDataDoneEvent($exchange, $exchangeEngine), ExchangeEngineDataDoneEvent::NAME);
 	}
 
 	protected function saveData(Exchange $exchange, DataSourceRequest $request, $data)

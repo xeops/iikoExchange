@@ -30,7 +30,7 @@ class ExchangeEngineDoneEventTrigger
 	{
 		if ($this->processManager->isAllEngineDone($event->getExchange()))
 		{
-			$this->eventDispatcher->dispatch(ExchangeDoneEvent::NAME, new ExchangeDoneEvent($event->getExchange()));
+			$this->eventDispatcher->dispatch(new ExchangeDoneEvent($event->getExchange()), ExchangeDoneEvent::NAME);
 		}
 	}
 }

@@ -4,7 +4,6 @@
 namespace iikoExchangeBundle\Engine;
 
 
-use iikoExchangeBundle\Engine\Event\ExchangeEngineProcessEvent;
 use iikoExchangeBundle\Engine\Event\ExchangeEngineRunEvent;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -26,7 +25,7 @@ class ExchangeEngine extends AbstractEngineBuilder
 
 	public final function run(Exchange $exchange)
 	{
-		$this->dispatcher->dispatch(ExchangeEngineRunEvent::NAME, new ExchangeEngineRunEvent($exchange, $this));
+		$this->dispatcher->dispatch(new ExchangeEngineRunEvent($exchange, $this), ExchangeEngineRunEvent::NAME);
 	}
 
 }
