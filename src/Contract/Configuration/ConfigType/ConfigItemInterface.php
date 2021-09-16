@@ -18,6 +18,7 @@ interface ConfigItemInterface extends ExchangeNodeInterface
 	const TYPE_FLOAT = 'float';
 	const TYPE_DATE_DIFF = 'date_diff';
 	const TYPE_SELECT = 'select';
+	const TYPE_ARRAY = 'multiselect';
 	const TYPE_PASSWORD = 'password';
 	const TYPE_MAPPING = 'mapping';
 	const TYPE_PERIOD = 'period';
