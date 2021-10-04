@@ -42,7 +42,7 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 
 	public function getExposedValues(): ?array
 	{
-		if(null == $this->exposedValues)
+		if (null == $this->exposedValues)
 		{
 			$this->exposedValues = $this->exposeValues();
 		}
@@ -51,7 +51,7 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 
 	public function getExposedIdentifiers(): ?array
 	{
-		if(null === $this->exposedIdentifiers)
+		if (null === $this->exposedIdentifiers)
 		{
 			$this->exposedIdentifiers = $this->exposeIdentifiers();
 		}
@@ -67,8 +67,10 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 	}
 
 
-
-
+	public function isSelectedTable(): bool
+	{
+		return false;
+	}
 
 
 	public function jsonSerialize()
@@ -77,7 +79,8 @@ abstract class AbstractMapping implements MappingInterface, WithRestaurantExtens
 			[
 				self::FIELD_FULL_TABLE => $this->isFullTable(),
 				self::FIELD_VALUES => $this->getExposedValues(),
-				self::FIELD_IDENTIFIERS => $this->getExposedIdentifiers()
+				self::FIELD_IDENTIFIERS => $this->getExposedIdentifiers(),
+				self::FIELD_SELECTED_TABLE => $this->isSelectedTable()
 			];
 	}
 }

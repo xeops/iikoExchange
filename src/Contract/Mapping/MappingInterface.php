@@ -13,6 +13,7 @@ interface MappingInterface extends ExchangeNodeInterface, ConfigurableExtensionI
 	const FIELD_IDENTIFIERS = 'identifiers';
 	const FIELD_VALUES = 'values';
 	const FIELD_FULL_TABLE = 'full';
+	const FIELD_SELECTED_TABLE = 'selected';
 
 	/**
 	 * @return ConfigItemInterface[]
