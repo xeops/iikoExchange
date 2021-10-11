@@ -22,7 +22,10 @@ class ExchangeEngineLoadEventTrigger
 
 	public function onLoad(ExchangeEngineLoadEvent $event)
 	{
-		$event->getExchange()->getLoader()->sendRequest($event->getData());
+		if($event->getData() !== false && $event->getData() !== null)
+		{
+			$event->getExchange()->getLoader()->sendRequest($event->getData());
+		}
 
 		$this->dispatcher->dispatch(ExchangeEngineDoneEvent::NAME, new ExchangeEngineDoneEvent($event->getExchange(), $event->getExchangeEngine()));
 	}
