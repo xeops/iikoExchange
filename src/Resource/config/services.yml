@@ -1,6 +1,7 @@
 services:
     exchange.directory:
         class: iikoExchangeBundle\Service\ExchangeDirectoryService
+        public: true
 
     exchange.engine.data_manager:
         class: iikoExchangeBundle\Service\ExchangeEngineDataManager
