@@ -72,6 +72,21 @@ Extractor, Loader или же Provider - класс для соединения 
         class: iikoExchangeBundle\Library\Provider\Provider
         arguments: [ "MY_PROVIDER", "@my_exchange.connection" ]
 ```
+
+#### iiko connection
+
+В самом iikoWeb connection и провайдер для айко уже определены.
+Для тестирования механизма можно использовать класс 
+`iikoExchangeBundle\Connection\iiko\iikoConnection` подключив его как `exchange.connection.iiko.olap`
+
+Для этого следует завести параметры 
+```yaml
+exchange_iiko_server : 'https://iiko-server.iiko.ru:443'
+exchange_iiko_username : 'admin'
+exchange_iiko_password : 'b1b3773a05c0ed0176787a4f1574ff0075f7521e' // SHA1
+
+```
+
 ### Schedule
 Schedule - класс для расписания. Основные виды расписаний
 * Крон
