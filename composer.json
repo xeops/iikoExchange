@@ -9,6 +9,7 @@
 		"php-http/guzzle6-adapter": "^1.1",
 		"symfony/config": "~3.0",
 		"symfony/event-dispatcher": "3.2.*",
+		"symfony/console": "3.2.*",
 		"ext-json": "*",
 		"ext-simplexml": "*",
 		"ext-ftp": "*",
