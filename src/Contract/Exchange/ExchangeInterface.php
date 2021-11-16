@@ -13,6 +13,15 @@ use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 interface ExchangeInterface extends ExchangeNodeInterface
 {
+	const EXECUTION_SCHEDULE = 'schedule';
+	const EXECUTION_MANUAL = 'schedule';
+	const EXECUTION_PREVIEW = 'schedule';
+
+
+	const PARAM_PERIOD = 'period';
+	const PARAM_RESTAURANT = 'restaurant';
+
+
 	const FIELD_ID = 'id';
 	const FIELD_UNIQUE = 'unique';
 
@@ -88,8 +97,4 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	public function setSchedules(array $schedules): ExchangeInterface;
 
 	public function getChildNodes(): array;
-
-	public function process();
-
-	public function error(\Exception $exception);
 }
