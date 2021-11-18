@@ -14,6 +14,16 @@ use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
+	public function __clone()
+	{
+		$this->generateUniq();
+	}
+
+	protected function generateUniq()
+	{
+		$this->uniq = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
+	}
+
 	protected ?int $moduleId = null;
 
 	protected ?int $id = null;
@@ -39,24 +49,6 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function setUniq(string $uniq)
 	{
 		$this->uniq = $uniq;
-		return $this;
-	}
-
-	/**
-	 * @return $this
-	 */
-	public function generateUniq()
-	{
-		$this->uniq = strtolower(sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(16384, 20479),
-			mt_rand(32768, 49151),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535)));
-
 		return $this;
 	}
 
@@ -175,6 +167,19 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function getEngines(): array
 	{
 		return $this->engines;
+	}
+
+	public final function getRequests(): array
+	{
+		$result = [];
+		foreach ($this->getEngines() as $engine)
+		{
+			foreach ($engine->getRequests() as $request)
+			{
+				$result[$request->getCode()] = $request;
+			}
+		}
+		return $result;
 	}
 
 	/**

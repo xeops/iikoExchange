@@ -9,6 +9,7 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Event\ExchangeErrorEvent;
 use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
 use iikoExchangeBundle\Library\Provider\Provider;
+use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 interface ExchangeInterface extends ExchangeNodeInterface
@@ -27,14 +28,6 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 
 	public function getUniq(): string;
-
-
-	public function setUniq(string $uniq);
-
-	/**
-	 * @return $this
-	 */
-	public function generateUniq();
 
 	/**
 	 * @return int|null
@@ -78,6 +71,11 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	 * @return ExchangeEngine[]
 	 */
 	public function getEngines(): array;
+
+	/**
+	 * @return DataSourceRequest[]
+	 */
+	public function getRequests(): array;
 
 	/**
 	 * @param array $engines

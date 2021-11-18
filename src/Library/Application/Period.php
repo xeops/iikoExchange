@@ -2,7 +2,7 @@
 
 namespace iikoExchangeBundle\Application;
 
-class Calendar
+class Period
 {
 	private \DateTime $dateFrom;
 	private \DateTime $dateTo;

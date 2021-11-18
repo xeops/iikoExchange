@@ -5,12 +5,13 @@ namespace iikoExchangeBundle\ExtensionHelper;
 
 
 
+use iikoExchangeBundle\Application\Restaurant;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 
 class WithRestaurantExtensionHelper
 {
-	public static function setRestaurantForExchangeNode(ExchangeNodeInterface $exchangeNode, $restaurant)
+	public static function setRestaurantForExchangeNode(ExchangeNodeInterface $exchangeNode, Restaurant $restaurant)
 	{
 		if ($exchangeNode instanceof WithRestaurantExtensionInterface)
 		{
@@ -22,7 +23,7 @@ class WithRestaurantExtensionHelper
 		}
 	}
 
-	public static function extractRestaurant(ExchangeNodeInterface $exchangeNode)
+	public static function extractRestaurant(ExchangeNodeInterface $exchangeNode) : ?Restaurant
 	{
 		if ($exchangeNode instanceof WithRestaurantExtensionInterface)
 		{

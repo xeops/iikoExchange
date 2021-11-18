@@ -4,11 +4,11 @@
 namespace iikoExchangeBundle\Contract\Exception;
 
 
+use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
+
 interface ExchangeExceptionInterface
 {
-	/**
-	 * @param mixed $message
-	 */
-	public function setMessage($message): void;
+	public function setExchange(ExchangeInterface $exchange) : ExchangeExceptionInterface;
 
+	public function getExchange(): ExchangeInterface;
 }
