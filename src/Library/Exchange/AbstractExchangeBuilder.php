@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Exchange;
 
 
+use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
@@ -42,15 +43,6 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this->uniq;
 	}
 
-	/**
-	 * @param string $uniq
-	 * @return $this
-	 */
-	public function setUniq(string $uniq)
-	{
-		$this->uniq = $uniq;
-		return $this;
-	}
 
 	/**
 	 * @return int|null
@@ -60,15 +52,15 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this->id;
 	}
 
-	public function setId(int $id)
+	public function setId(?int $id)
 	{
 		$this->id = $id;
 		return $this;
 	}
 
 
-	protected Provider $extractor;
-	protected Provider $loader;
+	protected Connection $extractor;
+	protected Connection $loader;
 	/** @var ExchangeEngine[] */
 	protected array $engines;
 	protected array $schedules;
@@ -81,7 +73,6 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function __construct(string $code)
 	{
 		$this->code = $code;
-		$this->unique = md5(mt_rand() . $code);
 	}
 
 
@@ -126,36 +117,36 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getExtractor(): Provider
+	public function getExtractor(): Connection
 	{
 		return $this->extractor;
 	}
 
 	/**
-	 * @param Provider $extractor
+	 * @param Connection $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Provider $extractor): ExchangeInterface
+	public function setExtractor(Connection $extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
 	}
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getLoader(): Provider
+	public function getLoader(): Connection
 	{
 		return $this->loader;
 	}
 
 	/**
-	 * @param Provider $loader
+	 * @param Connection $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Provider $loader): ExchangeInterface
+	public function setLoader(Connection $loader): ExchangeInterface
 	{
 		$this->loader = $loader;
 		return $this;

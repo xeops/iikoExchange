@@ -25,7 +25,7 @@ class FtpConnection extends Connection
 	const CONFIG_PASSWORD = 'CONFIG_PASSWORD';
 
 
-	public function sendRequest($handle)
+	public function sendRequest($handle) : Response
 	{
 		if($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
 		{

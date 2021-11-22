@@ -7,7 +7,7 @@ use iikoExchangeBundle\Library\Request\DataSourceRequest;
 
 interface EngineDataStorageInterface
 {
-	public function saveData(Exchange $exchange, DataSourceRequest $request, $data): bool;
+	public function saveData(Exchange $exchange, DataSourceRequest $request, $data) : void;
 
 	public function getData(Exchange $exchange, DataSourceRequest $request);
 

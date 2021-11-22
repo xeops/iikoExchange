@@ -30,6 +30,23 @@ class ExchangeProcessManagerService
 	private EventDispatcher $dispatcher;
 
 	/**
+	 * @param EngineDataStorageInterface $dataStorage
+	 * @param ExchangeDirectoryService $exchangeDirectory
+	 * @param ExchangeConfigStorageInterface $configStorage
+	 * @param ExchangeMappingStorageInterface $mappingStorage
+	 * @param EventDispatcher $dispatcher
+	 */
+	public function __construct(EngineDataStorageInterface $dataStorage, ExchangeDirectoryService $exchangeDirectory, ExchangeConfigStorageInterface $configStorage, ExchangeMappingStorageInterface $mappingStorage, EventDispatcher $dispatcher)
+	{
+		$this->dataStorage = $dataStorage;
+		$this->exchangeDirectory = $exchangeDirectory;
+		$this->configStorage = $configStorage;
+		$this->mappingStorage = $mappingStorage;
+		$this->dispatcher = $dispatcher;
+	}
+
+
+	/**
 	 * Метод для запуска обмена.
 	 * @param string $exchangeCode - уникальный код обмена
 	 * @param string $scheduleType - тип расписания. @see ExchangeInterface::EXECUTION_*
@@ -104,10 +121,10 @@ class ExchangeProcessManagerService
 			}
 
 			$transformed = $engine->getTransformer()->transform($exchange, $engine, $data);
+
 			$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
 
-			$exchange->getLoader()->sendRequest();
-
+			$exchange->getLoader()->sendRequest($formatted);
 		}
 	}
 

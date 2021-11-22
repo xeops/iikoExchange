@@ -42,6 +42,10 @@ trait ConfigurableExtensionTrait
 
 	protected function getConfigValue(string $configCode)
 	{
+		if (array_key_exists($configCode, $this->config))
+		{
+			return $this->config[$configCode];
+		}
 		$parameter = null;
 		foreach ($this->exposeConfiguration() as $configItem)
 		{
@@ -58,6 +62,6 @@ trait ConfigurableExtensionTrait
 		{
 			throw new ConfigNotFoundException($configCode);
 		}
-		return $this->config[$configCode] ?? $parameter->getValue();
+		return $parameter->getValue();
 	}
 }

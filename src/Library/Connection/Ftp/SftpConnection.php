@@ -14,7 +14,7 @@ class SftpConnection extends FtpConnection
 
 	const CODE = 'SFTP_CONNECTION';
 
-	public function sendRequest($handle)
+	public function sendRequest($handle) : Response
 	{
 		if (!is_resource($handle))
 		{

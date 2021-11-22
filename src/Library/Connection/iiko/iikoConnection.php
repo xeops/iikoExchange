@@ -33,11 +33,13 @@ class iikoConnection extends Connection
 	 * @param IikoRequestInterface $request
 	 * @return Response|void
 	 */
-	public function sendRequest($request)
+	public function sendRequest($request): Response
 	{
 		$guzzleRequest = new Request($request->getMethod(), (new Uri($request->getPath()))->withQuery($request->getQuery()), $request->getHeaders(), $request->getBody());
 
-		return $this->getClient()->send($guzzleRequest);
+		$response = $this->getClient()->send($guzzleRequest);
+
+		return new Response($response->getStatusCode(), $response->getHeaders(), $response->getBody(), $response->getProtocolVersion(), $response->getReasonPhrase());
 	}
 
 	private function getClient(): Client

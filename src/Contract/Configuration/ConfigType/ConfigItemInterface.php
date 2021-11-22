@@ -12,6 +12,7 @@ interface ConfigItemInterface extends ExchangeNodeInterface
 	const FIELD_VALUE = 'value';
 	const FIELD_REQUIRED = 'required';
 
+
 	const TYPE_STRING = 'string';
 	const TYPE_URL = 'url';
 	const TYPE_INT = 'int';

@@ -4,11 +4,9 @@
 namespace iikoExchangeBundle\Contract\Exchange;
 
 
+use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
-use iikoExchangeBundle\Exchange\Event\ExchangeErrorEvent;
-use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
-use iikoExchangeBundle\Library\Provider\Provider;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
@@ -17,10 +15,6 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	const EXECUTION_SCHEDULE = 'schedule';
 	const EXECUTION_MANUAL = 'schedule';
 	const EXECUTION_PREVIEW = 'schedule';
-
-
-	const PARAM_PERIOD = 'period';
-	const PARAM_RESTAURANT = 'restaurant';
 
 
 	const FIELD_ID = 'id';
@@ -46,26 +40,26 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getExtractor(): Provider;
+	public function getExtractor(): Connection;
 
 	/**
-	 * @param Provider $extractor
+	 * @param Connection $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Provider $extractor): ExchangeInterface;
+	public function setExtractor(Connection $extractor): ExchangeInterface;
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getLoader(): Provider;
+	public function getLoader(): Connection;
 
 	/**
-	 * @param Provider $loader
+	 * @param Connection $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Provider $loader): ExchangeInterface;
+	public function setLoader(Connection $loader): ExchangeInterface;
 
 	/**
 	 * @return ExchangeEngine[]

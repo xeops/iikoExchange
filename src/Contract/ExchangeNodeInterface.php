@@ -4,7 +4,7 @@
 namespace iikoExchangeBundle\Contract;
 
 
-interface ExchangeNodeInterface extends \JsonSerializable
+interface ExchangeNodeInterface extends \JsonSerializable #\\TODO \Serializable
 {
 	const FIELD_CODE = 'code';
 	const FIELD_NAME = 'name';
