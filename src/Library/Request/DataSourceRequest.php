@@ -7,11 +7,12 @@ namespace iikoExchangeBundle\Library\Request;
 use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class DataSourceRequest implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class DataSourceRequest implements ExchangeRequestInterface, ConfigurableExtensionInterface
 {
 	use ExchangeNodeTrait
 	{

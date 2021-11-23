@@ -2,7 +2,9 @@
 
 namespace iikoExchangeBundle\Contract\Request;
 
-interface ExchangeRequestInterface
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+
+interface ExchangeRequestInterface extends ExchangeNodeInterface
 {
 
 }

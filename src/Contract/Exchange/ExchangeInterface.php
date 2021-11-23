@@ -5,7 +5,9 @@ namespace iikoExchangeBundle\Contract\Exchange;
 
 
 use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
@@ -67,12 +69,12 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	public function getEngines(): array;
 
 	/**
-	 * @return DataSourceRequest[]
+	 * @return ExchangeRequestInterface[]
 	 */
 	public function getRequests(): array;
 
 	/**
-	 * @param array $engines
+	 * @param ExchangeEngineInterface[] $engines
 	 * @return ExchangeInterface
 	 */
 	public function setEngines(array $engines): ExchangeInterface;
