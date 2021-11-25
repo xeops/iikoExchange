@@ -2,7 +2,9 @@
 
 namespace iikoExchangeBundle\Contract\Engine;
 
-interface ExchangeEngineInterface
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+
+interface ExchangeEngineInterface extends ExchangeNodeInterface
 {
 
 }

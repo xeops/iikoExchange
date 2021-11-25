@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Engine\Event;
+namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;

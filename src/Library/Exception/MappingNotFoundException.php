@@ -4,15 +4,11 @@
 namespace iikoExchangeBundle\Exception;
 
 
-use iikoExchangeBundle\Contract\Exception\ExchangeExceptionInterface;
-
-class MappingNotFoundException extends \Exception implements ExchangeExceptionInterface
+class MappingNotFoundException extends ExchangeException
 {
 
 	protected array $identifiers;
 	protected string $mappingCode;
-
-	protected $message;
 
 	const MESSAGE = 'MAPPING_NOT_FOUND';
 
@@ -41,12 +37,5 @@ class MappingNotFoundException extends \Exception implements ExchangeExceptionIn
 	}
 
 
-	/**
-	 * @param mixed $message
-	 */
-	public function setMessage($message): void
-	{
-		$this->message = $message;
-	}
 
 }

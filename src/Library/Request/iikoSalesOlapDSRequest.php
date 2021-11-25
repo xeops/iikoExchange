@@ -28,8 +28,8 @@ abstract class iikoSalesOlapDSRequest extends DataSourceRequest implements WithP
 	{
 		$period = $this->getPeriod();
 
-		$from = $period->getStartDate();
-		$to = $period->getDurationInDays() === 1 ? $period->getEndDate()->modify('+1 day') : $period->getEndDate();
+		$from = $period->getDateFrom();
+		$to = $period->getDurationInDays() === 1 ? $period->getDateTo()->modify('+1 day') : $period->getDateTo();
 
 		return [
 			"OpenDate.Typed" => iikoReportFilter::dateRange($from->getTimestamp(), $to->getTimestamp())

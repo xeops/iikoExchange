@@ -2,66 +2,22 @@ services:
     exchange.directory:
         class: iikoExchangeBundle\Service\ExchangeDirectoryService
 
-    exchange.engine.data_manager:
-        class: iikoExchangeBundle\Service\ExchangeEngineDataManager
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeDoneEvent::NAME, method: onExchangeDone, priority: 0 }
 
-    exchange.process_manager:
-        class: iikoExchangeBundle\Service\ExchangeProcessManagerService
+    exchange.manager:
+        class: iikoExchangeBundle\Service\ExchangeManager
+        arguments: [ '@exchange.directory','@exchange.storage.preview' ,'@exchange.storage.config', '@exchange.storage.mapping', '@event_dispatcher', '@logger', '@translator' ]
 
+    exchange.storage.config:
+        class: iikoExchangeBundle\Service\Storage\DummyConfigStorage
 
+    exchange.storage.mapping:
+        class: iikoExchangeBundle\Service\Storage\DummyMappingStorage
+
+    exchange.storage.preview:
+        class: iikoExchangeBundle\Service\Storage\DummyPreviewStorage
     exchange.connection.iiko.olap:
         class: iikoExchangeBundle\Connection\iiko\iikoConnection
         calls:
-            - [setServer, ['%exchange_iiko_server%']]
-            - [setUserName, ['%exchange_iiko_username%']]
-            - [setPassword, ['%exchange_iiko_password%']]
-    # TRIGGERS
-    #           EXCHANGE
-    exchange.trigger.process:
-        class: iikoExchangeBundle\Exchange\Trigger\ExchangeProcessEventTrigger
-        arguments: [ "@logger" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent::NAME, method: onProcess, priority: 0 }
-    exchange.trigger.engine_done:
-        class: iikoExchangeBundle\Exchange\Trigger\ExchangeEngineDoneEventTrigger
-        arguments: [ "@exchange.process_manager", "@event_dispatcher" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineDoneEvent::NAME, method: onEngineDone, priority: 0 }
-    #           ENGINE
-    exchange.engine.trigger.load:
-        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineLoadEventTrigger
-        arguments: [ "@event_dispatcher" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineLoadEvent::NAME, method: onLoad, priority: 0 }
-
-    exchange.engine.trigger.run:
-        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineRunEventTrigger
-        arguments: [ "@event_dispatcher" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineRunEvent::NAME, method: onExchangeEngineRun, priority: 0 }
-
-    exchange.engine.trigger.send:
-        class: iikoExchangeBundle\Library\Request\EventTrigger\ExchangeEngineSendRequestEventTrigger
-        arguments: [ "@exchange.engine.data_manager", "@event_dispatcher" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineSendRequestEvent::NAME, method: onSendRequest, priority: 0 }
-
-    exchange.engine.trigger.data_done:
-        class: iikoExchangeBundle\Engine\Trigger\ExchangeEngineDataDoneEventTrigger
-        arguments: ["@event_dispatcher"]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineDataDoneEvent::NAME, method: onDataFull, priority: 0 }
-
-    exchange.engine.trigger.transform:
-        class: iikoExchangeBundle\Library\Transform\EventTrigger\ExchangeEngineTransformEventTrigger
-        arguments: [ "@event_dispatcher", "@exchange.engine.data_manager" ]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineTransformDataEvent::NAME, method: onTransform, priority: 0 }
-
-    exchange.engine.trigger.format:
-        class: iikoExchangeBundle\Format\EventTrigger\ExchangeFormatStageEventTrigger
-        arguments: ["@event_dispatcher"]
-        tags:
-            - { name: kernel.event_listener, event: !php/const:iikoExchangeBundle\Engine\Event\ExchangeEngineFormatEvent::NAME, method: onFormat, priority: 0 }
+            - [ setServer, [ '%exchange_iiko_server%' ] ]
+            - [ setUserName, [ '%exchange_iiko_username%' ] ]
+            - [ setPassword, [ '%exchange_iiko_password%' ] ]

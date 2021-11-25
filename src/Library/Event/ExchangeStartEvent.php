@@ -1,20 +1,18 @@
 <?php
 
 
-namespace iikoExchangeBundle\Exchange\Event;
+namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeDoneEvent extends Event implements ExchangeEventInterface
+class ExchangeStartEvent extends Event implements ExchangeEventInterface
 {
-	const NAME = 'exchange.done';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
+	const NAME = 'exchange.start';
+
+	protected Exchange $exchange;
 
 	public function __construct(Exchange $exchange)
 	{

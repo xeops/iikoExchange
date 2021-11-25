@@ -32,7 +32,6 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 	public function setId(int $id);
 
-
 	const FIELD_EXTRACTOR = 'extractor';
 	const FIELD_PROVIDER = 'provider';
 	const FIELD_LOADER = 'loader';
@@ -91,4 +90,12 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	public function setSchedules(array $schedules): ExchangeInterface;
 
 	public function getChildNodes(): array;
+
+	public function getPreviewTemplate(): ?string;
+
+	public function setPreviewTemplate(string $template): ExchangeInterface;
+
+	public function setLocale(string $locale): ExchangeInterface;
+
+	public function getLocale(): string;
 }

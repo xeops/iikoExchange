@@ -2,17 +2,17 @@
 
 namespace iikoExchangeBundle\Exception;
 
-use iikoExchangeBundle\Contract\Exception\ExchangeExceptionInterface;
+
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 
-abstract class BaseExchangeException extends \Exception implements ExchangeExceptionInterface
+class ExchangeException extends \Exception
 {
 	protected ExchangeInterface $exchange;
 
 	/**
 	 * @param ExchangeInterface $exchange
 	 */
-	public function setExchange(ExchangeInterface $exchange): ExchangeExceptionInterface
+	public function setExchange(ExchangeInterface $exchange): ExchangeException
 	{
 		$this->exchange = $exchange;
 		return $this;
@@ -24,6 +24,14 @@ abstract class BaseExchangeException extends \Exception implements ExchangeExcep
 	public function getExchange(): ExchangeInterface
 	{
 		return $this->exchange;
+	}
+
+	/**
+	 * @param mixed $message
+	 */
+	public function setMessage($message): void
+	{
+		$this->message = $message;
 	}
 
 

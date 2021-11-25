@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Engine;
 
 
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
@@ -12,7 +13,7 @@ use iikoExchangeBundle\Format\Formatter;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Transform\AbstractTransformer;
 
-abstract class AbstractEngineBuilder implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class AbstractEngineBuilder implements ExchangeEngineInterface, ConfigurableExtensionInterface
 {
 	const FIELD_REQUEST = 'requests';
 	const FIELD_TRANSFORMER = 'transformer';

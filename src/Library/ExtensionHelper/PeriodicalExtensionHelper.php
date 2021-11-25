@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\ExtensionHelper;
 
 
+use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
@@ -22,7 +23,7 @@ class PeriodicalExtensionHelper
 		}
 	}
 
-	public static function extractPeriod(ExchangeNodeInterface $exchangeNode)
+	public static function extractPeriod(ExchangeNodeInterface $exchangeNode) : ?Period
 	{
 		if ($exchangeNode instanceof WithPeriodExtensionInterface)
 		{

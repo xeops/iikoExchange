@@ -38,5 +38,8 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 	 */
 
 
-	abstract public function exposeConfiguration(): array;
+	public function exposeConfiguration(): array
+	{
+		return [];
+	}
 }

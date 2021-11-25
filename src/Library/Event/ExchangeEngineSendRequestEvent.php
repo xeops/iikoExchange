@@ -1,10 +1,11 @@
 <?php
 
 
-namespace iikoExchangeBundle\Engine\Event;
+namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
+use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Request\DataSourceRequest;
@@ -22,11 +23,11 @@ class ExchangeEngineSendRequestEvent extends Event  implements ExchangeEventInte
 	 */
 	private ExchangeEngine $engine;
 	/**
-	 * @var DataSourceRequest
+	 * @var ExchangeRequestInterface
 	 */
-	private DataSourceRequest $dataSourceRequest;
+	private ExchangeRequestInterface $dataSourceRequest;
 
-	public function __construct(Exchange $exchange, DataSourceRequest $dataSourceRequest)
+	public function __construct(Exchange $exchange, ExchangeRequestInterface $dataSourceRequest)
 	{
 		$this->exchange = $exchange;
 		$this->dataSourceRequest = $dataSourceRequest;
@@ -42,9 +43,9 @@ class ExchangeEngineSendRequestEvent extends Event  implements ExchangeEventInte
 
 
 	/**
-	 * @return DataSourceRequest
+	 * @return ExchangeRequestInterface
 	 */
-	public function getDataSourceRequest(): DataSourceRequest
+	public function getDataSourceRequest(): ExchangeRequestInterface
 	{
 		return $this->dataSourceRequest;
 	}

@@ -2,7 +2,7 @@
 
 namespace iikoExchangeBundle\Exception;
 
-class EngineNotFoundDataException extends BaseExchangeException
+class EngineNotFoundDataException extends ExchangeException
 {
 
 }

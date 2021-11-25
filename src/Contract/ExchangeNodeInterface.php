@@ -14,7 +14,7 @@ interface ExchangeNodeInterface extends \JsonSerializable #\\TODO \Serializable
 
 	public function getChildNodes(): array;
 
-	public function setName(string $name);
+	public function setName(string $name) : ExchangeNodeInterface;
 
 	public function setDescription(string $description);
 

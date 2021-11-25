@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iikoExchangeBundle\Engine\Event;
+namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
@@ -9,9 +9,9 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineDoneEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineDataDoneEvent extends Event implements ExchangeEventInterface
 {
-	const NAME = 'exchange.engine.done';
+	const NAME = 'exchange.engine.dataDone';
 	/**
 	 * @var Exchange
 	 */
@@ -42,6 +42,4 @@ class ExchangeEngineDoneEvent extends Event  implements ExchangeEventInterface
 	{
 		return $this->exchangeEngine;
 	}
-
-
 }

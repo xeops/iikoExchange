@@ -37,6 +37,10 @@ class WithMappingExtensionHelper
 		return null;
 	}
 
+	/**
+	 * @param ExchangeNodeInterface $exchangeNode
+	 * @return MappingInterface[]
+	 */
 	public static function extractMapping(ExchangeNodeInterface $exchangeNode)
 	{
 		$mappingList = [];

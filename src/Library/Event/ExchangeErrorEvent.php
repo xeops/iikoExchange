@@ -1,10 +1,11 @@
 <?php
 
 
-namespace iikoExchangeBundle\Exchange\Event;
+namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
+use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -15,9 +16,9 @@ class ExchangeErrorEvent extends Event implements ExchangeEventInterface
 	 * @var Exchange
 	 */
 	private Exchange $exchange;
-	private \Exception $exception;
+	private ExchangeException $exception;
 
-	public function __construct(Exchange $exchange, \Exception $exception)
+	public function __construct(Exchange $exchange, ExchangeException $exception)
 	{
 		$this->exchange = $exchange;
 		$this->exception = $exception;
@@ -32,11 +33,22 @@ class ExchangeErrorEvent extends Event implements ExchangeEventInterface
 	}
 
 	/**
-	 * @return \Exception
+	 * @return ExchangeException
 	 */
-	public function getException(): \Exception
+	public function getException(): ExchangeException
 	{
 		return $this->exception;
 	}
+
+	/**
+	 * @param ExchangeException $exception
+	 * @return ExchangeErrorEvent
+	 */
+	public function setException(ExchangeException $exception): ExchangeErrorEvent
+	{
+		$this->exception = $exception;
+		return $this;
+	}
+
 
 }

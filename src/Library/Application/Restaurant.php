@@ -5,7 +5,18 @@ namespace iikoExchangeBundle\Application;
 class Restaurant
 {
 	private int $id;
-	private int $name;
+	private string $name;
+
+	/**
+	 * @param int $id
+	 * @param string $name
+	 */
+	public function __construct(int $id, string $name)
+	{
+		$this->id = $id;
+		$this->name = $name;
+	}
+
 
 	/**
 	 * @return int
@@ -17,27 +28,34 @@ class Restaurant
 
 	/**
 	 * @param int $id
+	 * @return Restaurant
 	 */
-	public function setId(int $id): void
+	public function setId(int $id): Restaurant
 	{
 		$this->id = $id;
+		return $this;
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getName(): int
+	public function getName(): string
 	{
 		return $this->name;
 	}
 
 	/**
-	 * @param int $name
+	 * @param string $name
+	 * @return Restaurant
 	 */
-	public function setName(int $name): void
+	public function setName(string $name): Restaurant
 	{
 		$this->name = $name;
+		return $this;
 	}
+
+
+
 
 
 }

@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Exchange;
 
 
 use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
@@ -15,9 +16,18 @@ use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
+	protected string $locale = 'ru_RU';
+
 	public function __clone()
 	{
 		$this->generateUniq();
+		$this->loader = clone $this->loader;
+		$this->extractor = clone $this->extractor;
+
+		foreach ($this->engines as $key => $engine)
+		{
+			$this->engines[$key] = clone $engine;
+		}
 	}
 
 	protected function generateUniq()
@@ -30,6 +40,8 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	protected ?int $id = null;
 
 	protected ?string $uniq = null;
+
+	protected ?string $previewTemplate = null;
 
 	/**
 	 * @return string
@@ -128,7 +140,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	 * @param Connection $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Connection $extractor): ExchangeInterface
+	public function setExtractor(ConnectionInterface $extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
@@ -221,4 +233,42 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	{
 		return $this->moduleId;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getPreviewTemplate(): ?string
+	{
+		return $this->previewTemplate;
+	}
+
+	/**
+	 * @param string|null $previewTemplate
+	 * @return AbstractExchangeBuilder
+	 */
+	public function setPreviewTemplate(?string $previewTemplate): AbstractExchangeBuilder
+	{
+		$this->previewTemplate = $previewTemplate;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLocale(): string
+	{
+		return $this->locale;
+	}
+
+	/**
+	 * @param string $locale
+	 * @return AbstractExchangeBuilder
+	 */
+	public function setLocale(string $locale): AbstractExchangeBuilder
+	{
+		$this->locale = $locale;
+		return $this;
+	}
+
+
 }
