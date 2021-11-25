@@ -21,3 +21,14 @@ services:
             - [ setServer, [ '%exchange_iiko_server%' ] ]
             - [ setUserName, [ '%exchange_iiko_username%' ] ]
             - [ setPassword, [ '%exchange_iiko_password%' ] ]
+
+
+    # connections
+
+    exchange.connection.sftp:
+        class: iikoExchangeBundle\Connection\Ftp\SftpConnection
+        arguments: [ "CONNECTION_SFTP" ]
+
+    # schedulers
+    exchange.schedule.cron:
+        class: iikoExchangeBundle\Library\Schedule\ScheduleCronWithPeriod
