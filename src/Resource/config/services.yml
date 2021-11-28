@@ -17,6 +17,7 @@ services:
         class: iikoExchangeBundle\Service\Storage\DummyPreviewStorage
     exchange.connection.iiko.olap:
         class: iikoExchangeBundle\Connection\iiko\iikoConnection
+        arguments: [ '@logger' ]
         calls:
             - [ setServer, [ '%exchange_iiko_server%' ] ]
             - [ setUserName, [ '%exchange_iiko_username%' ] ]

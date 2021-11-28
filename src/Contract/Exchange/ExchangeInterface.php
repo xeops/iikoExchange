@@ -9,7 +9,6 @@ use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
-use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 interface ExchangeInterface extends ExchangeNodeInterface

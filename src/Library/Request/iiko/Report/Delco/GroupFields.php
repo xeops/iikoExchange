@@ -1,5 +1,5 @@
-<?php 
-namespace IikoApiBundle\Reports\Olap\Version52\Delco; 
+<?php
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Delco;
 class GroupFields { 
        /** CloseTime.Minutes15 STRING */ 
        /** 15-minutes closing interval */ 

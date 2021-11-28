@@ -2,16 +2,17 @@
 
 namespace iikoExchangeBundle\Contract\Request;
 
-interface IikoRequestInterface
+interface IikoRequestInterface extends ExchangeRequestInterface
 {
-	public function getPath() : string;
+	public function getPath(): string;
 
-	public function getMethod() : string;
+	public function getMethod(): string;
 
-	public function getQuery() : string;
+	public function getQuery(): string;
 
-	public function getBody() : string;
+	public function getBody(): array;
 
-	public function getHeaders() : array;
+	public function getHeaders(): array;
 
+	public function processResponse($data);
 }

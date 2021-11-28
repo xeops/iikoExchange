@@ -56,19 +56,4 @@ class PeriodicalExtensionHelper
 		return false;
 	}
 
-	public static function isNeedBreakDownByDays(ExchangeNodeInterface $exchangeNode)
-	{
-		if ($exchangeNode instanceof WithPeriodExtensionInterface && $exchangeNode->byDays() === true)
-		{
-			return true;
-		}
-		foreach ($exchangeNode->getChildNodes() as $childNode)
-		{
-			if (static::isNeedPeriod($childNode))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
 }

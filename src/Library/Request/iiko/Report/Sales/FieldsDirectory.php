@@ -1,7 +1,7 @@
 <?php
 
 
-namespace IikoApiBundle\Reports\Olap\Version52\Sales;
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Sales;
 
 
 class FieldsDirectory

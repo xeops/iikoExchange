@@ -14,6 +14,7 @@ use iikoExchangeBundle\Contract\Request\IikoRequestInterface;
 use Monolog\Logger;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 class iikoConnection extends Connection
@@ -23,10 +24,12 @@ class iikoConnection extends Connection
 	private string $password;
 
 	private ?string $key;
+	private LoggerInterface $logger;
 
-	public function __construct()
+	public function __construct(LoggerInterface $logger)
 	{
 		parent::__construct(IIKO);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -35,7 +38,7 @@ class iikoConnection extends Connection
 	 */
 	public function sendRequest($request): Response
 	{
-		$guzzleRequest = new Request($request->getMethod(), (new Uri($request->getPath()))->withQuery($request->getQuery()), $request->getHeaders(), $request->getBody());
+		$guzzleRequest = new Request($request->getMethod(), (new Uri($request->getPath()))->withQuery($request->getQuery()), $request->getHeaders(), json_encode($request->getBody()));
 
 		$response = $this->getClient()->send($guzzleRequest);
 
@@ -45,14 +48,20 @@ class iikoConnection extends Connection
 	private function getClient(): Client
 	{
 		$handlers = HandlerStack::create();
-		$handlers->push(Middleware::log(new Logger('iiko'), new MessageFormatter('{request} - {response}'), LogLevel::DEBUG));
+
 		$handlers->push(Middleware::mapRequest(function (RequestInterface $request)
 		{
-			return $request->withUri(Uri::withQueryValue($request->getUri(), 'key', $this->login()));
+			$this->logger->info('Exchange send request to iiko', ['url' => $request->getUri(), 'method' => $request->getMethod(), 'body' => $request->getBody()->getContents()]);
+			return $request->withUri(Uri::withQueryValues($request->getUri(), ['key' => $this->login(), 'client-type' => 'iikoweb-exchange']));
 		}));
 
 		$handlers->push(Middleware::mapResponse(function (ResponseInterface $response)
 		{
+			$this->logger->info('Exchange got result from iiko', ['code' => $response->getStatusCode()]);
+			if ($response->getStatusCode() !== 200)
+			{
+				$this->logger->error('Exchange got error from iiko', ['error' => $response->getBody()->getContents()]);
+			}
 			$this->logout();
 			return $response;
 		}));
@@ -63,12 +72,14 @@ class iikoConnection extends Connection
 	private function login(): string
 	{
 		$this->key = (new Client(['base_uri' => $this->server]))->get('/resto/api/auth', ['query' => ["login" => $this->userName, "pass" => $this->password]])->getBody()->getContents();
+		$this->logger->debug('Exchange successfully connected to iiko');
 		return $this->key;
 	}
 
 	private function logout(): void
 	{
-		(new Client(['base_uri' => $this->server]))->get('/resto/api/logout', ['key' => $this->key])->getBody()->getContents();
+		(new Client(['base_uri' => $this->server]))->get('/resto/api/logout?client-type=iikoweb-exchange', ['query' => ['key' => $this->key]])->getBody()->getContents();
+		$this->logger->debug('Exchange successfully disconnected from iiko');
 		$this->key = null;
 	}
 

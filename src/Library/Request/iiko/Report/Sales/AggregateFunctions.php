@@ -1,8 +1,8 @@
 <?php
 
-    namespace IikoApiBundle\Reports\Olap\Version52\Sales;
-    
-    class AggregateFunctions {
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Sales;
+
+class AggregateFunctions {
         
         public static $sumFields = [
 

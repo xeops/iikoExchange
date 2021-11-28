@@ -1,7 +1,7 @@
 <?php
 
 
-namespace IikoApiBundle\Reports\Olap\Version52\Delco;
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Delco;
 
 
 class FieldsDirectory

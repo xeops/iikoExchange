@@ -114,7 +114,7 @@ class ExchangeManager
 		}
 		catch (\Exception | \Throwable $exception)
 		{
-			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage()]);
+			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
 			$error = (new ExchangeException('SERVER_ERROR'))->setExchange($exchange);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
@@ -197,7 +197,7 @@ class ExchangeManager
 			foreach ($node->getMapping() as $mapping)
 			{
 				$mappingCollection = $this->mappingStorage->getMapping($exchange, $mapping->getCode(), $restaurant);
-				$this->logger->debug('Exchange. Set mapping', ['exchangeCode' => $exchange->getCode(), 'mappingCode' => $mapping->getCode(), 'mappingList' => $mappingCollection]);
+				$this->logger->debug('Exchange. Set mapping', ['exchangeCode' => $exchange->getCode(), 'node' => $node->getCode(), 'mappingCode' => $mapping->getCode(), 'mappingList' => $mappingCollection]);
 				$node->setMappingValues($mapping->getCode(), $mappingCollection);
 			}
 
@@ -315,7 +315,7 @@ class ExchangeManager
 		$exception->setMessage($error);
 
 
-		$this->logger->error("Exchange error", ['error' => $error, 'exchangeId' => $exchange->getId(), 'exchangeUniq' => $exchange->getUniq()]);
+		$this->logger->error("Exchange error", ['error' => $error, 'exchangeId' => $exchange->getId(), 'exchangeUniq' => $exchange->getUniq(), 'params' => $additionalLoggerInfo]);
 
 		return $exception;
 	}

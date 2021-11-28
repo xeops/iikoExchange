@@ -1,5 +1,5 @@
-<?php 
-namespace IikoApiBundle\Reports\Olap\Version52\Delco; 
+<?php
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Delco;
 class AggregateFields { 
        /** PercentOfSummary.ByCol PERCENT */ 
        /** % by column */ 

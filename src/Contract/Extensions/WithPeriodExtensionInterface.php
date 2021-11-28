@@ -20,6 +20,4 @@ interface WithPeriodExtensionInterface
 	 * @return Period
 	 */
 	public function getPeriod();
-
-	public function byDays() : bool;
 }

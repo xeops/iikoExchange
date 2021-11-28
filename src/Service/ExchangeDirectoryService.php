@@ -22,8 +22,8 @@ class ExchangeDirectoryService
 		return $this->exchanges;
 	}
 
-	public function getExchangeByCode(string $code, int $id = null) : Exchange
+	public function getExchangeByCode(string $code): Exchange
 	{
-		return (clone $this->getCollection()[$code])->setId($id);
+		return (clone $this->getCollection()[$code]);
 	}
 }

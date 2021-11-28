@@ -5,12 +5,11 @@ namespace iikoExchangeBundle\Engine;
 
 
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
-use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\Format\Formatter;
-use iikoExchangeBundle\Library\Request\DataSourceRequest;
 use iikoExchangeBundle\Library\Transform\AbstractTransformer;
 
 abstract class AbstractEngineBuilder implements ExchangeEngineInterface, ConfigurableExtensionInterface
@@ -28,7 +27,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 		ConfigurableExtensionTrait::jsonSerialize as public configJsonSerialize;
 	}
 
-	/** @var DataSourceRequest[] */
+	/** @var ExchangeRequestInterface[] */
 	protected array $requests;
 	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
@@ -50,7 +49,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	}
 
 	/**
-	 * @param DataSourceRequest[] $requests
+	 * @param ExchangeRequestInterface[] $requests
 	 * @return AbstractEngineBuilder
 	 */
 	public function setRequests(array $requests): AbstractEngineBuilder
@@ -81,7 +80,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 
 
 	/**
-	 * @return DataSourceRequest[]
+	 * @return ExchangeRequestInterface[]
 	 */
 	public function getRequests(): array
 	{

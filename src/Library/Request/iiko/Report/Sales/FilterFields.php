@@ -1,5 +1,6 @@
-<?php 
-namespace IikoApiBundle\Reports\Olap\Version52\Sales; 
+<?php
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Sales;
+
 class FilterFields { 
        /** CloseTime.Minutes15 STRING */ 
        /** 15-minutes closing interval */ 

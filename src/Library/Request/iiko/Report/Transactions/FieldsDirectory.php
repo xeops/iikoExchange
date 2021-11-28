@@ -1,7 +1,7 @@
 <?php
 
 
-namespace IikoApiBundle\Reports\Olap\Version52\Transactions;
+namespace iikoExchangeBundle\Library\Request\iiko\Report\Transactions;
 
 
 class FieldsDirectory
