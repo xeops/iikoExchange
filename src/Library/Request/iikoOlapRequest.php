@@ -23,6 +23,7 @@ abstract class iikoOlapRequest implements IikoRequestInterface, WithPeriodExtens
 
 	const TYPE_SALES = 'SALES';
 	const TYPE_TRANSACTIONS = 'TRANSACTIONS';
+	const TYPE_DELIVERIES = 'DELIVERIES';
 
 	abstract protected function getType(): string;
 

@@ -15,7 +15,7 @@ services:
 
     exchange.storage.preview:
         class: iikoExchangeBundle\Service\Storage\DummyPreviewStorage
-    exchange.connection.iiko.olap:
+    exchange.connection.iiko:
         class: iikoExchangeBundle\Connection\iiko\iikoConnection
         arguments: [ '@logger' ]
         calls:

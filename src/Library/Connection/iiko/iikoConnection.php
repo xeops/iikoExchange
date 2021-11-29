@@ -19,9 +19,9 @@ use Psr\Log\LogLevel;
 
 class iikoConnection extends Connection
 {
-	private string $server;
-	private string $userName;
-	private string $password;
+	private ?string $server;
+	private ?string $userName;
+	private ?string $password;
 
 	private ?string $key;
 	private LoggerInterface $logger;
@@ -86,25 +86,28 @@ class iikoConnection extends Connection
 	/**
 	 * @param string $server
 	 */
-	public function setServer(string $server): void
+	public function setServer(?string $server): iikoConnection
 	{
 		$this->server = $server;
+		return $this;
 	}
 
 	/**
 	 * @param string $userName
 	 */
-	public function setUserName(string $userName): void
+	public function setUserName(?string $userName): iikoConnection
 	{
 		$this->userName = $userName;
+		return $this;
 	}
 
 	/**
 	 * @param string $password
 	 */
-	public function setPassword(string $password): void
+	public function setPassword(?string $password): iikoConnection
 	{
 		$this->password = $password;
+		return $this;
 	}
 
 
