@@ -10,13 +10,9 @@ use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Format\Formatter;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineFormatEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineFormatEvent extends BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.format';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
 
 
 	private $data;
@@ -25,17 +21,14 @@ class ExchangeEngineFormatEvent extends Event  implements ExchangeEventInterface
 	 */
 	private ExchangeEngine $engine;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $engine, $data)
+	public function __construct(Exchange $exchange, ExchangeEngine $engine, $data,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->data = $data;
 		$this->engine = $engine;
+		$this->scheduleType = $scheduleType;
 	}
 
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
-	}
 
 	public function getFormatter(): Formatter
 	{

@@ -10,13 +10,10 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineSendRequestEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.sendRequest';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
+
 	/**
 	 * @var ExchangeEngine
 	 */
@@ -26,19 +23,13 @@ class ExchangeEngineSendRequestEvent extends Event  implements ExchangeEventInte
 	 */
 	private ExchangeRequestInterface $dataSourceRequest;
 
-	public function __construct(Exchange $exchange, ExchangeRequestInterface $dataSourceRequest)
+	public function __construct(Exchange $exchange, ExchangeRequestInterface $dataSourceRequest,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->dataSourceRequest = $dataSourceRequest;
+		$this->scheduleType = $scheduleType;
 	}
 
-	/**
-	 * @return Exchange
-	 */
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
-	}
 
 
 	/**

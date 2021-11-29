@@ -14,7 +14,7 @@ use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
  */
 trait WithRestaurantExtensionTrait
 {
-	protected $restaurant;
+	protected Restaurant $restaurant;
 
 	protected bool $useRestaurant = true;
 

@@ -8,5 +8,7 @@ use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 
 interface ExchangeEventInterface
 {
-	public function getExchange() : ExchangeInterface;
+	public function getExchange(): ExchangeInterface;
+
+	public function scheduleType(): string;
 }

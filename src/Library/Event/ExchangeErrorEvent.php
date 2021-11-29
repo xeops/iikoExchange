@@ -9,28 +9,19 @@ use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeErrorEvent extends Event implements ExchangeEventInterface
+class ExchangeErrorEvent extends BaseExchangeEvent
 {
 	const NAME = 'exchange.error';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
+
 	private ExchangeException $exception;
 
-	public function __construct(Exchange $exchange, ExchangeException $exception)
+	public function __construct(Exchange $exchange, ExchangeException $exception,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->exception = $exception;
+		$this->scheduleType = $scheduleType;
 	}
 
-	/**
-	 * @return Exchange
-	 */
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
-	}
 
 	/**
 	 * @return ExchangeException

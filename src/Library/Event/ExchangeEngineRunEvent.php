@@ -9,19 +9,18 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineRunEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineRunEvent extends  BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.run';
 	/** @var ExchangeEngine */
 	private ExchangeEngine $engine;
 
-	/** @var Exchange */
-	private Exchange $exchange;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $engine)
+	public function __construct(Exchange $exchange, ExchangeEngine $engine,  string $scheduleType)
 	{
 		$this->engine = $engine;
 		$this->exchange = $exchange;
+		$this->scheduleType = $scheduleType;
 	}
 
 	/**
@@ -32,11 +31,4 @@ class ExchangeEngineRunEvent extends Event  implements ExchangeEventInterface
 		return $this->engine;
 	}
 
-	/**
-	 * @return Exchange
-	 */
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
-	}
 }

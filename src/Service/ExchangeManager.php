@@ -107,7 +107,7 @@ class ExchangeManager
 			}
 			else
 			{
-				$this->dispatch(new ExchangeErrorEvent($exchange, $error), $scheduleType);
+				$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
 			}
 			return false;
 
@@ -123,22 +123,22 @@ class ExchangeManager
 			}
 			else
 			{
-				$this->dispatch(new ExchangeErrorEvent($exchange, $error), $scheduleType);
+				$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
 			}
 			return false;
 		}
 
-		$this->dispatch(new ExchangeDoneEvent($exchange), $scheduleType);
+		$this->dispatcher->dispatch('exchange.done', new ExchangeDoneEvent($exchange, $scheduleType));
 		return true;
 	}
 
 	private function runExchange(ExchangeInterface $exchange, string $scheduleType)
 	{
-		$this->dispatch(new ExchangeStartEvent($exchange), $scheduleType);
+		$this->dispatcher->dispatch('exchange.start', new ExchangeStartEvent($exchange, $scheduleType));
 		$data = [];
 		foreach ($exchange->getRequests() as $request)
 		{
-			$this->dispatch(new ExchangeEngineSendRequestEvent($exchange, $request), $scheduleType);
+			$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType), $scheduleType);
 			$response = $exchange->getExtractor()->sendRequest($request);
 			if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
 			{
@@ -149,7 +149,7 @@ class ExchangeManager
 
 		foreach ($exchange->getEngines() as $engine)
 		{
-			$this->dispatch(new ExchangeEngineTransformDataEvent($exchange, $engine), $scheduleType);
+			$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
 			$transformed = $engine->getTransformer()->transform($exchange, $engine, array_filter($data, fn($code) => in_array($code, array_map(fn(ExchangeRequestInterface $request) => $request->getCode(), $engine->getRequests()))));
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
@@ -157,12 +157,12 @@ class ExchangeManager
 			}
 			else
 			{
-				$this->dispatch(new ExchangeEngineFormatEvent($exchange, $engine, $transformed), $scheduleType);
+				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType), $scheduleType);
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->dispatch(new ExchangeEngineLoadEvent($exchange, $engine, $transformed), $scheduleType);
+				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType), $scheduleType);
 				$exchange->getLoader()->sendRequest($formatted);
 			}
-			$this->dispatch(new ExchangeEngineDataDoneEvent($exchange, $engine), $scheduleType);
+			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType), $scheduleType);
 		}
 	}
 
@@ -196,6 +196,7 @@ class ExchangeManager
 
 			foreach ($node->getMapping() as $mapping)
 			{
+				/** @var ExchangeNodeInterface $node */
 				$mappingCollection = $this->mappingStorage->getMapping($exchange, $mapping->getCode(), $restaurant);
 				$this->logger->debug('Exchange. Set mapping', ['exchangeCode' => $exchange->getCode(), 'node' => $node->getCode(), 'mappingCode' => $mapping->getCode(), 'mappingList' => $mappingCollection]);
 				$node->setMappingValues($mapping->getCode(), $mappingCollection);
@@ -205,14 +206,6 @@ class ExchangeManager
 		foreach ($node->getChildNodes() as $childNode)
 		{
 			$this->fillMapping($exchange, $childNode);
-		}
-	}
-
-	private function dispatch(Event $event, string $scheduleType)
-	{
-		if ($scheduleType !== ScheduleInterface::TYPE_PREVIEW)
-		{
-			$this->dispatcher->dispatch($event::NAME, $event);
 		}
 	}
 
@@ -280,7 +273,7 @@ class ExchangeManager
 
 	public function getError(ExchangeInterface $exchange, ExchangeException $exception): ExchangeException
 	{
-		$message = $exception;
+		$message = $exception->getMessage();
 		$additionalLoggerInfo = [];
 		switch (get_class($exception))
 		{

@@ -110,7 +110,8 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 				static::FIELD_LOADER => $this->getLoader(),
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),
-				static::FIELD_SCHEDULES => $this->getSchedules()
+				static::FIELD_SCHEDULES => $this->getSchedules(),
+				static::FIELD_PREVIEW => $this->previewTemplate !== null
 			];
 	}
 

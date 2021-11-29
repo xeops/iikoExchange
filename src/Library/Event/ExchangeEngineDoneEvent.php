@@ -4,35 +4,23 @@
 namespace iikoExchangeBundle\Event;
 
 
-use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
-use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineDoneEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineDoneEvent extends BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.done';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
+
 	/**
 	 * @var ExchangeEngine
 	 */
 	private ExchangeEngine $exchangeEngine;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine)
+	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->exchangeEngine = $exchangeEngine;
-	}
-
-	/**
-	 * @return Exchange
-	 */
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
+		$this->scheduleType = $scheduleType;
 	}
 
 	/**

@@ -10,13 +10,10 @@ use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Library\Provider\Provider;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExchangeEngineLoadEvent extends Event  implements ExchangeEventInterface
+class ExchangeEngineLoadEvent extends  BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.load';
-	/**
-	 * @var Exchange
-	 */
-	private Exchange $exchange;
+
 	/**
 	 * @var ExchangeEngine
 	 */
@@ -24,20 +21,14 @@ class ExchangeEngineLoadEvent extends Event  implements ExchangeEventInterface
 
 	private $data;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, $data)
+	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, $data,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->exchangeEngine = $exchangeEngine;
 		$this->data = $data;
+		$this->scheduleType = $scheduleType;
 	}
 
-	/**
-	 * @return Exchange
-	 */
-	public function getExchange(): Exchange
-	{
-		return $this->exchange;
-	}
 
 	/**
 	 * @return ExchangeEngine
