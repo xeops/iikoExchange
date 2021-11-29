@@ -66,7 +66,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	{
 
 		(new Client(['base_uri' => $this->getConfigValue(self::CONFIG_ENDPOINT), 'http_errors' => false]))->post($this->getRenewTokenPath(), [
-			RequestOptions::JSON => [
+			RequestOptions::FORM_PARAMS => [
 				'client_id' => $this->getConfigValue(self::CONFIG_CLIENT_ID),
 				'client_secret' => $this->getConfigValue(self::CONFIG_CLIENT_SECRET),
 				'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
@@ -80,11 +80,11 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	public function getAccessToken(string $code): array
 	{
 		$response = (new Client(['base_uri' => $this->getBaseAuthorisationUrl(), 'http_errors' => false]))->post($this->getAccessTokenPath(), [
-			RequestOptions::JSON => [
+			RequestOptions::FORM_PARAMS => [
 				'client_id' => $this->getConfigValue(self::CONFIG_CLIENT_ID),
 				'client_secret' => $this->getConfigValue(self::CONFIG_CLIENT_SECRET),
 				'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
-				'grant_type' => 'refresh_token',
+				'grant_type' => 'authorization_code',
 				'code' => $code,
 				'scope' => 'longlife_refresh_token'
 			]
@@ -104,8 +104,8 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	public function getRedirectToLoginUrl(string $clientId, string $redirectUri): string
 	{
 		return
-			trim($this->getBaseAuthorisationUrl(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR .
-			$this->getLoginPath() .
+			rtrim($this->getBaseAuthorisationUrl(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR .
+			ltrim($this->getLoginPath(), DIRECTORY_SEPARATOR) .
 			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&scope=longlife_refresh_token";
 	}
 
