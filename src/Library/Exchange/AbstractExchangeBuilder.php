@@ -105,7 +105,8 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 
 		return $this->nodeJsonSerialize() + [
 
-				static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [ExchangeEngine::FIELD_REQUEST => array_values($requests)],
+				static::FIELD_EXTRACTOR => $this->getExtractor(),
+				static::FIELD_REQUESTS => array_values($requests),
 				static::FIELD_LOADER => $this->getLoader(),
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),

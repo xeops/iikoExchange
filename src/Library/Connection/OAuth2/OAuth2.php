@@ -22,6 +22,10 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 {
 	const CODE = 'OAUTH2';
 
+	public function getType(): string
+	{
+		return 'OAUTH2';
+	}
 
 	public function sendRequest(ExchangeRequestInterface $request): Response
 	{

@@ -24,12 +24,16 @@ class FtpConnection extends Connection
 	const CONFIG_USERNAME = 'CONFIG_USERNAME';
 	const CONFIG_PASSWORD = 'CONFIG_PASSWORD';
 
-
-	public function sendRequest($handle) : Response
+	public function getType(): string
 	{
-		if($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
+		return 'ftp';
+	}
+
+	public function sendRequest($handle): Response
+	{
+		if ($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
 		{
-			$connection =  new SftpConnection($this->code);
+			$connection = new SftpConnection($this->code);
 			$connection->setConfigCollection($this->config);
 			return $connection->sendRequest($handle);
 		}
@@ -49,7 +53,7 @@ class FtpConnection extends Connection
 		$path = implode(DIRECTORY_SEPARATOR, $fileInfo);
 		if (!ftp_chdir($connection, $path))
 		{
-			if(!ftp_mkdir($connection, $path))
+			if (!ftp_mkdir($connection, $path))
 			{
 				throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
 			}
@@ -61,7 +65,7 @@ class FtpConnection extends Connection
 		ftp_close($connection);
 		if (!$result)
 		{
-			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
+			throw new ConnectionException(error_get_last()['message'] ?? 'File was not uploaded.');
 		}
 
 		return new Response(200, [], 'ok');

@@ -32,6 +32,11 @@ class iikoConnection extends Connection
 		$this->logger = $logger;
 	}
 
+	public function getType(): string
+	{
+		return IIKO;
+	}
+
 	/**
 	 * @param IikoRequestInterface $request
 	 * @return Response|void

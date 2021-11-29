@@ -29,7 +29,7 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 
 	public function jsonSerialize()
 	{
-		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
+		return ['connection_type' => $this->getType()] + $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 
 	/**
