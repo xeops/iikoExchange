@@ -109,6 +109,10 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&scope=longlife_refresh_token";
 	}
 
+	public function jsonSerialize()
+	{
+		return parent::jsonSerialize() + ['buttonImage' => $this->getButtonImage()];
+	}
 
 	protected function getAuthHeaderType(): string
 	{
