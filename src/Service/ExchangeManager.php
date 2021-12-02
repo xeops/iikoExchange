@@ -80,7 +80,7 @@ class ExchangeManager
 	 */
 	public function startExchange(ExchangeInterface $exchange, string $scheduleType, ExchangeParametersInterface $params): bool
 	{
-		$this->logger->debug('Exchange. Start', ['exchangeCode' => $exchange->getCode()]);
+		$this->logger->info('Exchange. Start', ['exchangeCode' => $exchange->getCode(), 'exchangeId' => $exchange->getId(), 'scheduleType' => $scheduleType, 'params' => $params]);
 
 		$this->setParams($exchange, $params);
 

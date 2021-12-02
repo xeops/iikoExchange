@@ -43,5 +43,13 @@ class ExchangeParameters implements ExchangeParametersInterface
 		return $this;
 	}
 
-
+	public function jsonSerialize()
+	{
+		return [
+			'to' => $this->period ? $this->period->getDateTo()->format('Y-m-d H:i:s') : null,
+			'from' => $this->period ? $this->period->getDateFrom()->format('Y-m-d H:i:s') : null,
+			'restaurantId' => $this->restaurant ? $this->restaurant->getId() : null,
+			'restaurantName' => $this->restaurant ? $this->restaurant->getName() : null
+		];
+	}
 }

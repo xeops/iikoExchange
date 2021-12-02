@@ -32,6 +32,7 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	public function setId(int $id);
 
 	const FIELD_PREVIEW = 'preview';
+	const FIELD_INTERVAL = 'interval';
 	const FIELD_EXTRACTOR = 'extractor';
 	const FIELD_LOADER = 'loader';
 	const FIELD_ENGINES = 'engines';
