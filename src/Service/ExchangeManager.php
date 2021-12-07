@@ -50,7 +50,7 @@ class ExchangeManager
 	private LoggerInterface $logger;
 	private TranslatorInterface $translator;
 	private PreviewStorageInterface $previewStorage;
-
+	private bool $isDebug = false;
 	/**
 	 * @param PreviewStorageInterface $dataStorage
 	 * @param ExchangeDirectoryService $exchangeDirectory
@@ -115,7 +115,7 @@ class ExchangeManager
 		catch (\Exception | \Throwable $exception)
 		{
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
-			$error = (new ExchangeException('SERVER_ERROR'))->setExchange($exchange);
+			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() : 'SERVER_ERROR'))->setExchange($exchange);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
@@ -311,5 +311,13 @@ class ExchangeManager
 		$this->logger->error("Exchange error", ['error' => $error, 'exchangeId' => $exchange->getId(), 'exchangeUniq' => $exchange->getUniq(), 'params' => $additionalLoggerInfo]);
 
 		return $exception;
+	}
+
+	/**
+	 * @param bool $isDebug
+	 */
+	public function setIsDebug(bool $isDebug): void
+	{
+		$this->isDebug = $isDebug;
 	}
 }
