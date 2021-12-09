@@ -9,9 +9,13 @@ use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
+use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
+use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Provider\Provider;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
@@ -70,6 +74,12 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this;
 	}
 
+	public function setUniq(string $uniq) : ExchangeInterface
+	{
+		$this->uniq = $uniq;
+		return $this;
+	}
+
 
 	protected Connection $extractor;
 	protected Connection $loader;
@@ -111,7 +121,10 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),
 				static::FIELD_SCHEDULES => $this->getSchedules(),
-				static::FIELD_PREVIEW => $this->previewTemplate !== null
+				static::FIELD_PREVIEW => $this->previewTemplate !== null,
+				WithPeriodExtensionInterface::FIELD_PERIOD => PeriodicalExtensionHelper::isNeedPeriod($this),
+				WithRestaurantExtensionInterface::FIELD_RESTAURANT => WithRestaurantExtensionHelper::isNeedRestaurant($this),
+				WithMultiRestaurantExtensionInterface::FIELD_BY_MULTI_STORE => WithRestaurantExtensionHelper::isNeedMultiRestaurant($this)
 			];
 	}
 

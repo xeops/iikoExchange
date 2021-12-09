@@ -10,4 +10,6 @@ interface ExchangeParametersInterface extends \JsonSerializable
 	public function getPeriod(): ?Period;
 
 	public function getRestaurant(): ?Restaurant;
+
+	public function getRestaurantCollection(): ?array;
 }

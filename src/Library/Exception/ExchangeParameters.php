@@ -9,9 +9,9 @@ use iikoExchangeBundle\Contract\Extensions\ExchangeParametersInterface;
 
 class ExchangeParameters implements ExchangeParametersInterface
 {
-	protected ?Period $period;
-	protected ?Restaurant $restaurant;
-
+	protected ?Period $period = null;
+	protected ?Restaurant $restaurant = null;
+	protected ?array $restaurantCollection = [];
 
 	public function getPeriod(): ?Period
 	{
@@ -51,5 +51,18 @@ class ExchangeParameters implements ExchangeParametersInterface
 			'restaurantId' => $this->restaurant ? $this->restaurant->getId() : null,
 			'restaurantName' => $this->restaurant ? $this->restaurant->getName() : null
 		];
+	}
+
+	public function getRestaurantCollection(): ?array
+	{
+		return $this->restaurantCollection;
+	}
+
+	/**
+	 * @param array|null $restaurantCollection
+	 */
+	public function setRestaurantCollection(?array $restaurantCollection): void
+	{
+		$this->restaurantCollection = $restaurantCollection;
 	}
 }

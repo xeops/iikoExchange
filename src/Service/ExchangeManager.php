@@ -3,20 +3,22 @@
 
 namespace iikoExchangeBundle\Service;
 
-use Exchange\ExchangeBundle\Entity\ExchangeItem;
 use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Application\Restaurant;
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\ExchangeParametersInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Schedule\ScheduleInterface;
-use iikoExchangeBundle\Contract\Service\PreviewStorageInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeMappingStorageInterface;
+use iikoExchangeBundle\Contract\Service\PreviewStorageInterface;
+use iikoExchangeBundle\Event\ExchangeDoneEvent;
 use iikoExchangeBundle\Event\ExchangeEngineDataDoneEvent;
 use iikoExchangeBundle\Event\ExchangeEngineFormatEvent;
 use iikoExchangeBundle\Event\ExchangeEngineLoadEvent;
@@ -25,19 +27,17 @@ use iikoExchangeBundle\Event\ExchangeEngineTransformDataEvent;
 use iikoExchangeBundle\Event\ExchangeErrorEvent;
 use iikoExchangeBundle\Event\ExchangeStartEvent;
 use iikoExchangeBundle\Exception\ConfigNotFoundException;
-use iikoExchangeBundle\Exception\ConnectionException;
 use iikoExchangeBundle\Exception\EngineNotFoundDataException;
 use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\Exception\MappingNotFoundException;
 use iikoExchangeBundle\Exception\StartUpParameterNotFound;
-use iikoExchangeBundle\Event\ExchangeDoneEvent;
-
-use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
+use iikoExchangeBundle\ExtensionTrait\WithPeriodExtensionTrait;
 use iikoExchangeBundle\iikoExchangeBundle;
+use iikoExchangeBundle\Library\Request\RequestResponseCollection;
+use iikoExchangeBundle\Library\Request\RequestResponseItem;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -51,6 +51,7 @@ class ExchangeManager
 	private TranslatorInterface $translator;
 	private PreviewStorageInterface $previewStorage;
 	private bool $isDebug = false;
+
 	/**
 	 * @param PreviewStorageInterface $dataStorage
 	 * @param ExchangeDirectoryService $exchangeDirectory
@@ -70,14 +71,6 @@ class ExchangeManager
 	}
 
 
-	/**
-	 * Метод для запуска обмена.
-	 * @param string $exchangeCode - уникальный код обмена
-	 * @param string $scheduleType - тип расписания. @see ExchangeInterface::EXECUTION_*
-	 * @param array $params - параметры запуска. Для обменов, требующих работу с периодом и/или рестораном обязательная передача параметров
-	 * @param int $id
-	 * @throws \Exception
-	 */
 	public function startExchange(ExchangeInterface $exchange, string $scheduleType, ExchangeParametersInterface $params): bool
 	{
 		$this->logger->info('Exchange. Start', ['exchangeCode' => $exchange->getCode(), 'exchangeId' => $exchange->getId(), 'scheduleType' => $scheduleType, 'params' => $params]);
@@ -112,7 +105,7 @@ class ExchangeManager
 			return false;
 
 		}
-		catch (\Exception | \Throwable $exception)
+		catch (\Exception|\Throwable $exception)
 		{
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
 			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() : 'SERVER_ERROR'))->setExchange($exchange);
@@ -135,35 +128,81 @@ class ExchangeManager
 	private function runExchange(ExchangeInterface $exchange, string $scheduleType)
 	{
 		$this->dispatcher->dispatch('exchange.start', new ExchangeStartEvent($exchange, $scheduleType));
-		$data = [];
-		foreach ($exchange->getRequests() as $request)
-		{
-			$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType), $scheduleType);
-			$response = $exchange->getExtractor()->sendRequest($request);
-			if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
-			{
-				throw new EngineNotFoundDataException();
-			}
-			$data[$request->getCode()] = $request->processResponse($response->getBody()->getContents());
-		}
+
+		$data = new RequestResponseCollection;
 
 		foreach ($exchange->getEngines() as $engine)
 		{
+			/** @var ExchangeEngineInterface $engine */
+			foreach ($engine->getRequests() as $request)
+			{
+				if ($engine instanceof WithMultiRestaurantExtensionInterface)
+				{
+					foreach ($engine->getRestaurantCollection() as $restaurant)
+					{
+						WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
+						$this->callRequest($exchange, $scheduleType, $request, $data);
+					}
+				}
+				else
+				{
+					$this->callRequest($exchange, $scheduleType, $request, $data);
+				}
+			}
+
 			$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
-			$transformed = $engine->getTransformer()->transform($exchange, $engine, array_filter($data, fn($code) => in_array($code, array_map(fn(ExchangeRequestInterface $request) => $request->getCode(), $engine->getRequests()))));
+			$transformed = $engine->getTransformer()->transform($exchange, $engine, $data->withFilter(
+				fn(RequestResponseItem $item) => in_array($item->getRequestCode(), array_map(
+					fn(ExchangeRequestInterface $request) => $request->getCode(), $engine->getRequests()))));
+
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
 				$this->previewStorage->saveData($exchange, $engine, $transformed);
 			}
 			else
 			{
-				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType), $scheduleType);
+				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType), $scheduleType);
+				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType));
 				$exchange->getLoader()->sendRequest($formatted);
 			}
-			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType), $scheduleType);
+			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
 		}
+	}
+
+	protected function callRequest(ExchangeInterface $exchange, string $scheduleType, ExchangeRequestInterface $request, RequestResponseCollection $collection)
+	{
+		if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
+		{
+			if ($collection->exist($request->getCode(), WithRestaurantExtensionHelper::extractRestaurant($request)->getId()))
+			{
+				return;
+			}
+			if (PeriodicalExtensionHelper::isNeedPeriod($request))
+			{
+				$period = PeriodicalExtensionHelper::extractPeriod($exchange);
+				if ($period->getDateFrom()->format('H:i:s') !== '00:00:00' || $period->getDateTo()->format('H:i:s') !== '00:00:00')
+				{
+					$period->withTimeZone(WithRestaurantExtensionHelper::extractRestaurant($request)->getDateTimeZone());
+				}
+				PeriodicalExtensionHelper::setPeriodForExchangeNode($request, $period);
+			}
+		}
+
+		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
+		$response = $exchange->getExtractor()->sendRequest($request);
+		if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
+		{
+			throw new EngineNotFoundDataException();
+		}
+
+		$collection->add(new RequestResponseItem(
+			$request->getCode(),
+			$request->processResponse($response->getBody()->getContents()),
+			PeriodicalExtensionHelper::extractPeriod($request),
+			WithRestaurantExtensionHelper::extractRestaurant($request)
+		));
+
 	}
 
 
@@ -219,6 +258,14 @@ class ExchangeManager
 				throw (new StartUpParameterNotFound())->setExchange($exchange);
 			}
 			PeriodicalExtensionHelper::setPeriodForExchangeNode($exchange, $params->getPeriod());
+		}
+		if (WithRestaurantExtensionHelper::isNeedMultiRestaurant($exchange))
+		{
+			if (is_null($params->getRestaurantCollection()))
+			{
+				throw (new StartUpParameterNotFound())->setExchange($exchange);
+			}
+			WithRestaurantExtensionHelper::setRestaurantCollectionForExchangeNode($exchange, $params->getRestaurantCollection());
 		}
 
 		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))

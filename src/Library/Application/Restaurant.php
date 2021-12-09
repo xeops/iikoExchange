@@ -6,15 +6,17 @@ class Restaurant
 {
 	private int $id;
 	private string $name;
+	private \DateTimeZone $dateTimeZone;
 
 	/**
 	 * @param int $id
 	 * @param string $name
 	 */
-	public function __construct(int $id, string $name)
+	public function __construct(int $id, string $name, \DateTimeZone $dateTimeZone)
 	{
 		$this->id = $id;
 		$this->name = $name;
+		$this->dateTimeZone = $dateTimeZone;
 	}
 
 
@@ -54,8 +56,22 @@ class Restaurant
 		return $this;
 	}
 
+	/**
+	 * @return \DateTimeZone
+	 */
+	public function getDateTimeZone(): \DateTimeZone
+	{
+		return $this->dateTimeZone;
+	}
 
-
-
+	/**
+	 * @param \DateTimeZone $dateTimeZone
+	 * @return Restaurant
+	 */
+	public function setDateTimeZone(\DateTimeZone $dateTimeZone): Restaurant
+	{
+		$this->dateTimeZone = $dateTimeZone;
+		return $this;
+	}
 
 }

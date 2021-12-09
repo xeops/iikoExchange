@@ -4,9 +4,9 @@
 namespace iikoExchangeBundle\ExtensionHelper;
 
 
-
 use iikoExchangeBundle\Application\Restaurant;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 
 class WithRestaurantExtensionHelper
@@ -23,7 +23,19 @@ class WithRestaurantExtensionHelper
 		}
 	}
 
-	public static function extractRestaurant(ExchangeNodeInterface $exchangeNode) : ?Restaurant
+	public static function setRestaurantCollectionForExchangeNode(ExchangeNodeInterface $exchangeNode, array $collection)
+	{
+		if ($exchangeNode instanceof WithMultiRestaurantExtensionInterface)
+		{
+			$exchangeNode->setRestaurantCollection($collection);
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			static::setRestaurantCollectionForExchangeNode($childNode, $collection);
+		}
+	}
+
+	public static function extractRestaurant(ExchangeNodeInterface $exchangeNode): ?Restaurant
 	{
 		if ($exchangeNode instanceof WithRestaurantExtensionInterface)
 		{
@@ -49,6 +61,22 @@ class WithRestaurantExtensionHelper
 		foreach ($exchangeNode->getChildNodes() as $childNode)
 		{
 			if (static::isNeedRestaurant($childNode))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static function isNeedMultiRestaurant(ExchangeNodeInterface $exchangeNode)
+	{
+		if ($exchangeNode instanceof WithMultiRestaurantExtensionInterface)
+		{
+			return true;
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			if (static::isNeedMultiRestaurant($childNode))
 			{
 				return true;
 			}
