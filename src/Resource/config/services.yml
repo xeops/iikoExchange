@@ -25,6 +25,8 @@ services:
             - [ setPassword, [ '%exchange_iiko_password%' ] ]
 
 
+    exchange.options_sets:
+        class: iikoExchangeBundle\Service\OptionSetDirectory
     # connections
 
     exchange.connection.sftp:

@@ -12,8 +12,15 @@ class ExchangeCompilePass implements CompilerPassInterface
 {
 	public function process(ContainerBuilder $container)
 	{
+		$this->fillExchangeDirectory($container);
+		$this->fillExchangeOptionSets($container);
+	}
+
+	protected function fillExchangeDirectory(ContainerBuilder $container): void
+	{
 		// always first check if the primary service is defined
-		if (!$container->has('exchange.directory')) {
+		if (!$container->has('exchange.directory'))
+		{
 			return;
 		}
 
@@ -22,9 +29,31 @@ class ExchangeCompilePass implements CompilerPassInterface
 		// find all service IDs with the app.mail_transport tag
 		$taggedServices = $container->findTaggedServiceIds('exchange');
 
-		foreach ($taggedServices as $id => $tags) {
+		foreach ($taggedServices as $id => $tags)
+		{
 			// add the transport service to the ChainTransport service
 			$definition->addMethodCall('addExchange', array(new Reference($id)));
+		}
+	}
+
+
+	protected function fillExchangeOptionSets(ContainerBuilder $container): void
+	{
+		// always first check if the primary service is defined
+		if (!$container->has('exchange.options_sets'))
+		{
+			return;
+		}
+
+		$definition = $container->findDefinition('exchange.options_sets');
+
+		// find all service IDs with the app.mail_transport tag
+		$taggedServices = $container->findTaggedServiceIds('exchange.option_set');
+
+		foreach ($taggedServices as $id => $tags)
+		{
+			// add the transport service to the ChainTransport service
+			$definition->addMethodCall('addOptionSet', array(new Reference($id)));
 		}
 	}
 }

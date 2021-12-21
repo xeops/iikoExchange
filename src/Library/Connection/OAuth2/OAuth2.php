@@ -65,16 +65,21 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	protected function renewToken()
 	{
 
-		(new Client(['base_uri' => $this->getConfigValue(self::CONFIG_ENDPOINT), 'http_errors' => false]))->post($this->getRenewTokenPath(), [
+		(new Client(['base_uri' => $this->getEndpoint(), 'http_errors' => false]))->post($this->getRenewTokenPath(), [
 			RequestOptions::FORM_PARAMS => [
 				'client_id' => $this->getConfigValue(self::CONFIG_CLIENT_ID),
 				'client_secret' => $this->getConfigValue(self::CONFIG_CLIENT_SECRET),
 				'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
 				'grant_type' => 'refresh_token',
 				'refresh_token' => $this->getConfigValue(self::CONFIG_REFRESH_TOKEN),
-				'scope' => 'longlife_refresh_token'
+				'scope' => $this->getScope()
 			]
 		]);
+	}
+
+	protected function getEndpoint() : string
+	{
+		return $this->getConfigValue(self::CONFIG_ENDPOINT);
 	}
 
 	public function getAccessToken(string $code): array
@@ -86,7 +91,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 				'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
 				'grant_type' => 'authorization_code',
 				'code' => $code,
-				'scope' => 'longlife_refresh_token'
+				'scope' => $this->getScope()
 			]
 		]);
 
@@ -106,7 +111,12 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 		return
 			rtrim($this->getBaseAuthorisationUrl(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR .
 			ltrim($this->getLoginPath(), DIRECTORY_SEPARATOR) .
-			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&scope=longlife_refresh_token";
+			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&scope=" . $this->getScope();
+	}
+
+	protected function getScope() : string
+	{
+		return  'longlife_refresh_token';
 	}
 
 	public function jsonSerialize()
