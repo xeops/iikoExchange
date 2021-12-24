@@ -33,7 +33,6 @@ use iikoExchangeBundle\Exception\MappingNotFoundException;
 use iikoExchangeBundle\Exception\StartUpParameterNotFound;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
-use iikoExchangeBundle\ExtensionTrait\WithPeriodExtensionTrait;
 use iikoExchangeBundle\iikoExchangeBundle;
 use iikoExchangeBundle\Library\Request\RequestResponseCollection;
 use iikoExchangeBundle\Library\Request\RequestResponseItem;
@@ -43,7 +42,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ExchangeManager
 {
-	private ExchangeDirectoryService $exchangeDirectory;
+
 	private ExchangeConfigStorageInterface $configStorage;
 	private ExchangeMappingStorageInterface $mappingStorage;
 	private EventDispatcherInterface $dispatcher;
@@ -54,14 +53,13 @@ class ExchangeManager
 
 	/**
 	 * @param PreviewStorageInterface $dataStorage
-	 * @param ExchangeDirectoryService $exchangeDirectory
 	 * @param ExchangeConfigStorageInterface $configStorage
 	 * @param ExchangeMappingStorageInterface $mappingStorage
 	 * @param EventDispatcherInterface $dispatcher
 	 */
-	public function __construct(ExchangeDirectoryService $exchangeDirectory, PreviewStorageInterface $previewStorage, ExchangeConfigStorageInterface $configStorage, ExchangeMappingStorageInterface $mappingStorage, EventDispatcherInterface $dispatcher, LoggerInterface $logger, TranslatorInterface $translator)
+	public function __construct(PreviewStorageInterface $previewStorage, ExchangeConfigStorageInterface $configStorage, ExchangeMappingStorageInterface $mappingStorage, EventDispatcherInterface $dispatcher, LoggerInterface $logger, TranslatorInterface $translator)
 	{
-		$this->exchangeDirectory = $exchangeDirectory;
+
 		$this->configStorage = $configStorage;
 		$this->mappingStorage = $mappingStorage;
 		$this->dispatcher = $dispatcher;

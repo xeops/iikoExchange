@@ -1,0 +1,6 @@
+services:
+    exchange.option_set.iiko.restaurant_section:
+        class: iikoExchangeBundle\Library\OptionSet\RestaurantSectionOptionSet
+        arguments: [ '@exchange.connection.iiko' ]
+        tags:
+            - { name: "exchange.options_set" }

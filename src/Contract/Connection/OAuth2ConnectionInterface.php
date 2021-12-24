@@ -8,11 +8,11 @@ interface OAuth2ConnectionInterface extends ConnectionInterface, ExchangeNodeInt
 {
 	const CONFIG_CLIENT_ID = 'CLIENT_ID';
 	const CONFIG_CLIENT_SECRET = 'CLIENT_SECRET';
-
 	const CONFIG_REDIRECT_URI = 'REDIRECT_URI';
-	const CONFIG_ACCESS_TOKEN = 'ACCESS_TOKEN';
-	const CONFIG_ENDPOINT = 'ENDPOINT';
-	const CONFIG_REFRESH_TOKEN = 'REFRESH_TOKEN';
+
+	const SESSION_ACCESS_TOKEN = 'ACCESS_TOKEN';
+	const SESSION_ENDPOINT = 'ENDPOINT';
+	const SESSION_REFRESH_TOKEN = 'REFRESH_TOKEN';
 
 	public function getBaseAuthorisationUrl(): string;
 
@@ -26,7 +26,11 @@ interface OAuth2ConnectionInterface extends ConnectionInterface, ExchangeNodeInt
 
 	public function getAuthDataMapping(): array;
 
-	public function getAccessToken(string $code): array;
+	public function accessToken(string $code): void;
 
 	public function getButtonImage(): ?string;
+
+	public function isSingleRedirectUri(): bool;
+
+	public function getBaseRequestUrl(): string;
 }

@@ -1,21 +1,26 @@
 services:
     exchange.directory:
-        class: iikoExchangeBundle\Service\ExchangeDirectoryService
+        class: iikoExchangeBundle\Service\ExchangeDirectory
 
 
     exchange.manager:
         class: iikoExchangeBundle\Service\ExchangeManager
-        arguments: [ '@exchange.directory','@exchange.storage.preview' ,'@exchange.storage.config', '@exchange.storage.mapping', '@event_dispatcher', '@logger', '@translator' ]
+        arguments: [ '@exchange.storage.preview' ,'@exchange.storage.config', '@exchange.storage.mapping', '@event_dispatcher', '@logger', '@translator' ]
         calls:
-            - [setIsDebug, ['%kernel.debug%']]
+            - [ setIsDebug, [ '%kernel.debug%' ] ]
+
     exchange.storage.config:
         class: iikoExchangeBundle\Service\Storage\DummyConfigStorage
 
     exchange.storage.mapping:
         class: iikoExchangeBundle\Service\Storage\DummyMappingStorage
 
+    exchange.storage.session:
+        class: iikoExchangeBundle\Service\Storage\DummyConnectionSessionStorage
+
     exchange.storage.preview:
         class: iikoExchangeBundle\Service\Storage\DummyPreviewStorage
+
     exchange.connection.iiko:
         class: iikoExchangeBundle\Connection\iiko\iikoConnection
         arguments: [ '@logger' ]
@@ -27,6 +32,10 @@ services:
 
     exchange.options_sets:
         class: iikoExchangeBundle\Service\OptionSetDirectory
+
+    exchange.option_set_manager:
+        class: iikoExchangeBundle\Service\OptionSetManager
+        arguments: [ '@logger', '@exchange.storage.config', '@exchange.options_sets' ]
     # connections
 
     exchange.connection.sftp:
@@ -36,3 +45,6 @@ services:
     # schedulers
     exchange.schedule.cron:
         class: iikoExchangeBundle\Library\Schedule\ScheduleCronWithPeriod
+
+imports:
+    - { resource: option-sets.yml }

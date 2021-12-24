@@ -2,7 +2,7 @@
 
 namespace iikoExchangeBundle\Contract\Request;
 
-interface IikoRequestInterface extends ExchangeRequestInterface
+interface IikoRequestInterface
 {
 	public function getPath(): string;
 

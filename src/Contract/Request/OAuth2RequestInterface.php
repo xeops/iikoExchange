@@ -2,7 +2,7 @@
 
 namespace iikoExchangeBundle\Contract\Request;
 
-interface OAuth2RequestInterface extends ExchangeRequestInterface
+interface OAuth2RequestInterface
 {
 	public function getPath(): string;
 
@@ -12,7 +12,5 @@ interface OAuth2RequestInterface extends ExchangeRequestInterface
 
 	public function getQuery(): array;
 
-	public function getBody(): array;
-
-	public function processResponse($response);
+	public function getBody(): ?string;
 }

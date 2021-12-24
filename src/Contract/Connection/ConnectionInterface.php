@@ -8,7 +8,9 @@ use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 
 interface ConnectionInterface extends ConfigurableExtensionInterface
 {
-	public function sendRequest(ExchangeRequestInterface $request): Response;
+	public function sendRequest($request): Response;
 
 	public function getType(): string;
+
+	public function getCode(): string;
 }

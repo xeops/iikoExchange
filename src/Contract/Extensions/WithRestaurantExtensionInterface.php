@@ -14,5 +14,5 @@ interface WithRestaurantExtensionInterface
 
 	public function setRestaurant($restaurant);
 
-	public function getRestaurant(): Restaurant;
+	public function getRestaurant(): ?Restaurant;
 }

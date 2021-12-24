@@ -8,7 +8,7 @@ use iikoExchangeBundle\Exception\ConfigNotFoundException;
 
 trait ConfigurableExtensionTrait
 {
-	protected array $config;
+	protected array $config = [];
 
 	protected ?array $exposedConfig = null;
 

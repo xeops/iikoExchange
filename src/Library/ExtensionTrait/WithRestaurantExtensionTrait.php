@@ -14,7 +14,7 @@ use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
  */
 trait WithRestaurantExtensionTrait
 {
-	protected Restaurant $restaurant;
+	protected ?Restaurant $restaurant = null;
 
 	protected bool $useRestaurant = true;
 
@@ -24,7 +24,7 @@ trait WithRestaurantExtensionTrait
 		return $this;
 	}
 
-	public function getRestaurant() : Restaurant
+	public function getRestaurant() : ?Restaurant
 	{
 		return $this->restaurant;
 	}

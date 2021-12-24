@@ -32,7 +32,7 @@ class ExchangeCompilePass implements CompilerPassInterface
 		foreach ($taggedServices as $id => $tags)
 		{
 			// add the transport service to the ChainTransport service
-			$definition->addMethodCall('addExchange', array(new Reference($id)));
+			$definition->addMethodCall('add', array(new Reference($id)));
 		}
 	}
 
@@ -48,12 +48,12 @@ class ExchangeCompilePass implements CompilerPassInterface
 		$definition = $container->findDefinition('exchange.options_sets');
 
 		// find all service IDs with the app.mail_transport tag
-		$taggedServices = $container->findTaggedServiceIds('exchange.option_set');
+		$taggedServices = $container->findTaggedServiceIds('exchange.options_set');
 
 		foreach ($taggedServices as $id => $tags)
 		{
 			// add the transport service to the ChainTransport service
-			$definition->addMethodCall('addOptionSet', array(new Reference($id)));
+			$definition->addMethodCall('add', array(new Reference($id)));
 		}
 	}
 }
