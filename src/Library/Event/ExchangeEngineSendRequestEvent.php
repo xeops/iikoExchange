@@ -23,7 +23,7 @@ class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 	 */
 	private ExchangeRequestInterface $dataSourceRequest;
 
-	public function __construct(Exchange $exchange, ExchangeRequestInterface $dataSourceRequest,  string $scheduleType)
+	public function __construct(Exchange $exchange, $dataSourceRequest,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->dataSourceRequest = $dataSourceRequest;
@@ -31,11 +31,7 @@ class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 	}
 
 
-
-	/**
-	 * @return ExchangeRequestInterface
-	 */
-	public function getDataSourceRequest(): ExchangeRequestInterface
+	public function getDataSourceRequest()
 	{
 		return $this->dataSourceRequest;
 	}
