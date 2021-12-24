@@ -22,7 +22,7 @@ class RestaurantSectionOptionSet extends BaseOptionSet
 		$result = [];
 		foreach (json_decode(json_encode(simplexml_load_string($response)), true)['document'] ?? [] as $item)
 		{
-			$result[] = new OptionSetItem($item['name'], $item['id']);
+			$result[] = new OptionSetItem($item['name'], $item['name']);
 		}
 		return $result;
 	}

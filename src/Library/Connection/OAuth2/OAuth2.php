@@ -82,11 +82,9 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 		$this->sessionMiddleware($stack);
 
-		$stack->push(Middleware::log($this->logger, new MessageFormatter(MessageFormatter::DEBUG), LogLevel::INFO));
-
 		$stack->push(Middleware::mapRequest(function (RequestInterface $request): RequestInterface
 		{
-			$this->logger->info('Exchange request.', ['connection' => $this->code, 'host' => $request->getUri()->getHost(), 'path' => $request->getUri()->getPath(), 'query' => $request->getUri()->getQuery(), 'body' => $request->getBody()->__toString(), 'headers' => $request->getHeaders()]);
+			$this->logger->info('Exchange request.', ['connection' => $this->code, 'host' => $request->getUri()->getHost(), 'path' => $request->getUri()->getPath(), 'query' => $request->getUri()->getQuery(), 'body' => $request->getBody()->__toString()]);
 			return $request;
 		}));
 
