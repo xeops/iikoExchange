@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Library\Request;
 
 
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Request\IikoRequestInterface;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
@@ -11,7 +12,7 @@ use iikoExchangeBundle\ExtensionTrait\WithPeriodExtensionTrait;
 use iikoExchangeBundle\Library\Request\iiko\Report\iikoReportFilter;
 
 
-abstract class iikoOlapRequest implements IikoRequestInterface, WithPeriodExtensionInterface
+abstract class iikoOlapRequest implements IikoRequestInterface, WithPeriodExtensionInterface, ExchangeNodeInterface
 {
 	public function __construct(string $code)
 	{
