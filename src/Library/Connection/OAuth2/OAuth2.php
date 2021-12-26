@@ -96,9 +96,13 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 				$request = $this->renewToken($request);
 				return true;
 			}
-			elseif ($response->getStatusCode() !== 200)
+			elseif ($response && $response->getStatusCode() !== 200)
 			{
 				throw new ConnectionException($response->getReasonPhrase(), $response->getStatusCode());
+			}
+			elseif ($response === null)
+			{
+				throw new ConnectionException('Empty body');
 			}
 
 		}));
