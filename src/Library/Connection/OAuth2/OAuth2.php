@@ -59,7 +59,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 	public function getBaseRequestUrl(): string
 	{
-		return $this->getConfigValue(self::SESSION_ENDPOINT);
+		return $this->getEndpoint();
 	}
 
 	protected function sessionMiddleware(HandlerStack $stack)
@@ -70,7 +70,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 			{
 				throw new ConnectionException('Session not found for clientID:' . $this->getConfigValue(self::CONFIG_CLIENT_ID));
 			}
-			$sessionData = $this->sessionStorage->get($this->getSessionKey());
+			$sessionData = json_decode($this->sessionStorage->get($this->getSessionKey()), true);
 
 			return $request->withHeader('Authorization', $this->getAuthHeaderType() . " " . $sessionData[$this->getAuthDataMapping()[self::SESSION_ACCESS_TOKEN]]);
 		}));
@@ -88,6 +88,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 			return $request;
 		}));
 
+
 		$stack->push(Middleware::retry(function ($retries, RequestInterface $request, ?ResponseInterface $response = null, ?\Exception $exception = null)
 		{
 			if ($retries === 0 && $response && $response->getStatusCode() === 401)
@@ -98,7 +99,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 			}
 			elseif ($response && $response->getStatusCode() !== 200)
 			{
-				throw new ConnectionException($response->getReasonPhrase(), $response->getStatusCode());
+				throw new ConnectionException($response->getBody() ? $response->getBody()->__toString() : $response->getReasonPhrase(), $response->getStatusCode());
 			}
 			elseif ($response === null)
 			{
@@ -152,7 +153,18 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 	protected function getEndpoint(): string
 	{
-		return $this->getConfigValue(self::SESSION_ENDPOINT);
+		$sessionData = json_decode($this->sessionStorage->get($this->getSessionKey()), true);
+		if (empty($sessionData) || !array_key_exists($this->getAuthDataMapping()[self::SESSION_ENDPOINT], $sessionData))
+		{
+			throw new ConnectionException('Session data not found');
+		}
+
+		$endpoint = $sessionData[$this->getAuthDataMapping()[self::SESSION_ENDPOINT]];
+		if (strpos($endpoint, 'http') === false)
+		{
+			$endpoint = "https://{$endpoint}";
+		}
+		return $endpoint;
 	}
 
 	public function accessToken(string $code): void
@@ -223,5 +235,14 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	public function isSingleRedirectUri(): bool
 	{
 		return false;
+	}
+
+	public function getAuthDataMapping(): array
+	{
+		return [
+			self::SESSION_ACCESS_TOKEN => 'access_token',
+			self::SESSION_ENDPOINT => 'endpoint',
+			self::SESSION_REFRESH_TOKEN => 'refresh_token',
+		];
 	}
 }
