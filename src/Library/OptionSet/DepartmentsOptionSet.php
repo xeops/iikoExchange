@@ -2,14 +2,12 @@
 
 namespace iikoExchangeBundle\Library\OptionSet;
 
-use iikoExchangeBundle\Contract\OptionSet\OptionSetInterface;
-
-class DepartmentsOptionSet implements OptionSetInterface
+class DepartmentsOptionSet extends BaseOptionSet
 {
 
 	public static function getCode(): string
 	{
-		return 'DEPARTMENTS';
+		return 'DEPARTMENT';
 	}
 
 	public function getItems(): array
@@ -17,5 +15,15 @@ class DepartmentsOptionSet implements OptionSetInterface
 		return [
 			new OptionSetItem('My restaurant', 1)
 		];
+	}
+
+	public function getRequest()
+	{
+		throw new \Exception('Not implemented');
+	}
+
+	public function processResponse($response): array
+	{
+		throw new \Exception('Not implemented');
 	}
 }
