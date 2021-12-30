@@ -9,6 +9,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
@@ -18,10 +19,12 @@ use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Request\OAuth2RequestInterface;
 use iikoExchangeBundle\Contract\Service\ConnectionSessionStorage;
 use iikoExchangeBundle\Exception\ConnectionException;
+use Monolog\Logger;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use function GuzzleHttp\Psr7\modify_request;
 
 
 abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
@@ -62,6 +65,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 		return $this->getEndpoint();
 	}
 
+
 	protected function sessionMiddleware(HandlerStack $stack)
 	{
 		$stack->push(Middleware::mapRequest(function (RequestInterface $request): RequestInterface
@@ -82,31 +86,13 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 		$this->sessionMiddleware($stack);
 
+
 		$stack->push(Middleware::mapRequest(function (RequestInterface $request): RequestInterface
 		{
 			$this->logger->info('Exchange request.', ['connection' => $this->code, 'host' => $request->getUri()->getHost(), 'path' => $request->getUri()->getPath(), 'query' => $request->getUri()->getQuery(), 'body' => $request->getBody()->__toString()]);
 			return $request;
 		}));
 
-
-		$stack->push(Middleware::retry(function ($retries, RequestInterface $request, ?ResponseInterface $response = null, ?\Exception $exception = null)
-		{
-			if ($retries === 0 && $response && $response->getStatusCode() === 401)
-			{
-
-				$request = $this->renewToken($request);
-				return true;
-			}
-			elseif ($response && $response->getStatusCode() !== 200)
-			{
-				throw new ConnectionException($response->getBody() ? $response->getBody()->__toString() : $response->getReasonPhrase(), $response->getStatusCode());
-			}
-			elseif ($response === null)
-			{
-				throw new ConnectionException('Empty body');
-			}
-
-		}));
 
 		$stack->push(Middleware::mapResponse(function (ResponseInterface $response)
 		{
@@ -121,9 +107,37 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 			return $response;
 		}));
 
+		$stack->push($this->reauthenticate(), 'reauthenticate');
+
 
 		return $stack;
 
+	}
+
+	public function reauthenticate($maxRetries = 1)
+	{
+		return function (callable $handler) use ($maxRetries)
+		{
+			return function (RequestInterface $request, array $options) use ($handler, $maxRetries)
+			{
+				return $handler($request, $options)->then(
+					function (ResponseInterface $response) use ($request, $handler, $options, $maxRetries)
+					{
+						if ($response->getStatusCode() == 401)
+						{
+							$options['reauth'] = ($options['reauth'] ?? 0) + 1;
+
+							if ($options['reauth'] <= $maxRetries)
+							{
+								$request = $this->renewToken($request);
+								return $handler($request, $options);
+							}
+						}
+						return $response;
+					}
+				);
+			};
+		};
 	}
 
 	protected function renewToken(RequestInterface $request)
@@ -145,10 +159,14 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 		}
 
 		$authData = json_decode($response->getBody(), true);
-
-
 		$this->sessionStorage->set($this->getSessionKey(), json_encode($authData));
-		return $request->withHeader('Authorization', $this->getAuthHeaderType() . " " . $authData[$this->getAuthDataMapping()[self::SESSION_ACCESS_TOKEN]]);
+
+		return Utils::modifyRequest($request, [
+			'set_headers' => [
+				'Authorization' => $this->getAuthHeaderType() . " " . $authData[$this->getAuthDataMapping()[self::SESSION_ACCESS_TOKEN]]
+			]
+		]);
+
 	}
 
 	protected function getEndpoint(): string
