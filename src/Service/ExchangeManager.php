@@ -162,7 +162,18 @@ class ExchangeManager
 				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
 				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType));
-				$exchange->getLoader()->sendRequest($formatted);
+				if ($formatted instanceof \Iterator)
+				{
+					foreach ($formatted as $item)
+					{
+						$exchange->getLoader()->sendRequest($item);
+					}
+				}
+				else
+				{
+					$exchange->getLoader()->sendRequest($formatted);
+				}
+
 			}
 			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
 		}
