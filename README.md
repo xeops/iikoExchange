@@ -5,162 +5,223 @@
 [![Latest Unstable Version](https://poser.pugx.org/xeops/iiko-exchange/v/unstable)](//packagist.org/packages/xeops/iiko-exchange)
 
 ## iiko data exchange library
-Данная библиотека предназначена для реализации бандлов по обмену данными между
-сторонней системой и iiko или наоборот.
 
+Данная библиотека представляет собой [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load)
+процесс для интеграции iiko c внешними системами посредством сервера iikoWeb.
+
+Суть интеграции состоит в плановом **одностороннем** обмене данных между iiko и внешней системой.
+
+```
         /-------------/         /----------------/
        /    iiko     / ----->  / 3d paty system /
       /-------------/         /----------------/
+```
 
-## Installation
+_Возможен обмен в обратном порядке ( 3d paty system -> iiko )_
+
+Процесс разработки обмена следующий
+1. Создается проект, использующий данную библиотеку
+2. Проект проходит аудит и ревью разработчиками iikoWeb
+3. Проект включается в продукт iikoWeb посредством [composer](https://getcomposer.org/)
+
+Процесс работы обмена
+1. Пользователь открывает frontend приложение Exchange, написанное на Angular
+2. Приложение запрашивает все возможные типы обменов у сервера iikoWeb
+3. Пользователь создает обмен, указывая имя и рестораны, для которых оно будет работать. На данном этапе 
+рестораны могут быть не указаны, и тогда будут работать все, что есть в сети.
+4. Пользователь вводит настройки подключения к внешней системе
+5. Пользователь заполняет все настройки и сопоставления (мапинги) согласно документации и/или подсказкам.
+6. Пользователь настраивает расписание
+7. После сохранения расписания, согласно ему создается задание на сервере iikoWeb.
+8. При наступлении времени исполнения, iikoWeb запускает процесс обмена, заполняя его всеми необходимыми
+настройками и сопоставлениями.
+
+
+## Первые шаги
+### Создание проекта
+Необходимо создать проект со следующей директорией папок
+```bash
+AcmeExchangeBundle
+│
+├── src
+│   ├── Formatter
+│   ├── Loader
+│   ├── Mapping
+│   ├── OptionSet(?)
+│   ├── Request
+│   ├── Resources
+│   │   ├── config
+│   │   │   └── services.yml
+│   │   └── view
+│   │       └── preview.html.twig
+│   ├── Transformer
+│   │   └── file23.ext
+├── Tests 
+│   └── *****
+└── README.md
+
+
+```
+### Инициализация проекта
+
+Процесс инициализации проекта описан в [отдельной статье](./docs/iikoGitLabComposer.md)
+
+### Подключение библиотеки
+
 ```shell
 composer require xeops/iiko-exchange
 ```
 
-## Exchange
-Обьект Exchange состоит из:
-* Engine
-* Extractor
-* Loader
-* Schedule
+### Реализация
 
-#### Create Exchange
-
+#### 1. Инициализация сервиса Обмена
+Первым делом необходимо в services.yml создать сервис [**обмена**](./docs/Exchange.md)
 ```yaml
-my_exchange:
-    class: MyBundle\Exchange\MyExchange
-    arguments: [ "EXCHANGE_CODE", "@event_dispatcher" ]
-    tags:
-        - { name: "exchange" }
-    calls:
-        - [ setEngines, [ [ "@my_exchange_engine_1" ] ] ]
-        - [ setExtractor, [ "@exchange.provider.iiko.olap" ] ]
-        - [ setLoader, [ "@my_exchange.provider" ] ]
-        - [ setSchedules, [ [ "@exchange.schedule.cron" ] ] ]
-```
-
-### Engine
-Engine - набор действий для формирования 1 цикла выгрузки:
-* загрузить данные
-* трансформировать - перевести поля и данные из формата источника в формат получателя
-* форматировать - записать трансформированные данные в формат, установленный получаетелем ( json, csv, etc.)
-
-#### Transformer
-
-Transformer, он же адаптер, необходим для перевода полей системы А в поля системы В, т.е.
-перевод данных из DTO системы А в DTO системы В.
-
-#### Formatter
-Formatter необходим для форматирования данных в конечный вид. Например, если
-приемник данных принимает CSV, необходимо написать класс, который сложит данные в CSV файл.
-Далее, если принимающая сторона поменяет формат на любой другой, нужно будет поменять лишь
-данный класс Formatter.
-
-
-### Extractor & Loader (Provider) 
-Extractor, Loader или же Provider - класс для соединения c внешней системой или iiko,
-служит для отправки запроса (Request).
-
-#### Create Connection & Provider
-
-```yaml
-    my_exchange.connection:
-        class: iikoExchangeBundle\Connection\Ftp\SftpConnection
-        arguments: [ "MY_CONNECTION" ]
-
-    my_exchange.provider:
-        class: iikoExchangeBundle\Library\Provider\Provider
-        arguments: [ "MY_PROVIDER", "@my_exchange.connection" ]
-```
-
-#### iiko connection
-
-В самом iikoWeb connection и провайдер для айко уже определены.
-Для тестирования механизма можно использовать класс 
-`iikoExchangeBundle\Connection\iiko\iikoConnection` подключив его как `exchange.connection.iiko.olap`
-
-Для этого следует завести параметры 
-```yaml
-exchange_iiko_server : 'https://iiko-server.iiko.ru:443'
-exchange_iiko_username : 'admin'
-exchange_iiko_password : 'b1b3773a05c0ed0176787a4f1574ff0075f7521e' // SHA1
-
-```
-
-### Schedule
-Schedule - класс для расписания. Основные виды расписаний
-* Крон
-* Крон с периодом
-
-### How it works?
-
-![plot](./docs/image/exchange.png)
-
-
-### Mapping
-
-Для того, чтобы данные из источкика (А) сопоставить в данные из приемника данных (В)
-необходимо использовать маппинг (mapping).
-
-Маппинг состоит из двух частей:
- - идентификаторы
- - значения.
-
-Идентификаторы и значения могут быть во множественном числе, чтобы можно было использовать
-маппинг вида например:
-```
-+--------------+--------------+--------------+--------------+
-|            IIKO             |         3D party system     |   
-+--------------+--------------+--------------+--------------+
-|payment type  | order type   | account code | description  |
-|--------------+--------------+--------------+--------------+
-| Visa         | Dine In      | 300_001      | Dining in    |
-|--------------+--------------+--------------+--------------+
-| Cash         | Express      | 300_002      | Fast food    |
-|--------------+--------------+--------------+--------------+
-| Cash         | Dine In      | 300_002      | Dining in    |
-|--------------+--------------+--------------+--------------+
-```
-
-Каждый элемент идентификатора или значения - это ConfigItemInterface.
-
-Пример реализации
-```yaml
-    my_exchange.mapping.sample:
-        class: MyBundle\Mapping\SampleMapping
-```
-
-Пример подключения
-```yaml
-    my_exchange.formatter.recipt:
-        arguments: [ "FORMATTER_RECIPT" ]
-        class: MyBundle\Formatter\SampleFormatter
+    exchange.acme:
+        # Собственный класс можно не создавать, базовый класс содержит всю необходимую реализацию
+        class: iikoExchangeBundle\Exchange\Exchange
+        # в качестве аргумента необходимо передать уникальный код обмена, который будет использоваться для переводов и получения настроек
+        # чтобы гарантировать уникальность - используйте названия внешней системы, с которой вы интегрируетесь и способ
+        arguments: [ 'ACME_OLAP_TO_FTP_EXCHANGE_CODE' ]
         calls:
-            - [ addMapping, [ "@my_exchange.mapping.sample" ] ]
+            # задайте расписание, с помощью которого обмен будет запускать в автоматическом режиме
+            - [ setSchedules,[ [ '@exchange.schedule.cron' ] ] ]
+            # задайте шаблон, с помощью которого будет выводиться превью выгрузки
+            - [ setPreviewTemplate, [ 'AcmeExchangeBundle::preview.html.twig' ] ]
+        # без тегирования система не узнает о том, что вы подключили новый механизм обмена
+        tags:
+            - { name: "exchange" }
+```
+! не забудьте добавить первой строкой в services.yml
+```yaml
+services:
+    # начиная от этого отступа объявляйте сервисы
 ```
 
-Маппинг является расширением.
+#### 2. Создание движков
+Под каждую задачу в рамках одного процесса выгрузки создайте [**движок**](./docs/Engines.md)
+Создайте для каждого движка сервис
+
+```yaml
+    exchange.acme.engine:
+        # Собственный класс можно не создавать, базовый класс содержит всю необходимую реализацию
+        class: iikoExchangeBundle\Engine\ExchangeEngine
+        # В качестве аргумента необходимо передать уникальный код движка
+        arguments: [ 'ACME_SALES' ]
+```
+
+#### 2.1 Создание запросов
+Каждый движок опеределяется уникальным набором [запросов](./docs/Request.md) и механизмом трансформации (
+[трансформер](./docs/Transformer.md) и [форматор](./docs/Formatter.md)
+)
+
+```yaml
+    exchange.acme.request.sales:
+        class: Exchange\AcmeExchangeBundle\Request\SalesRequest
+        arguments: [ 'ACME_SALES_REQUEST' ]
+```
+
+#### 2.2 Создание трансформера
+После выполнения [запросов](./docs/Request.md) к внешней системе, данные должны быть очищены
+и преобразованы в бизнес модель системы, в которую данные будут выгружены с помощью 
+[трансформера](./docs/Transformer.md).
+
+```yaml
+    exchange.acme.transformer.sales:
+        class: Exchange\AcmeExchangeBundle\Transformer\SalesTransformer
+        arguments: [ 'ACME_TRANSFORMER_SALES']
+```
+
+#### 2.3 Создание форматера
+После [трансформации](./docs/Transformer.md) данных в бизнес модель, эти данные необходимо отформатировать
+в запрос, принимаемой принимающей стороной. Для этого необходимо реализовать [форматер](./docs/Formatter.md)
+
+```yaml
+    exchange.acme.formatter.sales:
+        class: Exchange\AcmeExchangeBundle\Formatter\SalesFormatter
+        arguments: [ 'ACME_FORMATTER_SALES' ]
+```
+
+#### 2.4 подключение модулей движка
+После реализации [запросов](./docs/Request.md), [трансформера](./docs/Transformer.md) и [форматера](./docs/Formatter.md)
+сервисы нужно подключить в качестве модулей в движок, который собирается их использовать
+
+```yaml
+    exchange.acme.engine:
+        class: iikoExchangeBundle\Engine\ExchangeEngine
+        ....
+        calls:
+            # Запросы подключаются массивом, т.к. данные от запросов аккумулируются и передаются массивом в трансформацию
+            - [ setRequests, [ [ '@exchange.acme.request.sales' ] ] ]
+            - [ setFormatter, [ '@exchange.acme.formatter.sales' ] ]
+            - [ setTransformer, [ '@exchange.acme.transformer.sales' ] ]
+```
+
+#### 3. Создание соединения с внешней системой
+
+Есть несколько типов подключения
+
+- [iiko](./docs/iiko/IikoConnection.md)
+- [OAuth2](./docs/connection/OAuth2Connection.md)
+- [FTP/SFTP](./docs/connection/FTPConnection.md)
+
+Для создания своего типа используйте [базовый класс](./src/Library/Connection/Connection.php)
+После создайте сервис и подключите его к уже созданному сервису обмена
+```yaml
+# Создание соединения
+    exchange.acme.connection:
+        class: AcmeExchangeBundle\Loader\AcmeOAuth2Connection
+        arguments: [ 'ACME_CONNECTION', '@exchange.storage.session', '@logger' ]
+        tags:
+            - { name: "exchange.connection" }
+```
+
+```yaml
+# подключение соединения
+    exchange.acme:
+        class: iikoExchangeBundle\Exchange\Exchange
+        .....
+        calls:
+            ......
+            # для добавления соединения просто добавьте строчку ниже в уже существующий массив calls созданного сервиса обмена
+            - [ setLoader, [ '@exchange.acme.connection' ] ]
+            ......
+        ........
+```
+Для подключения соединения с iiko просто подключите уже созданный сервис соединения
+```yaml
+# подключение соединения к iiko
+    exchange.acme:
+        class: iikoExchangeBundle\Exchange\Exchange
+        .....
+        calls:
+            ......
+            # для добавления соединения просто добавьте строчку ниже в уже существующий массив calls созданного сервиса обмена
+            - [ setExtractor, [ '@exchange.connection.iiko' ] ]
+            ......
+        ........
+```
+В данном примере используется направление `iiko -> 3d party system`. Если нужна выгрузка в обратную сторону, соединения 
+нужно поменять местами.
+
+### Создание и использование расширений
+
+На каждом этапе выгрузки может потребоваться получить 
+ - [ресторан](./docs/traits/Restaurant.md)
+ - [период](./docs/traits/Periodical.md)
+ - [конфигурация](./docs/traits/Configurable.md)
+ - [сопоставление (маппинг)](./docs/traits/Mapping.md)
+
+Для этого классы могут использовать механизм [трейтов](https://www.php.net/manual/ru/language.oop5.traits.php)
+Каждое расширение подключается отдельно и используется тоже отдельно, прочитать подробнее можно по ссылкам сверху.
+
+Далее механизм обмена, автоматически заполнит ваши сервисы маппингом, конфигурацией, рестораном, периодом, если они ему необходимы.
 
 
-### Extension (Расширение)
-Расширения нужны для использования однотипной функциональности на разных этапах формирования
-выгрузки.
-В коде реализации расширения представлены  [трейтами (Traits)](https://www.php.net/manual/ru/language.oop5.traits.php)
 
-Список доступных расширений:
-- период
-- конфигурация
-- маппинг
-- ресторан.
+### Переводы
 
-**Период**
-Позволяет получить период, заданный для выгрузки
 
-**Конфигурация**
-Позволяет передавать конфигурацию в UI и получать значения
+## Запуск проекта
 
-**Маппинг**
-Позволяет передавать маппинг в UI и получать значения маппинга
-
-**Ресторан**
-Позволяет получить текущий ресторан, заданный для выгрузки
+Для запуска проекта используйте [песочницу](https://github.com/xeops/iikoExchangeApplication)
