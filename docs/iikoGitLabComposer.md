@@ -38,6 +38,8 @@ User уровень reporter. Personal API Key права read_api
 
 ##Gitlab-ci
 
+В корне проекта необходимо создать файл с именем `.gitlab-ci.yml`
+
 Пример файла:
 ```yaml
 

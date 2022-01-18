@@ -54,8 +54,7 @@ AcmeExchangeBundle
 │   │   │   └── services.yml
 │   │   └── view
 │   │       └── preview.html.twig
-│   ├── Transformer
-│   │   └── file23.ext
+│   └── Transformer
 ├── Tests 
 │   └── *****
 └── README.md
@@ -221,6 +220,9 @@ services:
 
 ### Переводы
 
+## Пример
+
+Пример реализации доступен в проекте [песочницы](https://github.com/xeops/iikoExchangeApplication)
 
 ## Запуск проекта
 
