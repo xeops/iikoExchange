@@ -77,8 +77,8 @@ class ExchangeManager
 
 		foreach ($exchange->getChildNodes() as $node)
 		{
-			$this->fillConfiguration($exchange, $node);
-			$this->fillMapping($exchange, $node);
+			$this->fillConfiguration($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
+			$this->fillMapping($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
 		}
 
 		try
@@ -144,8 +144,8 @@ class ExchangeManager
 							if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
 							{
 								WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
-								$this->fillConfiguration($exchange, $request);
-								$this->fillMapping($exchange, $request);
+								$this->fillConfiguration($exchange, $request, $restaurant);
+								$this->fillMapping($exchange, $request, $restaurant);
 							}
 
 							$data->add($this->callRequest($exchange, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
@@ -214,33 +214,23 @@ class ExchangeManager
 	}
 
 
-	private function fillConfiguration(ExchangeInterface $exchange, ExchangeNodeInterface $node)
+	private function fillConfiguration(ExchangeInterface $exchange, ExchangeNodeInterface $node, ?Restaurant $restaurant)
 	{
 		if ($node instanceof ConfigurableExtensionInterface)
 		{
-			$restaurant = null;
-			if ($node instanceof WithRestaurantExtensionInterface)
-			{
-				$restaurant = $node->getRestaurant();
-			}
+
 			$node->setConfigCollection($this->configStorage->getConfiguration($exchange, $node, $restaurant));
 		}
 		foreach ($node->getChildNodes() as $childNode)
 		{
-			$this->fillConfiguration($exchange, $childNode);
+			$this->fillConfiguration($exchange, $childNode, $restaurant);
 		}
 	}
 
-	private function fillMapping(ExchangeInterface $exchange, ExchangeNodeInterface $node)
+	private function fillMapping(ExchangeInterface $exchange, ExchangeNodeInterface $node, ?Restaurant $restaurant)
 	{
 		if ($node instanceof WithMappingExtensionInterface)
 		{
-			$restaurant = null;
-			if ($node instanceof WithRestaurantExtensionInterface)
-			{
-				$restaurant = $node->getRestaurant();
-			}
-
 			foreach ($node->getMapping() as $mapping)
 			{
 				/** @var ExchangeNodeInterface $node */
@@ -252,7 +242,7 @@ class ExchangeManager
 		}
 		foreach ($node->getChildNodes() as $childNode)
 		{
-			$this->fillMapping($exchange, $childNode);
+			$this->fillMapping($exchange, $childNode, $restaurant);
 		}
 	}
 
