@@ -139,14 +139,20 @@ class ExchangeManager
 				{
 					foreach ($engine->getRestaurantCollection() as $restaurant)
 					{
-						WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
 						if (!$data->exist($request->getCode(), $restaurant))
 						{
+							if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
+							{
+								WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
+								$this->fillConfiguration($exchange, $request);
+								$this->fillMapping($exchange, $request);
+							}
+
 							$data->add($this->callRequest($exchange, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
 						}
 					}
 				}
-				elseif(!$data->exist($request->getCode()))
+				elseif (!$data->exist($request->getCode()))
 				{
 					$data->add($this->callRequest($exchange, $scheduleType, $request), $request->getCode());
 				}

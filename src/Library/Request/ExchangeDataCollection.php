@@ -4,8 +4,6 @@ namespace iikoExchangeBundle\Library\Request;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use iikoExchangeBundle\Application\Restaurant;
-use iikoExchangeBundle\Contract\ExchangeNodeInterface;
-use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 
 class ExchangeDataCollection
 {
@@ -39,9 +37,10 @@ class ExchangeDataCollection
 		if ($forMultiStore)
 		{
 			$result = [];
-
-			$this->collection->filter(fn($item) => $item['requestCode'] === $requestCode && $item['restaurant'] !== null)->forAll(fn($item) => $result[$item['restaurant']] = $item['data']);
-
+			foreach ($this->collection->filter(fn($item) => $item['requestCode'] === $requestCode && $item['restaurant'] !== null)->toArray() as $item)
+			{
+				$result[$item['restaurant']->getId()] = $item['data'];
+			}
 			return $result;
 		}
 		return $this->collection->filter(fn($item) => $item['requestCode'] === $requestCode && $item['restaurant'] === null)->first()['data'];
