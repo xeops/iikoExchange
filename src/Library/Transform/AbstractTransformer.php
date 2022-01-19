@@ -11,7 +11,7 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Request\RequestResponseCollection;
+use iikoExchangeBundle\Library\Request\ExchangeDataCollection;
 use iikoExchangeBundle\Library\Request\RequestResponseItem;
 
 abstract class AbstractTransformer implements ExchangeNodeInterface, ConfigurableExtensionInterface
@@ -36,5 +36,5 @@ abstract class AbstractTransformer implements ExchangeNodeInterface, Configurabl
 		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 
-	abstract public function transform(Exchange $exchange, ExchangeEngine $exchangeEngine, RequestResponseCollection $data);
+	abstract public function transform(Exchange $exchange, ExchangeEngine $exchangeEngine, ExchangeDataCollection $data);
 }
