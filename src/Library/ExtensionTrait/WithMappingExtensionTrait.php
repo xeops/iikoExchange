@@ -89,6 +89,6 @@ trait WithMappingExtensionTrait
 		{
 			$result[] = $item[MappingInterface::FIELD_IDENTIFIERS][$identifier];
 		}
-		return array_unique($result);
+		return array_values(array_unique($result));
 	}
 }
