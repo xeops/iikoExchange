@@ -143,6 +143,7 @@ class ExchangeManager
 						{
 							if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
 							{
+								//TODO скрытый баг, когда 1 реквест используют раные движки, и настройки в таком случае просто затрутся и для след. движка будут не корректными
 								WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
 								$this->fillConfiguration($exchange, $request, $restaurant);
 								$this->fillMapping($exchange, $request, $restaurant);

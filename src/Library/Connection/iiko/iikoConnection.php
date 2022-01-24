@@ -22,6 +22,7 @@ class iikoConnection extends Connection
 	private ?string $server;
 	private ?string $userName;
 	private ?string $password;
+    private string $lang = 'en_GB';
 
 	private ?string $key;
 	private LoggerInterface $logger;
@@ -43,7 +44,9 @@ class iikoConnection extends Connection
 	 */
 	public function sendRequest($request): Response
 	{
-		$guzzleRequest = new Request($request->getMethod(), (new Uri($request->getPath()))->withQuery($request->getQuery()), $request->getHeaders(), json_encode($request->getBody()));
+        $headers = ["Accept-Language" => $this->lang];
+
+		$guzzleRequest = new Request($request->getMethod(), (new Uri($request->getPath()))->withQuery($request->getQuery()), array_merge($headers, $request->getHeaders()), json_encode($request->getBody()));
 
 		$response = $this->getClient()->send($guzzleRequest);
 
@@ -56,7 +59,7 @@ class iikoConnection extends Connection
 
 		$handlers->push(Middleware::mapRequest(function (RequestInterface $request)
 		{
-			$this->logger->info('Exchange send request to iiko', ['url' => $request->getUri(), 'method' => $request->getMethod(), 'body' => $request->getBody()->getContents()]);
+			$this->logger->info('Exchange send request to iiko', ['url' => $request->getUri(), 'headers' => $request->getHeaders(), 'method' => $request->getMethod(), 'body' => $request->getBody()->getContents()]);
 			return $request->withUri(Uri::withQueryValues($request->getUri(), ['key' => $this->login(), 'client-type' => 'iikoweb-exchange']));
 		}));
 
@@ -115,5 +118,13 @@ class iikoConnection extends Connection
 		return $this;
 	}
 
+
+    /**
+     * @param string $lang
+     */
+    public function setLang(string $lang): void
+    {
+        $this->lang = $lang;
+    }
 
 }
