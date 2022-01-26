@@ -22,7 +22,7 @@ class iikoConnection extends Connection
 	private ?string $server;
 	private ?string $userName;
 	private ?string $password;
-    private string $lang = 'en_GB';
+    private string $lang = 'en';
 
 	private ?string $key;
 	private LoggerInterface $logger;
