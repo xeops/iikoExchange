@@ -38,6 +38,10 @@ services:
         arguments: [ '@logger', '@exchange.storage.config', '@exchange.options_sets' ]
     # connections
 
+    exchange.connection.ftp:
+        class: iikoExchangeBundle\Connection\Ftp\FtpConnection
+        arguments: [ "CONNECTION_SFTP" ]
+
     exchange.connection.sftp:
         class: iikoExchangeBundle\Connection\Ftp\SftpConnection
         arguments: [ "CONNECTION_SFTP" ]

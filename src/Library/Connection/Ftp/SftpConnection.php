@@ -26,6 +26,13 @@ class SftpConnection extends FtpConnection
 		{
 			throw new ConnectionException("Request must be ftp-request type");
 		}
+		if ($this->getConfigValue(self::CONFIG_TYPE) === 'FTP')
+		{
+			$connection = new FtpConnection($this->code);
+			$connection->setConfigCollection($this->config);
+			return $connection->sendRequest($request);
+		}
+
 		$this->login();
 
 

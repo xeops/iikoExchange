@@ -56,7 +56,7 @@ class FtpConnection extends Connection
 		{
 			if (!ftp_mkdir($connection, $request->getFilePath()) || !ftp_chdir($connection, $request->getFilePath()))
 			{
-				throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
+				throw new ConnectionException('Change dir was with error.' . (error_get_last()['message'] ?? 'N/A'));
 			}
 		}
 
@@ -71,7 +71,7 @@ class FtpConnection extends Connection
 		ftp_close($connection);
 		if (!$result)
 		{
-			throw new ConnectionException(error_get_last()['message'] ?? 'File was not uploaded.');
+			throw new ConnectionException('File was not uploaded.' . (error_get_last()['message'] ?? 'N/A'));
 		}
 
 		return new Response(200, [], 'ok');

@@ -97,66 +97,7 @@ services:
     # начиная от этого отступа объявляйте сервисы
 ```
 
-#### 2. Создание движков
-Под каждую задачу в рамках одного процесса выгрузки создайте [**движок**](./docs/Engines.md)
-Создайте для каждого движка сервис
-
-```yaml
-    exchange.acme.engine:
-        # Собственный класс можно не создавать, базовый класс содержит всю необходимую реализацию
-        class: iikoExchangeBundle\Engine\ExchangeEngine
-        # В качестве аргумента необходимо передать уникальный код движка
-        arguments: [ 'ACME_SALES' ]
-```
-
-#### 2.1 Создание запросов
-Каждый движок опеределяется уникальным набором [запросов](./docs/Request.md) и механизмом трансформации (
-[трансформер](./docs/Transformer.md) и [форматор](./docs/Formatter.md)
-)
-
-```yaml
-    exchange.acme.request.sales:
-        class: Exchange\AcmeExchangeBundle\Request\SalesRequest
-        arguments: [ 'ACME_SALES_REQUEST' ]
-```
-
-#### 2.2 Создание трансформера
-После выполнения [запросов](./docs/Request.md) к внешней системе, данные должны быть очищены
-и преобразованы в бизнес модель системы, в которую данные будут выгружены с помощью 
-[трансформера](./docs/Transformer.md).
-
-```yaml
-    exchange.acme.transformer.sales:
-        class: Exchange\AcmeExchangeBundle\Transformer\SalesTransformer
-        arguments: [ 'ACME_TRANSFORMER_SALES']
-```
-
-#### 2.3 Создание форматера
-После [трансформации](./docs/Transformer.md) данных в бизнес модель, эти данные необходимо отформатировать
-в запрос, принимаемой принимающей стороной. Для этого необходимо реализовать [форматер](./docs/Formatter.md)
-
-```yaml
-    exchange.acme.formatter.sales:
-        class: Exchange\AcmeExchangeBundle\Formatter\SalesFormatter
-        arguments: [ 'ACME_FORMATTER_SALES' ]
-```
-
-#### 2.4 подключение модулей движка
-После реализации [запросов](./docs/Request.md), [трансформера](./docs/Transformer.md) и [форматера](./docs/Formatter.md)
-сервисы нужно подключить в качестве модулей в движок, который собирается их использовать
-
-```yaml
-    exchange.acme.engine:
-        class: iikoExchangeBundle\Engine\ExchangeEngine
-        ....
-        calls:
-            # Запросы подключаются массивом, т.к. данные от запросов аккумулируются и передаются массивом в трансформацию
-            - [ setRequests, [ [ '@exchange.acme.request.sales' ] ] ]
-            - [ setFormatter, [ '@exchange.acme.formatter.sales' ] ]
-            - [ setTransformer, [ '@exchange.acme.transformer.sales' ] ]
-```
-
-#### 3. Создание соединения с внешней системой
+#### 2. Создание соединения с внешней системой
 
 Есть несколько типов подключения
 
@@ -200,8 +141,69 @@ services:
             ......
         ........
 ```
-В данном примере используется направление `iiko -> 3d party system`. Если нужна выгрузка в обратную сторону, соединения 
+В данном примере используется направление `iiko -> 3d party system`. Если нужна выгрузка в обратную сторону, соединения
 нужно поменять местами.
+
+
+#### 3. Создание движков
+Под каждую задачу в рамках одного процесса выгрузки создайте [**движок**](./docs/Engines.md)
+Создайте для каждого движка сервис
+
+```yaml
+    exchange.acme.engine:
+        # Собственный класс можно не создавать, базовый класс содержит всю необходимую реализацию
+        class: iikoExchangeBundle\Engine\ExchangeEngine
+        # В качестве аргумента необходимо передать уникальный код движка
+        arguments: [ 'ACME_SALES' ]
+```
+
+#### 3.1 Создание запросов
+Каждый движок опеределяется уникальным набором [запросов](./docs/Request.md) и механизмом трансформации (
+[трансформер](./docs/Transformer.md) и [форматор](./docs/Formatter.md)
+)
+
+```yaml
+    exchange.acme.request.sales:
+        class: Exchange\AcmeExchangeBundle\Request\SalesRequest
+        arguments: [ 'ACME_SALES_REQUEST' ]
+```
+
+#### 3.2 Создание трансформера
+После выполнения [запросов](./docs/Request.md) к внешней системе, данные должны быть очищены
+и преобразованы в бизнес модель системы, в которую данные будут выгружены с помощью 
+[трансформера](./docs/Transformer.md).
+
+```yaml
+    exchange.acme.transformer.sales:
+        class: Exchange\AcmeExchangeBundle\Transformer\SalesTransformer
+        arguments: [ 'ACME_TRANSFORMER_SALES']
+```
+
+#### 3.3 Создание форматера
+После [трансформации](./docs/Transformer.md) данных в бизнес модель, эти данные необходимо отформатировать
+в запрос, принимаемой принимающей стороной. Для этого необходимо реализовать [форматер](./docs/Formatter.md)
+
+```yaml
+    exchange.acme.formatter.sales:
+        class: Exchange\AcmeExchangeBundle\Formatter\SalesFormatter
+        arguments: [ 'ACME_FORMATTER_SALES' ]
+```
+
+#### 3.4 подключение модулей движка
+После реализации [запросов](./docs/Request.md), [трансформера](./docs/Transformer.md) и [форматера](./docs/Formatter.md)
+сервисы нужно подключить в качестве модулей в движок, который собирается их использовать
+
+```yaml
+    exchange.acme.engine:
+        class: iikoExchangeBundle\Engine\ExchangeEngine
+        ....
+        calls:
+            # Запросы подключаются массивом, т.к. данные от запросов аккумулируются и передаются массивом в трансформацию
+            - [ setRequests, [ [ '@exchange.acme.request.sales' ] ] ]
+            - [ setFormatter, [ '@exchange.acme.formatter.sales' ] ]
+            - [ setTransformer, [ '@exchange.acme.transformer.sales' ] ]
+```
+
 
 ### Создание и использование расширений
 

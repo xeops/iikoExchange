@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class iikoConnection extends Connection
+final class iikoConnection extends Connection
 {
 	private ?string $server;
 	private ?string $userName;
