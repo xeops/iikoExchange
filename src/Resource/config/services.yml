@@ -1,10 +1,11 @@
 services:
     exchange.directory:
         class: iikoExchangeBundle\Service\ExchangeDirectory
-
+        public: true
 
     exchange.manager:
         class: iikoExchangeBundle\Service\ExchangeManager
+        public: true
         arguments: [ '@exchange.storage.preview' ,'@exchange.storage.config', '@exchange.storage.mapping', '@event_dispatcher', '@logger', '@translator' ]
         calls:
             - [ setIsDebug, [ '%kernel.debug%' ] ]
