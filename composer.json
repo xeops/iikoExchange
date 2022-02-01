@@ -15,7 +15,7 @@
 		"phpseclib/phpseclib": "~2.0"
 	},
 	"require-dev": {
-		"phpunir/phpunit": "9.1.4",
+		"phpunit/phpunit": "^9",
 		"symfony/phpunit-bridge": "5.1.*",
 		"phpunit/php-code-coverage": "9.1.11"
 	},

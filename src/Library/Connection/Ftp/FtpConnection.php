@@ -11,6 +11,7 @@ use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemSelect;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Request\FtpRequestInterface;
 use iikoExchangeBundle\Exception\ConnectionException;
 
 class FtpConnection extends Connection
@@ -24,44 +25,53 @@ class FtpConnection extends Connection
 	const CONFIG_USERNAME = 'CONFIG_USERNAME';
 	const CONFIG_PASSWORD = 'CONFIG_PASSWORD';
 
-
-	public function sendRequest($handle)
+	public function getType(): string
 	{
-		if($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
+		return 'ftp';
+	}
+
+	/**
+	 * @param FtpRequestInterface $request
+	 * @return Response
+	 * @throws ConnectionException
+	 * @throws \iikoExchangeBundle\Exception\ConfigNotFoundException
+	 */
+	public function sendRequest($request): Response
+	{
+		if (!($request instanceof FtpRequestInterface))
 		{
-			$connection =  new SftpConnection($this->code);
+			throw new ConnectionException("Request must be ftp-request type");
+		}
+		if ($this->getConfigValue(self::CONFIG_TYPE) === 'SFTP')
+		{
+			$connection = new SftpConnection($this->code);
 			$connection->setConfigCollection($this->config);
-			return $connection->sendRequest($handle);
+			return $connection->sendRequest($request);
 		}
-		if (!is_resource($handle))
-		{
-			throw new ConnectionException("Request must be resource type");
-		}
-		$meta = stream_get_meta_data($handle);
-
-		$fileInfo = explode(DIRECTORY_SEPARATOR, str_replace(sys_get_temp_dir(), "", $meta['uri']));
-
-		$fileName = $fileInfo[array_key_last($fileInfo)];
-		unset($fileInfo[array_key_last($fileInfo)]);
 
 		$connection = $this->login();
 		@ftp_pasv($connection, true);
-		$path = implode(DIRECTORY_SEPARATOR, $fileInfo);
-		if (!ftp_chdir($connection, $path))
+
+		if (!@ftp_chdir($connection, $request->getFilePath()))
 		{
-			if(!ftp_mkdir($connection, $path))
+			if (!ftp_mkdir($connection, $request->getFilePath()) || !ftp_chdir($connection, $request->getFilePath()))
 			{
-				throw new ConnectionException(error_get_last()['message'] ?? 'Change dir was with error.');
+				throw new ConnectionException('Change dir was with error.' . (error_get_last()['message'] ?? 'N/A'));
 			}
 		}
 
-		$result = ftp_fput($connection, $fileName, $handle);
+		$tempHandle = fopen('php://temp', 'r+');
+		fwrite($tempHandle, $request->getFileContent());
+		rewind($tempHandle);
 
-		fclose($handle);
+		$result = ftp_fput($connection, $request->getFileName(), $tempHandle);
+
+		fclose($tempHandle);
+
 		ftp_close($connection);
 		if (!$result)
 		{
-			throw new ConnectionException(error_get_last()['message'] ??  'File was not uploaded.');
+			throw new ConnectionException('File was not uploaded.' . (error_get_last()['message'] ?? 'N/A'));
 		}
 
 		return new Response(200, [], 'ok');

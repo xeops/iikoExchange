@@ -4,7 +4,7 @@
 namespace iikoExchangeBundle\ExtensionTrait;
 
 
-use iikoExchangeBundle\Contract\Extensions\CalendarPeriodInterface;
+use iikoExchangeBundle\Application\Period;
 
 trait WithPeriodExtensionTrait
 {
@@ -13,7 +13,7 @@ trait WithPeriodExtensionTrait
 	protected bool $breakByDays = true;
 
 	/**
-	 * @return CalendarPeriodInterface
+	 * @return Period
 	 */
 	public function getPeriod()
 	{
@@ -21,7 +21,7 @@ trait WithPeriodExtensionTrait
 	}
 
 	/**
-	 * @param CalendarPeriodInterface $period
+	 * @param Period $period
 	 */
 	public function setPeriod($period): void
 	{

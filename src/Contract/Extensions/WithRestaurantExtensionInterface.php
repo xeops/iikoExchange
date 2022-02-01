@@ -4,6 +4,8 @@
 namespace iikoExchangeBundle\Contract\Extensions;
 
 
+use iikoExchangeBundle\Application\Restaurant;
+
 interface WithRestaurantExtensionInterface
 {
 	const FIELD_RESTAURANT = 'restaurant';
@@ -12,5 +14,5 @@ interface WithRestaurantExtensionInterface
 
 	public function setRestaurant($restaurant);
 
-	public function getRestaurant();
+	public function getRestaurant(): ?Restaurant;
 }

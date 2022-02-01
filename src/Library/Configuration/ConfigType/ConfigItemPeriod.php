@@ -4,20 +4,18 @@
 namespace iikoExchangeBundle\Configuration\ConfigType;
 
 
-use AppBundle\Service\Calendar\CalendarPeriodDay;
-use AppBundle\Service\Calendar\CalendarPeriodMonth;
-use AppBundle\Service\Calendar\CalendarPeriodWeek;
-use AppBundle\Service\Calendar\CalendarPeriodYear;
-
 class ConfigItemPeriod extends AbstractConfigItem
 {
-	public function __construct(string $code, ?string $value = null, $required = true)
+	private string $maxPeriod;
+
+	public function __construct(string $code, ?string $value = null, $required = true, ?string $maxPeriod = 'hour')
 	{
 		if ($value !== null)
 		{
 			list($this->diffType, $this->count, $this->periodType) = explode(" ", $value);
 		}
 		parent::__construct($code, $value, $required);
+		$this->maxPeriod = $maxPeriod;
 	}
 
 	const FIELD_PERIOD_DIFF_TYPE = 'period_diff_type';
@@ -28,7 +26,7 @@ class ConfigItemPeriod extends AbstractConfigItem
 
 	const FIELD_DIFF_TYPES = ['previous', 'current', 'next'];
 	//TODO constants
-	const FIELD_PERIOD_TYPES = ['hour', 'day', 'week', 'month', 'year'];
+	const FIELD_PERIOD_TYPES = ['minute', 'hour', 'day', 'week', 'month', 'year'];
 
 	protected string $diffType = 'previous';
 	protected int $count = 1;
@@ -60,12 +58,13 @@ class ConfigItemPeriod extends AbstractConfigItem
 
 	public function jsonSerialize()
 	{
+		$periodTypes = self::FIELD_PERIOD_TYPES;
 		return parent::jsonSerialize() +
 			[
 				self::FIELD_CONSTANTS =>
 					[
 						self::FIELD_PERIOD_DIFF_TYPE => self::FIELD_DIFF_TYPES,
-						self::FIELD_PERIOD_TYPE => self::FIELD_PERIOD_TYPES
+						self::FIELD_PERIOD_TYPE => $this->maxPeriod === null ? $periodTypes : array_splice($periodTypes, 0, array_search($this->maxPeriod, $periodTypes) + 1)
 					]
 			];
 	}

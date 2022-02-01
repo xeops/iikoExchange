@@ -4,15 +4,14 @@
 namespace iikoExchangeBundle\Connection;
 
 use GuzzleHttp\Psr7\Response;
-use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
-abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensionInterface, ConnectionInterface
 {
-	const CONFIG_HOST = 'host';
 
 	use ExchangeNodeTrait
 	{
@@ -30,19 +29,17 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 
 	public function jsonSerialize()
 	{
-		return $this->nodeJsonSerialize() + $this->configJsonSerialize();
+		return ['connection_type' => $this->getType()] + $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
 
 	/**
 	 * @param mixed $request
 	 * @return Response
 	 */
-	abstract public function sendRequest($request);
+
 
 	public function exposeConfiguration(): array
 	{
-		return [
-			new ConfigItemString(self::CONFIG_HOST)
-		];
+		return [];
 	}
 }

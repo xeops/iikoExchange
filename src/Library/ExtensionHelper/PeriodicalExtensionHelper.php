@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\ExtensionHelper;
 
 
+use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
@@ -22,7 +23,7 @@ class PeriodicalExtensionHelper
 		}
 	}
 
-	public static function extractPeriod(ExchangeNodeInterface $exchangeNode)
+	public static function extractPeriod(ExchangeNodeInterface $exchangeNode) : ?Period
 	{
 		if ($exchangeNode instanceof WithPeriodExtensionInterface)
 		{
@@ -55,19 +56,4 @@ class PeriodicalExtensionHelper
 		return false;
 	}
 
-	public static function isNeedBreakDownByDays(ExchangeNodeInterface $exchangeNode)
-	{
-		if ($exchangeNode instanceof WithPeriodExtensionInterface && $exchangeNode->byDays() === true)
-		{
-			return true;
-		}
-		foreach ($exchangeNode->getChildNodes() as $childNode)
-		{
-			if (static::isNeedPeriod($childNode))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
 }

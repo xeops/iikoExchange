@@ -12,7 +12,7 @@ use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
-class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
 {
 	use ExchangeNodeTrait
 	{
@@ -28,10 +28,7 @@ class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
 		$this->code = $code;
 	}
 
-	public function getFormattedData(Exchange $exchange, $data)
-	{
-		return $data;
-	}
+	abstract public function getFormattedData(Exchange $exchange, $data);
 
 	public function jsonSerialize()
 	{

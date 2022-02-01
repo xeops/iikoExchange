@@ -12,17 +12,20 @@ interface ConfigItemInterface extends ExchangeNodeInterface
 	const FIELD_VALUE = 'value';
 	const FIELD_REQUIRED = 'required';
 
+
 	const TYPE_STRING = 'string';
 	const TYPE_URL = 'url';
 	const TYPE_INT = 'int';
 	const TYPE_FLOAT = 'float';
 	const TYPE_DATE_DIFF = 'date_diff';
 	const TYPE_SELECT = 'select';
+	const TYPE_ARRAY = 'multiselect';
 	const TYPE_PASSWORD = 'password';
 	const TYPE_MAPPING = 'mapping';
 	const TYPE_PERIOD = 'period';
 	const TYPE_CRON = 'cron';
 	const TYPE_TAGS = 'tags';
+	const TYPE_BOOLEAN = 'boolean';
 
 	public function getType();
 

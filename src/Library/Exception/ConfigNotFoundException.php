@@ -4,10 +4,7 @@
 namespace iikoExchangeBundle\Exception;
 
 
-use iikoExchangeBundle\Contract\Exception\ExchangeExceptionInterface;
-use Throwable;
-
-class ConfigNotFoundException extends \Exception implements ExchangeExceptionInterface
+class ConfigNotFoundException extends ExchangeException
 {
 	private string $configCode;
 	protected  $message;

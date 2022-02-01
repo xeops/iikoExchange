@@ -4,28 +4,25 @@
 namespace iikoExchangeBundle\Contract\Exchange;
 
 
+use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
-use iikoExchangeBundle\Exchange\Event\ExchangeErrorEvent;
-use iikoExchangeBundle\Exchange\Event\ExchangeProcessEvent;
-use iikoExchangeBundle\Library\Provider\Provider;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 interface ExchangeInterface extends ExchangeNodeInterface
 {
+	const EXECUTION_SCHEDULE = 'schedule';
+	const EXECUTION_MANUAL = 'schedule';
+	const EXECUTION_PREVIEW = 'schedule';
+
+
 	const FIELD_ID = 'id';
 	const FIELD_UNIQUE = 'unique';
 
 
 	public function getUniq(): string;
-
-
-	public function setUniq(string $uniq);
-
-	/**
-	 * @return $this
-	 */
-	public function generateUniq();
 
 	/**
 	 * @return int|null
@@ -34,36 +31,39 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 	public function setId(int $id);
 
+	public function setUniq(string $uniq) : ExchangeInterface;
 
+	const FIELD_PREVIEW = 'preview';
+	const FIELD_INTERVAL = 'interval';
 	const FIELD_EXTRACTOR = 'extractor';
-	const FIELD_PROVIDER = 'provider';
 	const FIELD_LOADER = 'loader';
 	const FIELD_ENGINES = 'engines';
 	const FIELD_SCHEDULES = 'schedules';
 	const FIELD_MAPPING = 'mapping';
+	const FIELD_REQUESTS = 'requests';
 
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getExtractor(): Provider;
+	public function getExtractor(): Connection;
 
 	/**
-	 * @param Provider $extractor
+	 * @param Connection $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Provider $extractor): ExchangeInterface;
+	public function setExtractor(Connection $extractor): ExchangeInterface;
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getLoader(): Provider;
+	public function getLoader(): Connection;
 
 	/**
-	 * @param Provider $loader
+	 * @param Connection $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Provider $loader): ExchangeInterface;
+	public function setLoader(Connection $loader): ExchangeInterface;
 
 	/**
 	 * @return ExchangeEngine[]
@@ -71,7 +71,12 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	public function getEngines(): array;
 
 	/**
-	 * @param array $engines
+	 * @return ExchangeRequestInterface[]
+	 */
+	public function getRequests(): array;
+
+	/**
+	 * @param ExchangeEngineInterface[] $engines
 	 * @return ExchangeInterface
 	 */
 	public function setEngines(array $engines): ExchangeInterface;
@@ -89,7 +94,11 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 	public function getChildNodes(): array;
 
-	public function process();
+	public function getPreviewTemplate(): ?string;
 
-	public function error(\Exception $exception);
+	public function setPreviewTemplate(string $template): ExchangeInterface;
+
+	public function setLocale(string $locale): ExchangeInterface;
+
+	public function getLocale(): string;
 }

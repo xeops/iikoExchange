@@ -4,21 +4,48 @@
 namespace iikoExchangeBundle\Exchange;
 
 
+use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
+use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
+use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Provider\Provider;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
+	protected string $locale = 'ru_RU';
+
+	public function __clone()
+	{
+		$this->generateUniq();
+		$this->loader = clone $this->loader;
+		$this->extractor = clone $this->extractor;
+
+		foreach ($this->engines as $key => $engine)
+		{
+			$this->engines[$key] = clone $engine;
+		}
+	}
+
+	protected function generateUniq()
+	{
+		$this->uniq = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
+	}
+
 	protected ?int $moduleId = null;
 
 	protected ?int $id = null;
 
 	protected ?string $uniq = null;
+
+	protected ?string $previewTemplate = null;
 
 	/**
 	 * @return string
@@ -32,33 +59,6 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this->uniq;
 	}
 
-	/**
-	 * @param string $uniq
-	 * @return $this
-	 */
-	public function setUniq(string $uniq)
-	{
-		$this->uniq = $uniq;
-		return $this;
-	}
-
-	/**
-	 * @return $this
-	 */
-	public function generateUniq()
-	{
-		$this->uniq = strtolower(sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(16384, 20479),
-			mt_rand(32768, 49151),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535),
-			mt_rand(0, 65535)));
-
-		return $this;
-	}
 
 	/**
 	 * @return int|null
@@ -68,15 +68,21 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this->id;
 	}
 
-	public function setId(int $id)
+	public function setId(?int $id)
 	{
 		$this->id = $id;
 		return $this;
 	}
 
+	public function setUniq(string $uniq) : ExchangeInterface
+	{
+		$this->uniq = $uniq;
+		return $this;
+	}
 
-	protected Provider $extractor;
-	protected Provider $loader;
+
+	protected Connection $extractor;
+	protected Connection $loader;
 	/** @var ExchangeEngine[] */
 	protected array $engines;
 	protected array $schedules;
@@ -89,7 +95,6 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function __construct(string $code)
 	{
 		$this->code = $code;
-		$this->unique = md5(mt_rand() . $code);
 	}
 
 
@@ -110,11 +115,16 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 
 		return $this->nodeJsonSerialize() + [
 
-				static::FIELD_EXTRACTOR => [self::FIELD_PROVIDER => $this->getExtractor()] + [ExchangeEngine::FIELD_REQUEST => array_values($requests)],
+				static::FIELD_EXTRACTOR => $this->getExtractor(),
+				static::FIELD_REQUESTS => array_values($requests),
 				static::FIELD_LOADER => $this->getLoader(),
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),
-				static::FIELD_SCHEDULES => $this->getSchedules()
+				static::FIELD_SCHEDULES => $this->getSchedules(),
+				static::FIELD_PREVIEW => $this->previewTemplate !== null,
+				WithPeriodExtensionInterface::FIELD_PERIOD => PeriodicalExtensionHelper::isNeedPeriod($this),
+				WithRestaurantExtensionInterface::FIELD_RESTAURANT => WithRestaurantExtensionHelper::isNeedRestaurant($this),
+				WithMultiRestaurantExtensionInterface::FIELD_BY_MULTI_STORE => WithRestaurantExtensionHelper::isNeedMultiRestaurant($this)
 			];
 	}
 
@@ -134,36 +144,36 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getExtractor(): Provider
+	public function getExtractor(): Connection
 	{
 		return $this->extractor;
 	}
 
 	/**
-	 * @param Provider $extractor
+	 * @param Connection $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Provider $extractor): ExchangeInterface
+	public function setExtractor(ConnectionInterface $extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
 	}
 
 	/**
-	 * @return Provider
+	 * @return Connection
 	 */
-	public function getLoader(): Provider
+	public function getLoader(): Connection
 	{
 		return $this->loader;
 	}
 
 	/**
-	 * @param Provider $loader
+	 * @param Connection $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Provider $loader): ExchangeInterface
+	public function setLoader(Connection $loader): ExchangeInterface
 	{
 		$this->loader = $loader;
 		return $this;
@@ -175,6 +185,19 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function getEngines(): array
 	{
 		return $this->engines;
+	}
+
+	public final function getRequests(): array
+	{
+		$result = [];
+		foreach ($this->getEngines() as $engine)
+		{
+			foreach ($engine->getRequests() as $request)
+			{
+				$result[$request->getCode()] = $request;
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -225,4 +248,42 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	{
 		return $this->moduleId;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getPreviewTemplate(): ?string
+	{
+		return $this->previewTemplate;
+	}
+
+	/**
+	 * @param string|null $previewTemplate
+	 * @return AbstractExchangeBuilder
+	 */
+	public function setPreviewTemplate(?string $previewTemplate): AbstractExchangeBuilder
+	{
+		$this->previewTemplate = $previewTemplate;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLocale(): string
+	{
+		return $this->locale;
+	}
+
+	/**
+	 * @param string $locale
+	 * @return AbstractExchangeBuilder
+	 */
+	public function setLocale(string $locale): AbstractExchangeBuilder
+	{
+		$this->locale = $locale;
+		return $this;
+	}
+
+
 }

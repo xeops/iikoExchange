@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Connection\Ftp;
 
 
 use GuzzleHttp\Psr7\Response;
+use iikoExchangeBundle\Contract\Request\FtpRequestInterface;
 use iikoExchangeBundle\Exception\ConnectionException;
 use phpseclib\Net\SFTP;
 
@@ -14,36 +15,42 @@ class SftpConnection extends FtpConnection
 
 	const CODE = 'SFTP_CONNECTION';
 
-	public function sendRequest($handle)
+	/**
+	 * @param FtpRequestInterface $handle
+	 * @return Response
+	 * @throws ConnectionException
+	 */
+	public function sendRequest($request): Response
 	{
-		if (!is_resource($handle))
+		if (!($request instanceof FtpRequestInterface))
 		{
-			throw new \Exception("Request must be resource type");
+			throw new ConnectionException("Request must be ftp-request type");
 		}
+		if ($this->getConfigValue(self::CONFIG_TYPE) === 'FTP')
+		{
+			$connection = new FtpConnection($this->code);
+			$connection->setConfigCollection($this->config);
+			return $connection->sendRequest($request);
+		}
+
 		$this->login();
 
-		$meta = stream_get_meta_data($handle);
-		$fileInfo = explode(DIRECTORY_SEPARATOR, str_replace(sys_get_temp_dir(), "", $meta['uri']));
-
-		$fileName = $fileInfo[array_key_last($fileInfo)];
-		unset($fileInfo[array_key_last($fileInfo)]);
-
-		$remoteFile = implode(DIRECTORY_SEPARATOR, $fileInfo) . "/" . $fileName;
 
 		$this->ftp->setTimeout(90);
 
-		$dirname = dirname($remoteFile);
-		if (! $this->ftp->chdir($dirname))
+
+		if (!@$this->ftp->chdir($request->getFilePath()))
 		{
-			$this->ftp->mkdir($dirname, -1, true);
+			if (!$this->ftp->mkdir($request->getFilePath(), -1, true) || !$this->ftp->chdir($request->getFilePath()))
+			{
+				throw new ConnectionException('Cant change directory to ' . $request->getFilePath());
+			}
 		}
 
-		$isSend = $this->ftp->put($remoteFile, $meta['uri'], $this->ftp::SOURCE_LOCAL_FILE);
+		$isSend = $this->ftp->put($request->getFilePath() . $request->getFileName(), $request->getFileContent(), $this->ftp::SOURCE_STRING);
 
 		$this->ftp->setTimeout(10);
 
-		fclose($handle);
-		unlink($meta['uri']);
 
 		if (!$isSend)
 		{

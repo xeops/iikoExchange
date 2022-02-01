@@ -22,21 +22,24 @@ trait WithMappingExtensionTrait
 	 */
 	public function getMappingValue(string $mappingCode, array $identifiers, string $valueCode)
 	{
-		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
+		if (array_key_exists($mappingCode, $this->getMappingValues()))
 		{
-			if (!array_diff_assoc($item[MappingInterface::FIELD_IDENTIFIERS], $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
+			foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
 			{
-				$value =  $item[MappingInterface::FIELD_VALUES][$valueCode];
-
-				if(is_string($value))
+				if (!array_diff_assoc($item[MappingInterface::FIELD_IDENTIFIERS], $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
 				{
-					foreach ($identifiers as $identifierCode => $identifierValue)
-					{
-						 $value = strtr($value, ["%$identifierCode%" => $identifierValue]);
-					}
-				}
+					$value = $item[MappingInterface::FIELD_VALUES][$valueCode];
 
-				return $value;
+					if (is_string($value))
+					{
+						foreach ($identifiers as $identifierCode => $identifierValue)
+						{
+							$value = strtr($value, ["%$identifierCode%" => $identifierValue]);
+						}
+					}
+
+					return $value;
+				}
 			}
 		}
 
@@ -76,11 +79,16 @@ trait WithMappingExtensionTrait
 
 	public function getUniqMappingIdentifiers(string $mappingCode, string $identifier)
 	{
+		if (!array_key_exists($mappingCode, $this->getMappingValues()))
+		{
+			throw new MappingNotFoundException($mappingCode, []);
+		}
 		$result = [];
-		foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
+
+		foreach ($this->getMappingValues()[$mappingCode] as $item)
 		{
 			$result[] = $item[MappingInterface::FIELD_IDENTIFIERS][$identifier];
 		}
-		return array_unique($result);
+		return array_values(array_unique($result));
 	}
 }
