@@ -265,7 +265,8 @@ class ExchangeManager
 				throw (new StartUpParameterNotFound())->setExchange($exchange);
 			}
 			WithRestaurantExtensionHelper::setRestaurantCollectionForExchangeNode($exchange, $params->getRestaurantCollection());
-		}elseif (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
+		}
+		elseif (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
 		{
 			if (is_null($params->getRestaurant()))
 			{
@@ -277,33 +278,33 @@ class ExchangeManager
 
 	public function translate(ExchangeInterface $exchange, ExchangeNodeInterface $node)
 	{
-		$node->setName($this->translator->trans($node->getCode() . ".NAME", [], $exchange->getCode()));
-		$node->setDescription($this->translator->trans($node->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+		$node->setName($this->trans($node->getCode() . ".NAME", $exchange->getCode()));
+		$node->setDescription($this->trans($node->getCode() . ".DESCRIPTION", $exchange->getCode()));
 
 		if ($node instanceof ConfigurableExtensionInterface)
 		{
 			foreach ($node->getConfiguration() as $configItem)
 			{
-				$configItem->setName($this->translator->trans($configItem->getCode() . ".NAME", [], $exchange->getCode()));
-				$configItem->setDescription($this->translator->trans($configItem->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+				$configItem->setName($this->trans($configItem->getCode() . ".NAME", $exchange->getCode()));
+				$configItem->setDescription($this->trans($configItem->getCode() . ".DESCRIPTION", $exchange->getCode()));
 			}
 		}
 		if ($node instanceof WithMappingExtensionInterface)
 		{
 			foreach ($node->getMapping() as $mapping)
 			{
-				$mapping->setName($this->translator->trans($mapping->getCode() . ".NAME", [], $exchange->getCode()));
-				$mapping->setDescription($this->translator->trans($mapping->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+				$mapping->setName($this->trans($mapping->getCode() . ".NAME", $exchange->getCode()));
+				$mapping->setDescription($this->trans($mapping->getCode() . ".DESCRIPTION", $exchange->getCode()));
 
 				foreach ($mapping->getExposedIdentifiers() as $identifier)
 				{
-					$identifier->setName($this->translator->trans($identifier->getCode() . ".NAME", [], $exchange->getCode()));
-					$identifier->setDescription($this->translator->trans($identifier->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+					$identifier->setName($this->trans($identifier->getCode() . ".NAME", $exchange->getCode()));
+					$identifier->setDescription($this->trans($identifier->getCode() . ".DESCRIPTION", $exchange->getCode()));
 				}
 				foreach ($mapping->getExposedValues() as $value)
 				{
-					$value->setName($this->translator->trans($value->getCode() . ".NAME", [], $exchange->getCode()));
-					$value->setDescription($this->translator->trans($value->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+					$value->setName($this->trans($value->getCode() . ".NAME", $exchange->getCode()));
+					$value->setDescription($this->trans($value->getCode() . ".DESCRIPTION", $exchange->getCode()));
 				}
 			}
 		}
@@ -313,6 +314,12 @@ class ExchangeManager
 		}
 
 		return $node;
+	}
+
+	protected function trans(string $code, string $exchangeCode)
+	{
+		$translated = $this->translator->trans($code, [], 'exchange');
+		return $translated === $code ? $this->translator->trans($code, [], $exchangeCode) : $translated;
 	}
 
 	public function getError(ExchangeInterface $exchange, ExchangeException $exception): ExchangeException
