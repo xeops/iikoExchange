@@ -265,9 +265,7 @@ class ExchangeManager
 				throw (new StartUpParameterNotFound())->setExchange($exchange);
 			}
 			WithRestaurantExtensionHelper::setRestaurantCollectionForExchangeNode($exchange, $params->getRestaurantCollection());
-		}
-
-		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
+		}elseif (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
 		{
 			if (is_null($params->getRestaurant()))
 			{
