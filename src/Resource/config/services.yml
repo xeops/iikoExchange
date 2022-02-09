@@ -48,7 +48,7 @@ services:
 
     # schedulers
     exchange.schedule.cron:
-        class: iikoExchangeBundle\Library\Schedule\ScheduleCronWithPeriod
+        class: iikoExchangeBundle\Library\Schedule\ScheduleCron
 
 imports:
     - { resource: option-sets.yml }
