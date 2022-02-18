@@ -155,6 +155,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 		$this->logger->warning('Exchhange OAuth2 reauth. Request', ['params' => $params, 'endpoint' => $this->getEndpoint(), 'path' => $this->getRenewTokenPath()]);
 		$handlers= HandlerStack::create();
 		$handlers->push(Middleware::log($this->logger, new MessageFormatter('{request} - {response}'), \Psr\Log\LogLevel::INFO));
+		$this->sessionMiddleware($handlers);
 
 		$response = (new Client(['base_uri' => $this->getEndpoint(), 'http_errors' => false, 'handler' => $handlers]))->post($this->getRenewTokenPath(), [RequestOptions::BODY => json_encode($params)]);
 		if ($response->getStatusCode() !== 200)
