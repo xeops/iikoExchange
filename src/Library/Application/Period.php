@@ -91,4 +91,19 @@ class Period
 		return (clone $this)->setDateFrom($this->getDateFrom()->setTimezone($timeZone))->setDateTo($this->getDateTo()->setTimezone($timeZone));
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getBreakdownDays()
+	{
+		$result = [];
+		$d = $this->dateFrom;
+		while ($d->format('Y-m-d') <= $this->dateTo->format('Y-m-d'))
+		{
+			$result[] = $d;
+			$d = $d->modify("+1 day");
+		}
+		return $result;
+	}
+
 }
