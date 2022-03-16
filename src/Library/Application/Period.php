@@ -92,7 +92,7 @@ class Period
 	}
 
 	/**
-	 * @inheritDoc
+	 * @return \DateTime[]
 	 */
 	public function getBreakdownDays()
 	{
