@@ -64,7 +64,15 @@ class SftpConnection extends FtpConnection
 	{
 		$this->ftp = new SFTP($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT), 10);
 
-		$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD));
+		if(!$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
+		{
+			throw new ConnectionException('Exchange connection failure. Check credentials');
+		}
+
+		if(!$this->ftp->isConnected())
+		{
+			throw new ConnectionException('Exchange connection disconnected');
+		}
 
 		return $this->ftp;
 	}
