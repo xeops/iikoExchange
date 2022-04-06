@@ -66,7 +66,7 @@ class SftpConnection extends FtpConnection
 
 		if(!$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
 		{
-			throw new ConnectionException('Exchange connection failure. Check credentials');
+			throw new ConnectionException('Exchange connection failure: incorrect/unavailable server or wrong username/password. Please check connection settings.');
 		}
 
 		if(!$this->ftp->isConnected())
