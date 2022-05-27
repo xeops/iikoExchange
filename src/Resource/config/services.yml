@@ -46,6 +46,14 @@ services:
         class: iikoExchangeBundle\Connection\Ftp\SftpConnection
         arguments: [ "CONNECTION_SFTP" ]
 
+    exchange.storage.employee:
+        class: iikoExchangeBundle\Service\Storage\iiko\EmployeeStorage
+        arguments: ['@logger', '@exchange.connection.iiko']
+
+    exchange.storage.schedule:
+        class: iikoExchangeBundle\Service\Storage\iiko\ScheduleStorage
+        arguments: ['@logger', '@exchange.connection.iiko']
+
     # schedulers
     exchange.schedule.cron:
         class: iikoExchangeBundle\Library\Schedule\ScheduleCron

@@ -5,11 +5,13 @@ namespace iikoExchangeBundle\Service;
 
 use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Application\Restaurant;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\ExchangeParametersInterface;
+use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
@@ -79,6 +81,7 @@ class ExchangeManager
 		{
 			$this->fillConfiguration($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
 			$this->fillMapping($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
+			$this->fillExchange($exchange, $node);
 		}
 
 		try
@@ -170,17 +173,20 @@ class ExchangeManager
 			{
 				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType));
+				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
+				$loader = ($engine->getLoader() ?: $exchange->getLoader());
+
 				if ($formatted instanceof \Iterator)
 				{
 					foreach ($formatted as $item)
 					{
-						$exchange->getLoader()->sendRequest($item);
+
+						$loader instanceof ConnectionInterface ? $loader->sendRequest($item) : $loader->store($item);
 					}
 				}
 				else
 				{
-					$exchange->getLoader()->sendRequest($formatted);
+					$loader instanceof ConnectionInterface ? $loader->sendRequest($formatted) : $loader->store($formatted);
 				}
 
 			}
@@ -244,6 +250,18 @@ class ExchangeManager
 		foreach ($node->getChildNodes() as $childNode)
 		{
 			$this->fillMapping($exchange, $childNode, $restaurant);
+		}
+	}
+
+	private function fillExchange(ExchangeInterface $exchange, ExchangeNodeInterface $node)
+	{
+		if($node instanceof WithExchangeExtensionInterface)
+		{
+			$node->setExchange($exchange);
+		}
+		foreach ($node->getChildNodes() as $childNode)
+		{
+			$this->fillExchange($exchange, $childNode);
 		}
 	}
 

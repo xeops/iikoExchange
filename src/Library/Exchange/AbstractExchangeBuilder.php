@@ -12,6 +12,7 @@ use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
@@ -74,7 +75,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this;
 	}
 
-	public function setUniq(string $uniq) : ExchangeInterface
+	public function setUniq(string $uniq): ExchangeInterface
 	{
 		$this->uniq = $uniq;
 		return $this;
@@ -82,7 +83,8 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 
 
 	protected Connection $extractor;
-	protected Connection $loader;
+	/** @var ConnectionInterface|StorageInterface */
+	protected $loader;
 	/** @var ExchangeEngine[] */
 	protected array $engines;
 	protected array $schedules;
@@ -162,18 +164,18 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return Connection
+	 * @return ConnectionInterface|StorageInterface
 	 */
-	public function getLoader(): Connection
+	public function getLoader()
 	{
 		return $this->loader;
 	}
 
 	/**
-	 * @param Connection $loader
+	 * @param ConnectionInterface|StorageInterface $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Connection $loader): ExchangeInterface
+	public function setLoader($loader): ExchangeInterface
 	{
 		$this->loader = $loader;
 		return $this;

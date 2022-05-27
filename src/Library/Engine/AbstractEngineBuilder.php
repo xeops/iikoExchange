@@ -4,8 +4,12 @@
 namespace iikoExchangeBundle\Engine;
 
 
+use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
+use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
@@ -31,6 +35,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	protected array $requests;
 	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
+	protected ?ConnectionInterface $loader = null;
 
 	public function __construct(string $code)
 	{
@@ -105,7 +110,24 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 
 	public function getChildNodes(): array
 	{
-		return array_merge($this->getRequests() , [$this->getFormatter(), $this->getTransformer()]);
+		return array_merge($this->getRequests(), [$this->getFormatter(), $this->getTransformer()]);
 	}
 
+	/**
+	 * @return ConnectionInterface|null|StorageInterface
+	 */
+	public function getLoader()
+	{
+		return $this->loader;
+	}
+
+	/**
+	 * @param ConnectionInterface|StorageInterface $loader
+	 * @return ExchangeInterface
+	 */
+	public function setLoader($loader): ExchangeEngineInterface
+	{
+		$this->loader = $loader;
+		return $this;
+	}
 }
