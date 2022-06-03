@@ -6,8 +6,8 @@ namespace iikoExchangeBundle\Contract\iiko\Staff;
 class EmployeeDto
 {
 	const DATE_FORMAT = "Y-m-d\TH:i:sP";
-	/** @var string */
-	protected $id;
+	/** @var null|string */
+	protected ?string $id;
 	/** @var  string */
 	protected $code;
 	/** @var string */
@@ -131,7 +131,7 @@ class EmployeeDto
 	/**
 	 * @return string
 	 */
-	public function getId(): string
+	public function getId(): ?string
 	{
 		return $this->id;
 	}

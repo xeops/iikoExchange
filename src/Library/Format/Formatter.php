@@ -7,12 +7,13 @@ namespace iikoExchangeBundle\Format;
 use GuzzleHttp\Psr7\Request;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\Formatter\FormatterInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 
-abstract class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface
+abstract class Formatter implements ExchangeNodeInterface, ConfigurableExtensionInterface, FormatterInterface
 {
 	use ExchangeNodeTrait
 	{

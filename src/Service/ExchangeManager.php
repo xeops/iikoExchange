@@ -15,6 +15,7 @@ use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\Formatter\IPreviewFormatter;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Schedule\ScheduleInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
@@ -37,6 +38,7 @@ use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\iikoExchangeBundle;
 use iikoExchangeBundle\Library\Request\ExchangeDataCollection;
+use iikoExchangeBundle\Library\Request\iikoOlapRequest;
 use iikoExchangeBundle\Library\Request\RequestResponseItem;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -109,7 +111,7 @@ class ExchangeManager
 		catch (\Exception|\Throwable $exception)
 		{
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
-			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() : 'SERVER_ERROR'))->setExchange($exchange);
+			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() . " on {$exception->getFile()}:{$exception->getLine()}" : 'SERVER_ERROR'))->setExchange($exchange);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
@@ -167,7 +169,16 @@ class ExchangeManager
 
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
-				$this->previewStorage->saveData($exchange, $engine, $transformed);
+				$saveData = $transformed;
+				if ($engine->getFormatter() instanceof IPreviewFormatter)
+				{
+					$saveData = $engine->getFormatter()->getFormattedData($exchange, $transformed);
+					if ($saveData instanceof \Iterator)
+					{
+						$saveData = iterator_to_array($saveData);
+					}
+				}
+				$this->previewStorage->saveData($exchange, $engine, $saveData);
 			}
 			else
 			{
@@ -216,7 +227,8 @@ class ExchangeManager
 			throw new EngineNotFoundDataException();
 		}
 
-		return $request->processResponse($response->getBody()->getContents());
+		$response = $response->getBody()->__toString();
+		return $request instanceof iikoOlapRequest ? $request->processResponse($response) : $response;
 
 	}
 
@@ -255,7 +267,7 @@ class ExchangeManager
 
 	private function fillExchange(ExchangeInterface $exchange, ExchangeNodeInterface $node)
 	{
-		if($node instanceof WithExchangeExtensionInterface)
+		if ($node instanceof WithExchangeExtensionInterface)
 		{
 			$node->setExchange($exchange);
 		}

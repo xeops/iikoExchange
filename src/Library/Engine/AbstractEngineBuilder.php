@@ -35,7 +35,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	protected array $requests;
 	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
-	protected ?ConnectionInterface $loader = null;
+	protected $loader = null;
 
 	public function __construct(string $code)
 	{

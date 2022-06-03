@@ -23,12 +23,11 @@ class EmployeeStorage implements StorageInterface, WithExchangeExtensionInterfac
 	}
 
 	/**
-	 * @param $id
 	 * @param EmployeeDto[] $data
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function store($id, $data)
+	public function store($data)
 	{
 		throw new \Exception('Not implemented');
 	}
