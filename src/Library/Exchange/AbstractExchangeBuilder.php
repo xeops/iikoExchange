@@ -12,6 +12,7 @@ use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
@@ -82,7 +83,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 
-	protected Connection $extractor;
+	protected $extractor = null;
 	/** @var ConnectionInterface|StorageInterface */
 	protected $loader;
 	/** @var ExchangeEngine[] */
@@ -146,18 +147,18 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return Connection
+	 * @return Connection|ExtractorInterface|null
 	 */
-	public function getExtractor(): Connection
+	public function getExtractor()
 	{
 		return $this->extractor;
 	}
 
 	/**
-	 * @param Connection $extractor
+	 * @param Connection|ExtractorInterface $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(ConnectionInterface $extractor): ExchangeInterface
+	public function setExtractor($extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
@@ -232,7 +233,16 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 
 	public function getChildNodes(): array
 	{
-		return array_merge($this->getSchedules(), $this->getEngines(), [$this->getLoader(), $this->getExtractor()]);
+		$result = array_merge($this->getSchedules(), $this->getEngines());
+		if ($this->getLoader())
+		{
+			$result[] = $this->getLoader();
+		}
+		if ($this->getExtractor())
+		{
+			$result[] = $this->getExtractor();
+		}
+		return $result;
 	}
 
 	/**

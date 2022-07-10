@@ -9,6 +9,7 @@ use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\ExtensionTrait\ConfigurableExtensionTrait;
@@ -36,6 +37,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
 	protected $loader = null;
+	protected $extractor = null;
 
 	public function __construct(string $code)
 	{
@@ -110,7 +112,16 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 
 	public function getChildNodes(): array
 	{
-		return array_merge($this->getRequests(), [$this->getFormatter(), $this->getTransformer()]);
+		$result = array_merge($this->getRequests(), [$this->getFormatter(), $this->getTransformer()]);
+		if ($this->getLoader())
+		{
+			$result[] = $this->getLoader();
+		}
+		if ($this->getExtractor())
+		{
+			$result[] = $this->getExtractor();
+		}
+		return $result;
 	}
 
 	/**
@@ -130,4 +141,24 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 		$this->loader = $loader;
 		return $this;
 	}
+
+	/**
+	 * @return ConnectionInterface|null|ExtractorInterface
+	 */
+	public function getExtractor()
+	{
+		return $this->extractor;
+	}
+
+	/**
+	 * @param ConnectionInterface|ExtractorInterface $extractor
+	 * @return AbstractEngineBuilder
+	 */
+	public function setExtractor($extractor)
+	{
+		$this->extractor = $extractor;
+		return $this;
+	}
+
+
 }

@@ -16,6 +16,7 @@ use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Formatter\IPreviewFormatter;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Schedule\ScheduleInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
@@ -154,13 +155,13 @@ class ExchangeManager
 								$this->fillMapping($exchange, $request, $restaurant);
 							}
 
-							$data->add($this->callRequest($exchange, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
+							$data->add($this->callRequest($exchange, $engine, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
 						}
 					}
 				}
 				elseif (!$data->exist($request->getCode()))
 				{
-					$data->add($this->callRequest($exchange, $scheduleType, $request), $request->getCode());
+					$data->add($this->callRequest($exchange, $engine, $scheduleType, $request), $request->getCode());
 				}
 			}
 
@@ -205,7 +206,7 @@ class ExchangeManager
 		}
 	}
 
-	protected function callRequest(ExchangeInterface $exchange, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
+	protected function callRequest(ExchangeInterface $exchange, ExchangeEngineInterface $engine, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
 	{
 		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange) || $restaurant)
 		{
@@ -221,7 +222,13 @@ class ExchangeManager
 		}
 
 		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
-		$response = $exchange->getExtractor()->sendRequest($request);
+
+		$extractor = $engine->getExtractor() ?: $exchange->getExtractor();
+		if($extractor instanceof ExtractorInterface)
+		{
+			return $extractor->extract($request);
+		}
+		$response = $extractor->sendRequest($request);
 		if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
 		{
 			throw new EngineNotFoundDataException();
