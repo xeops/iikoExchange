@@ -18,7 +18,6 @@ use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
@@ -88,7 +87,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	protected $loader;
 	/** @var ExchangeEngine[] */
 	protected array $engines;
-	protected array $schedules;
+	protected array $schedules = [];
 
 	use ExchangeNodeTrait
 	{
@@ -214,7 +213,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return ScheduleCron[]
+	 * @return ExchangeNodeInterface[]
 	 */
 	public function getSchedules(): array
 	{

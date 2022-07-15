@@ -58,5 +58,8 @@ services:
     exchange.schedule.cron:
         class: iikoExchangeBundle\Library\Schedule\ScheduleCron
 
+    exchange.schedule.forecast:
+        class: iikoExchangeBundle\Library\Schedule\SalesForecastingSchedule
+
 imports:
     - { resource: option-sets.yml }
