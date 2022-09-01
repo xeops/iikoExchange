@@ -16,7 +16,7 @@ interface OAuth2ConnectionInterface extends ConnectionInterface, ExchangeNodeInt
 
 	public function getBaseAuthorisationUrl(): string;
 
-	public function getRedirectToLoginUrl(string $clientId, string $redirectUri): string;
+	public function getRedirectToLoginUrl(string $clientId, string $redirectUri, string $state): string;
 
 	public function getLoginPath(): string;
 
