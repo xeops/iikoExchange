@@ -66,37 +66,7 @@ class IikoPaymentDetailsDto implements \JsonSerializable
 	}
 
 
-	/**
-	 * @param array $array
-	 * @return static
-	 */
-	public static function newFromArray(array $array)
-	{
-		$r = new static();
-		if (isset($array['salaryDepartmentId']) && is_string($array['salaryDepartmentId'])) {
-			$r->setSalaryDepartmentId($array['salaryDepartmentId']);
-		}
-		if (isset($array['salaryDepartmentName']) && is_string($array['salaryDepartmentName'])) {
-			$r->setSalaryDepartmentName($array['salaryDepartmentName']);
-		}
-		if (isset($array['regularPayedMinutes'])) {
-			$r->setRegularPayedMinutes($array['regularPayedMinutes']);
-		}
-		if (isset($array['regularPaymentSum'])) {
-			$r->setRegularPaymentSum($array['regularPaymentSum']);
-		}
-		if (isset($array['overtimePayedMinutes'])) {
-			$r->setOvertimePayedMinutes($array['overtimePayedMinutes']);
-		}
-		if (isset($array['overtimePayedSum'])) {
-			$r->setOvertimePayedSum($array['overtimePayedSum']);
-		}
-		if (isset($array['otherPaymentsSum'])) {
-			$r->setOtherPaymentsSum($array['otherPaymentsSum']);
-		}
-		return $r;
-
-	}
+	
 
 	/**
 	 * @return string

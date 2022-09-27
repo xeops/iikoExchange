@@ -9,9 +9,9 @@ class DummyEntityStorage implements EntitiesStorage
 {
 	private $storage = [];
 
-	public function saveEntity(ExchangeInterface $exchange, string $entityType, $externalId, array $data)
+	public function saveEntity(ExchangeInterface $exchange, string $entityType, $externalId, \JsonSerializable $data)
 	{
-		$this->storage[$exchange->getId() . "@" . $entityType . "@" . $externalId] = $data;
+		$this->storage[$exchange->getId() . "@" . $entityType . "@" . $externalId] = json_encode($data);
 	}
 
 	public function entityExist(ExchangeInterface $exchange, string $entityType, $externalId)
@@ -21,6 +21,6 @@ class DummyEntityStorage implements EntitiesStorage
 
 	public function getEntityData(ExchangeInterface $exchange, string $entityType, $externalId)
 	{
-		return $this->storage[$exchange->getId() . "@" . $entityType . "@" . $externalId];
+		return json_decode($this->storage[$exchange->getId() . "@" . $entityType . "@" . $externalId], true);
 	}
 }
