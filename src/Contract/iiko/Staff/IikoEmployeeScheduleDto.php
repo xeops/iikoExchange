@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nyatM
- * Date: 24.05.2018
- * Time: 18:08
- */
+
 
 namespace iikoExchangeBundle\Contract\iiko\Staff;
 

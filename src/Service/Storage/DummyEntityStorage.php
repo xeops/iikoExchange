@@ -3,9 +3,9 @@
 namespace iikoExchangeBundle\Service\Storage;
 
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
-use iikoExchangeBundle\Contract\Service\EntitiesStorage;
+use iikoExchangeBundle\Contract\Service\EntitiesStorageInterface;
 
-class DummyEntityStorage implements EntitiesStorage
+class DummyEntityStorage implements EntitiesStorageInterface
 {
 	private $storage = [];
 

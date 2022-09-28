@@ -4,7 +4,7 @@ namespace iikoExchangeBundle\Contract\Service;
 
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 
-interface EntitiesStorage
+interface EntitiesStorageInterface
 {
 	public function saveEntity(ExchangeInterface $exchange,string $entityType, $externalId,  \JsonSerializable $data);
 
