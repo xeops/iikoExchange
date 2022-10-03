@@ -186,6 +186,7 @@ class IikoEmployeeScheduleDto implements \JsonSerializable
 	public function getDepartmentName()
 	{
 		return $this->departmentName;
+
 	}
 
 	/**
@@ -194,6 +195,7 @@ class IikoEmployeeScheduleDto implements \JsonSerializable
 	public function setDepartmentName($departmentName)
 	{
 		$this->departmentName = (string)$departmentName;
+		return $this;
 	}
 
 	/**
@@ -241,24 +243,5 @@ class IikoEmployeeScheduleDto implements \JsonSerializable
 		return $this->getRoleId() ? true : false;
 	}
 
-	/**
-	 * Форматировать сущнность для добавления в iiko
-	 * @return mixed
-	 */
-	public function toSaveIikoXml()
-	{
-		$root = new \SimpleXMLElement('<schedule></schedule>');
-		if ($this->getId()) {
-			$root->addChild('id', $this->getId());
-		}
-		$root->addChild('employeeId', $this->getEmployeeId());
-		$root->addChild('roleId', $this->getRoleId());
-		$root->addChild('dateFrom', $this->getDateFrom()->format('Y-m-d\TH:i:s'));
-		$root->addChild('dateTo', $this->getDateTo()->format('Y-m-d\TH:i:s'));
-		$root->addChild('scheduleTypeCode', $this->getScheduleTypeCode());
-		$root->addChild('nonPaidMinutes', $this->getNonPaidMinutes());
-		$root->addChild('departmentId', $this->getDepartmentId());
-		return $root->asXML();
-	}
 
 }

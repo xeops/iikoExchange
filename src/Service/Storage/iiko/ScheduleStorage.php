@@ -8,6 +8,7 @@ use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\iiko\Staff\IikoEmployeeScheduleDto;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Exception\ExchangeException;
+use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\WithRestaurantExtensionTrait;
 use Psr\Log\LoggerInterface;
@@ -21,9 +22,14 @@ class ScheduleStorage implements StorageInterface, WithExchangeExtensionInterfac
 		WithRestaurantExtensionTrait::jsonSerialize as restaurantJsonSerialize;
 	}
 
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as nodeJsonSerialize;
+	}
+
 	public function jsonSerialize()
 	{
-		return $this->restaurantJsonSerialize();
+		return $this->nodeJsonSerialize() + $this->restaurantJsonSerialize();
 	}
 
 	/**

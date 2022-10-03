@@ -2,7 +2,9 @@
 
 namespace iikoExchangeBundle\Contract\iikoStorage;
 
-interface StorageInterface
+use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+
+interface StorageInterface extends ExchangeNodeInterface
 {
 	public function store($externalId, $data);
 

@@ -7,6 +7,7 @@ use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\iiko\Staff\EmployeeDto;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Exception\ExchangeException;
+use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
 use Psr\Log\LoggerInterface;
 
@@ -14,6 +15,16 @@ class EmployeeStorage implements StorageInterface, WithExchangeExtensionInterfac
 {
 	use WithExchangeExtensionTrait;
 
+	use ExchangeNodeTrait
+	{
+		ExchangeNodeTrait::jsonSerialize as nodeJsonSerialize;
+	}
+
+	public function jsonSerialize()
+	{
+
+		return $this->nodeJsonSerialize();
+	}
 	/**
 	 * @param EmployeeDto[] $data
 	 * @return mixed
