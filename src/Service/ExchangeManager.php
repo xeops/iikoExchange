@@ -222,6 +222,7 @@ class ExchangeManager
 		}
 
 		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
+		$this->logger->info('Exchange call request', ['requestCode' => $request->getCode()]);
 
 		$extractor = $engine->getExtractor() ?: $exchange->getExtractor();
 		if($extractor instanceof ExtractorInterface)
