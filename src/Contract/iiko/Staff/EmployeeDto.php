@@ -7,9 +7,9 @@ class EmployeeDto
 {
 	const DATE_FORMAT = "Y-m-d\TH:i:sP";
 	/** @var null|string */
-	protected ?string $id;
+	protected ?string $id = null;
 	/** @var  string */
-	protected $code;
+	protected string $code = '';
 	/** @var string */
 	protected $name = '';
 	/** @var string|null */

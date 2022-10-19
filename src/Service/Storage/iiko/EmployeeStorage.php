@@ -5,6 +5,7 @@ namespace iikoExchangeBundle\Service\Storage\iiko;
 use iikoExchangeBundle\Connection\iiko\iikoConnection;
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\iiko\Staff\EmployeeDto;
+use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
@@ -25,12 +26,8 @@ class EmployeeStorage implements StorageInterface, WithExchangeExtensionInterfac
 
 		return $this->nodeJsonSerialize();
 	}
-	/**
-	 * @param EmployeeDto[] $data
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	public function store($id, $data)
+
+	public function store(StorageEntityInterface $storageEntity)
 	{
 		throw new ExchangeException('Not implemented');
 	}

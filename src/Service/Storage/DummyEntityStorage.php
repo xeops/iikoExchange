@@ -9,7 +9,7 @@ class DummyEntityStorage implements EntitiesStorageInterface
 {
 	private $storage = [];
 
-	public function saveEntity(ExchangeInterface $exchange, string $entityType, $externalId, \JsonSerializable $data)
+	public function saveEntity(ExchangeInterface $exchange, string $entityType, $externalId, array $data)
 	{
 		$this->storage[$exchange->getId() . "@" . $entityType . "@" . $externalId] = json_encode($data);
 	}

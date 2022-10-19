@@ -4,6 +4,7 @@ namespace iikoExchangeBundle\Service\Storage\iiko;
 
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
@@ -29,7 +30,7 @@ class SalaryStorage implements StorageInterface, WithExchangeExtensionInterface,
 
 	const STORAGE_SALARY = 'Salary';
 
-	public function store($externalId, $data)
+	public function store(StorageEntityInterface $storageEntity)
 	{
 		throw new \Exception('Not implemented');
 	}

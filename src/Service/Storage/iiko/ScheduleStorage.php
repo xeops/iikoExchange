@@ -6,6 +6,7 @@ use iikoExchangeBundle\Connection\iiko\iikoConnection;
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\iiko\Staff\IikoEmployeeScheduleDto;
+use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
@@ -38,7 +39,7 @@ class ScheduleStorage implements StorageInterface, WithExchangeExtensionInterfac
 	 * @return mixed
 	 * @throws ExchangeException
 	 */
-	public function store($externalId, $data)
+	public function store(StorageEntityInterface $storageEntity)
 	{
 		throw new ExchangeException('ScheduleStorage not implemented');
 	}
