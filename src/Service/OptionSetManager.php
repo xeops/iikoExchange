@@ -7,6 +7,7 @@ use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
+use iikoExchangeBundle\Contract\OptionSet\OptionSetConstants;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
 use iikoExchangeBundle\ExtensionHelper\WithConfigExtensionHelper;
 use Psr\Log\LoggerInterface;
@@ -27,6 +28,11 @@ class OptionSetManager
 	public function getOptionSet(string $optionSetCode, ExchangeInterface $exchange, ?Restaurant $restaurant = null): array
 	{
 		$optionSetService = $this->optionSetDirectory->get($optionSetCode);
+
+		if ($optionSetService instanceof OptionSetConstants)
+		{
+			return $optionSetService->getCollection($exchange, $restaurant);
+		}
 		/** @var ExchangeNodeInterface|ConfigurableExtensionInterface|ConnectionInterface $connection */
 		$connection = $optionSetService->getConnection();
 

@@ -2,6 +2,7 @@
 
 namespace iikoExchangeBundle\Library\OptionSet;
 
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\OptionSet\OptionSetInterface;
 
 class PaymentTypesOptionSet implements OptionSetInterface
@@ -16,4 +17,5 @@ class PaymentTypesOptionSet implements OptionSetInterface
 	{
 		return [];
 	}
+
 }

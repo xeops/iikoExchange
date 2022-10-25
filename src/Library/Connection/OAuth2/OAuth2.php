@@ -89,7 +89,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 		$stack->push(Middleware::mapRequest(function (RequestInterface $request): RequestInterface
 		{
-			$this->logger->info('Exchange request.', ['connection' => $this->code, 'host' => $request->getUri()->getHost(), 'path' => $request->getUri()->getPath(), 'query' => $request->getUri()->getQuery(), 'body' => $request->getBody()->__toString()]);
+			$this->logger->info('Exchange request.', ['connection' => $this->code, 'host' => $request->getUri()->getHost(), 'path' => $request->getUri()->getPath(), 'query' => $request->getUri()->getQuery(), 'body' => $request->getBody()->__toString(), 'headers' => $request->getHeaders()]);
 			return $request;
 		}));
 
@@ -142,23 +142,33 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 
 	protected function renewToken(RequestInterface $request)
 	{
+		$sessionData = json_decode($this->sessionStorage->get($this->getSessionKey()), true);
+		$this->logger->info('Exchhange OAuth2 reauth. Get session', ['session' => $sessionData]);
+		$params = [
+			'client_id' => $this->getConfigValue(self::CONFIG_CLIENT_ID),
+			'client_secret' => $this->getConfigValue(self::CONFIG_CLIENT_SECRET),
+			'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
+			'grant_type' => 'refresh_token',
+			'refresh_token' =>$sessionData[$this->getAuthDataMapping()[self::SESSION_REFRESH_TOKEN]] ?? null,
+			'scope' => $this->getScope(),
+		];
+		$this->logger->warning('Exchhange OAuth2 reauth. Request', ['params' => $params, 'endpoint' => $this->getEndpoint(), 'path' => $this->getRenewTokenPath()]);
+		$handlers= HandlerStack::create();
+		$handlers->push(Middleware::log($this->logger, new MessageFormatter('{request} - {response}'), \Psr\Log\LogLevel::INFO));
+		$this->sessionMiddleware($handlers);
 
-		$response = (new Client(['base_uri' => $this->getEndpoint(), 'http_errors' => false]))->post($this->getRenewTokenPath(), [
-			RequestOptions::FORM_PARAMS => [
-				'client_id' => $this->getConfigValue(self::CONFIG_CLIENT_ID),
-				'client_secret' => $this->getConfigValue(self::CONFIG_CLIENT_SECRET),
-				'redirect_uri' => $this->getConfigValue(self::CONFIG_REDIRECT_URI),
-				'grant_type' => 'refresh_token',
-				'refresh_token' => $this->getConfigValue(self::SESSION_REFRESH_TOKEN),
-				'scope' => $this->getScope()
-			]
-		]);
+		$response = (new Client(['base_uri' => $this->getEndpoint(), 'http_errors' => false, 'handler' => $handlers]))->post(
+			$this->getRenewTokenPath(),
+			[
+				RequestOptions::FORM_PARAMS => $params
+			]);
 		if ($response->getStatusCode() !== 200)
 		{
 			throw new ConnectionException($response->getBody()->__toString());
 		}
 
 		$authData = json_decode($response->getBody(), true);
+		$this->logger->info('Exchhange OAuth2 reauth. Response', ['response' => $authData]);
 		$this->sessionStorage->set($this->getSessionKey(), json_encode($authData));
 
 		return Utils::modifyRequest($request, [

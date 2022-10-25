@@ -7,14 +7,17 @@ namespace iikoExchangeBundle\Configuration\ConfigType;
 class ConfigItemSelect extends AbstractConfigItem
 {
 	const FIELD_OPTION_SET_CODE = 'option_set_code';
+	const FIELD_OPTION_BY_RESTAURANT = 'by_store';
 
-	public function __construct(string $code, string $optionSetCode, ?string $value = null, $required = true)
+	public function __construct(string $code, string $optionSetCode, ?string $value = null, $required = true, bool $byRestaurant = false)
 	{
 		parent::__construct($code, $value, $required);
 		$this->optionSetCode = $optionSetCode;
+		$this->byRestaurant = $byRestaurant;
 	}
 
 	protected string $optionSetCode;
+	protected bool $byRestaurant;
 
 	/**
 	 * @param string $optionSetCode
@@ -38,7 +41,7 @@ class ConfigItemSelect extends AbstractConfigItem
 
 	public function jsonSerialize()
 	{
-		return parent::jsonSerialize() + [self::FIELD_OPTION_SET_CODE => $this->optionSetCode];
+		return parent::jsonSerialize() + [self::FIELD_OPTION_SET_CODE => $this->optionSetCode, self::FIELD_OPTION_BY_RESTAURANT => $this->byRestaurant];
 	}
 
 	/**

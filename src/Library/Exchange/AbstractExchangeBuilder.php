@@ -12,11 +12,12 @@ use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
-use iikoExchangeBundle\Library\Schedule\ScheduleCron;
 
 abstract class AbstractExchangeBuilder implements ExchangeInterface
 {
@@ -74,18 +75,19 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		return $this;
 	}
 
-	public function setUniq(string $uniq) : ExchangeInterface
+	public function setUniq(string $uniq): ExchangeInterface
 	{
 		$this->uniq = $uniq;
 		return $this;
 	}
 
 
-	protected Connection $extractor;
-	protected Connection $loader;
+	protected $extractor = null;
+	/** @var ConnectionInterface|StorageInterface */
+	protected $loader;
 	/** @var ExchangeEngine[] */
 	protected array $engines;
-	protected array $schedules;
+	protected array $schedules = [];
 
 	use ExchangeNodeTrait
 	{
@@ -144,36 +146,36 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return Connection
+	 * @return Connection|ExtractorInterface|null
 	 */
-	public function getExtractor(): Connection
+	public function getExtractor()
 	{
 		return $this->extractor;
 	}
 
 	/**
-	 * @param Connection $extractor
+	 * @param Connection|ExtractorInterface $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(ConnectionInterface $extractor): ExchangeInterface
+	public function setExtractor($extractor): ExchangeInterface
 	{
 		$this->extractor = $extractor;
 		return $this;
 	}
 
 	/**
-	 * @return Connection
+	 * @return ConnectionInterface|StorageInterface
 	 */
-	public function getLoader(): Connection
+	public function getLoader()
 	{
 		return $this->loader;
 	}
 
 	/**
-	 * @param Connection $loader
+	 * @param ConnectionInterface|StorageInterface $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Connection $loader): ExchangeInterface
+	public function setLoader($loader): ExchangeInterface
 	{
 		$this->loader = $loader;
 		return $this;
@@ -211,7 +213,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 	/**
-	 * @return ScheduleCron[]
+	 * @return ExchangeNodeInterface[]
 	 */
 	public function getSchedules(): array
 	{
@@ -230,7 +232,16 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 
 	public function getChildNodes(): array
 	{
-		return array_merge($this->getSchedules(), $this->getEngines(), [$this->getLoader(), $this->getExtractor()]);
+		$result = array_merge($this->getSchedules(), $this->getEngines());
+		if ($this->getLoader())
+		{
+			$result[] = $this->getLoader();
+		}
+		if ($this->getExtractor())
+		{
+			$result[] = $this->getExtractor();
+		}
+		return $result;
 	}
 
 	/**

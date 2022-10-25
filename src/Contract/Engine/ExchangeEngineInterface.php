@@ -2,7 +2,10 @@
 
 namespace iikoExchangeBundle\Contract\Engine;
 
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\AbstractEngineBuilder;
 use iikoExchangeBundle\Format\Formatter;
@@ -46,4 +49,26 @@ interface ExchangeEngineInterface extends ExchangeNodeInterface
 	public function getFormatter(): Formatter;
 
 	public function getChildNodes(): array;
+
+	/**
+	 * @return ConnectionInterface|StorageInterface
+	 */
+	public function getLoader();
+
+	/**
+	 * @param ConnectionInterface|StorageInterface $loader
+	 * @return ExchangeEngineInterface
+	 */
+	public function setLoader($loader): ExchangeEngineInterface;
+
+	/**
+	 * @return ConnectionInterface|null|ExtractorInterface
+	 */
+	public function getExtractor();
+
+	/**
+	 * @param ConnectionInterface|ExtractorInterface $extractor
+	 * @return AbstractEngineBuilder
+	 */
+	public function setExtractor($extractor);
 }

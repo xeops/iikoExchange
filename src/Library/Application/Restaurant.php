@@ -7,16 +7,18 @@ class Restaurant
 	private int $id;
 	private string $name;
 	private \DateTimeZone $dateTimeZone;
+	private ?string $departmentCode;
 
 	/**
 	 * @param int $id
 	 * @param string $name
 	 */
-	public function __construct(int $id, string $name, \DateTimeZone $dateTimeZone)
+	public function __construct(int $id, string $name, \DateTimeZone $dateTimeZone, ?string $departmentCode)
 	{
 		$this->id = $id;
 		$this->name = $name;
 		$this->dateTimeZone = $dateTimeZone;
+		$this->departmentCode = $departmentCode;
 	}
 
 
@@ -73,5 +75,25 @@ class Restaurant
 		$this->dateTimeZone = $dateTimeZone;
 		return $this;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getDepartmentCode(): ?string
+	{
+		return $this->departmentCode;
+	}
+
+	/**
+	 * @param string|null $departmentCode
+	 * @return Restaurant
+	 */
+	public function setDepartmentCode(?string $departmentCode): Restaurant
+	{
+		$this->departmentCode = $departmentCode;
+		return $this;
+	}
+
+
 
 }

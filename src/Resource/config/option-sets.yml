@@ -4,3 +4,8 @@ services:
         arguments: [ '@exchange.connection.iiko' ]
         tags:
             - { name: "exchange.options_set" }
+
+    exchange.option_set.system.timezone:
+        class: iikoExchangeBundle\Library\OptionSet\TimeZoneOptionSet
+        tags:
+            - { name: "exchange.options_set" }

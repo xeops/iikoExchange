@@ -5,8 +5,11 @@ namespace iikoExchangeBundle\Contract\Exchange;
 
 
 use iikoExchangeBundle\Connection\Connection;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Library\Schedule\ScheduleCron;
@@ -44,26 +47,26 @@ interface ExchangeInterface extends ExchangeNodeInterface
 
 
 	/**
-	 * @return Connection
+	 * @return Connection|ExtractorInterface
 	 */
-	public function getExtractor(): Connection;
+	public function getExtractor();
 
 	/**
-	 * @param Connection $extractor
+	 * @param Connection|ExtractorInterface $extractor
 	 * @return ExchangeInterface
 	 */
-	public function setExtractor(Connection $extractor): ExchangeInterface;
+	public function setExtractor($extractor): ExchangeInterface;
 
 	/**
-	 * @return Connection
+	 * @return ConnectionInterface|StorageInterface
 	 */
-	public function getLoader(): Connection;
+	public function getLoader();
 
 	/**
-	 * @param Connection $loader
+	 * @param ConnectionInterface|StorageInterface $loader
 	 * @return ExchangeInterface
 	 */
-	public function setLoader(Connection $loader): ExchangeInterface;
+	public function setLoader($loader): ExchangeInterface;
 
 	/**
 	 * @return ExchangeEngine[]

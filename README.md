@@ -210,7 +210,7 @@ services:
 На каждом этапе выгрузки может потребоваться получить 
  - [ресторан](./docs/traits/Restaurant.md)
  - [период](./docs/traits/Periodical.md)
- - [конфигурация](./docs/traits/Configurable.md)
+ - [конфигурацию](./docs/traits/Configurable.md)
  - [сопоставление (маппинг)](./docs/traits/Mapping.md)
 
 Для этого классы могут использовать механизм [трейтов](https://www.php.net/manual/ru/language.oop5.traits.php)

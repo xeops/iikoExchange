@@ -5,14 +5,18 @@ namespace iikoExchangeBundle\Service;
 
 use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Application\Restaurant;
+use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\ExchangeParametersInterface;
+use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
+use iikoExchangeBundle\Contract\Formatter\IPreviewFormatter;
+use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Schedule\ScheduleInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
@@ -35,6 +39,7 @@ use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
 use iikoExchangeBundle\iikoExchangeBundle;
 use iikoExchangeBundle\Library\Request\ExchangeDataCollection;
+use iikoExchangeBundle\Library\Request\iikoOlapRequest;
 use iikoExchangeBundle\Library\Request\RequestResponseItem;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -79,6 +84,7 @@ class ExchangeManager
 		{
 			$this->fillConfiguration($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
 			$this->fillMapping($exchange, $node, WithRestaurantExtensionHelper::extractRestaurant($exchange));
+			$this->fillExchange($exchange, $node);
 		}
 
 		try
@@ -106,7 +112,7 @@ class ExchangeManager
 		catch (\Exception|\Throwable $exception)
 		{
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
-			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() : 'SERVER_ERROR'))->setExchange($exchange);
+			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() . " on {$exception->getFile()}:{$exception->getLine()}" : 'SERVER_ERROR'))->setExchange($exchange);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
@@ -149,13 +155,13 @@ class ExchangeManager
 								$this->fillMapping($exchange, $request, $restaurant);
 							}
 
-							$data->add($this->callRequest($exchange, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
+							$data->add($this->callRequest($exchange, $engine, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
 						}
 					}
 				}
 				elseif (!$data->exist($request->getCode()))
 				{
-					$data->add($this->callRequest($exchange, $scheduleType, $request), $request->getCode());
+					$data->add($this->callRequest($exchange, $engine, $scheduleType, $request), $request->getCode());
 				}
 			}
 
@@ -164,23 +170,35 @@ class ExchangeManager
 
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
-				$this->previewStorage->saveData($exchange, $engine, $transformed);
+				$saveData = $transformed;
+				if ($engine->getFormatter() instanceof IPreviewFormatter)
+				{
+					$saveData = $engine->getFormatter()->getFormattedData($exchange, $transformed);
+					if ($saveData instanceof \Iterator)
+					{
+						$saveData = iterator_to_array($saveData);
+					}
+				}
+				$this->previewStorage->saveData($exchange, $engine, $saveData);
 			}
 			else
 			{
 				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $transformed, $scheduleType));
+				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
+				$loader = ($engine->getLoader() ?: $exchange->getLoader());
+
 				if ($formatted instanceof \Iterator)
 				{
 					foreach ($formatted as $item)
 					{
-						$exchange->getLoader()->sendRequest($item);
+
+						$loader instanceof ConnectionInterface ? $loader->sendRequest($item) : $loader->store($item);
 					}
 				}
 				else
 				{
-					$exchange->getLoader()->sendRequest($formatted);
+					$loader instanceof ConnectionInterface ? $loader->sendRequest($formatted) : $loader->store($formatted);
 				}
 
 			}
@@ -188,7 +206,7 @@ class ExchangeManager
 		}
 	}
 
-	protected function callRequest(ExchangeInterface $exchange, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
+	protected function callRequest(ExchangeInterface $exchange, ExchangeEngineInterface $engine, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
 	{
 		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange) || $restaurant)
 		{
@@ -204,13 +222,21 @@ class ExchangeManager
 		}
 
 		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
-		$response = $exchange->getExtractor()->sendRequest($request);
+		$this->logger->info('Exchange call request', ['requestCode' => $request->getCode()]);
+
+		$extractor = $engine->getExtractor() ?: $exchange->getExtractor();
+		if($extractor instanceof ExtractorInterface)
+		{
+			return $extractor->extract($request);
+		}
+		$response = $extractor->sendRequest($request);
 		if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
 		{
 			throw new EngineNotFoundDataException();
 		}
 
-		return $request->processResponse($response->getBody()->getContents());
+		$response = $response->getBody()->__toString();
+		return $request instanceof iikoOlapRequest ? $request->processResponse($response) : $response;
 
 	}
 
@@ -247,6 +273,18 @@ class ExchangeManager
 		}
 	}
 
+	private function fillExchange(ExchangeInterface $exchange, ExchangeNodeInterface $node)
+	{
+		if ($node instanceof WithExchangeExtensionInterface)
+		{
+			$node->setExchange($exchange);
+		}
+		foreach ($node->getChildNodes() as $childNode)
+		{
+			$this->fillExchange($exchange, $childNode);
+		}
+	}
+
 
 	private function setParams(ExchangeInterface $exchange, ExchangeParametersInterface $params): void
 	{
@@ -266,8 +304,7 @@ class ExchangeManager
 			}
 			WithRestaurantExtensionHelper::setRestaurantCollectionForExchangeNode($exchange, $params->getRestaurantCollection());
 		}
-
-		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
+		elseif (WithRestaurantExtensionHelper::isNeedRestaurant($exchange))
 		{
 			if (is_null($params->getRestaurant()))
 			{
@@ -279,33 +316,33 @@ class ExchangeManager
 
 	public function translate(ExchangeInterface $exchange, ExchangeNodeInterface $node)
 	{
-		$node->setName($this->translator->trans($node->getCode() . ".NAME", [], $exchange->getCode()));
-		$node->setDescription($this->translator->trans($node->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+		$node->setName($this->trans($node->getCode() . ".NAME", $exchange->getCode()));
+		$node->setDescription($this->trans($node->getCode() . ".DESCRIPTION", $exchange->getCode()));
 
 		if ($node instanceof ConfigurableExtensionInterface)
 		{
 			foreach ($node->getConfiguration() as $configItem)
 			{
-				$configItem->setName($this->translator->trans($configItem->getCode() . ".NAME", [], $exchange->getCode()));
-				$configItem->setDescription($this->translator->trans($configItem->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+				$configItem->setName($this->trans($configItem->getCode() . ".NAME", $exchange->getCode()));
+				$configItem->setDescription($this->trans($configItem->getCode() . ".DESCRIPTION", $exchange->getCode()));
 			}
 		}
 		if ($node instanceof WithMappingExtensionInterface)
 		{
 			foreach ($node->getMapping() as $mapping)
 			{
-				$mapping->setName($this->translator->trans($mapping->getCode() . ".NAME", [], $exchange->getCode()));
-				$mapping->setDescription($this->translator->trans($mapping->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+				$mapping->setName($this->trans($mapping->getCode() . ".NAME", $exchange->getCode()));
+				$mapping->setDescription($this->trans($mapping->getCode() . ".DESCRIPTION", $exchange->getCode()));
 
 				foreach ($mapping->getExposedIdentifiers() as $identifier)
 				{
-					$identifier->setName($this->translator->trans($identifier->getCode() . ".NAME", [], $exchange->getCode()));
-					$identifier->setDescription($this->translator->trans($identifier->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+					$identifier->setName($this->trans($identifier->getCode() . ".NAME", $exchange->getCode()));
+					$identifier->setDescription($this->trans($identifier->getCode() . ".DESCRIPTION", $exchange->getCode()));
 				}
 				foreach ($mapping->getExposedValues() as $value)
 				{
-					$value->setName($this->translator->trans($value->getCode() . ".NAME", [], $exchange->getCode()));
-					$value->setDescription($this->translator->trans($value->getCode() . ".DESCRIPTION", [], $exchange->getCode()));
+					$value->setName($this->trans($value->getCode() . ".NAME", $exchange->getCode()));
+					$value->setDescription($this->trans($value->getCode() . ".DESCRIPTION", $exchange->getCode()));
 				}
 			}
 		}
@@ -315,6 +352,12 @@ class ExchangeManager
 		}
 
 		return $node;
+	}
+
+	protected function trans(string $code, string $exchangeCode)
+	{
+		$translated = $this->translator->trans($code, [], 'exchange');
+		return $translated === $code ? $this->translator->trans($code, [], $exchangeCode) : $translated;
 	}
 
 	public function getError(ExchangeInterface $exchange, ExchangeException $exception): ExchangeException
