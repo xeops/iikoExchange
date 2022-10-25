@@ -32,7 +32,7 @@ class ScheduleStorage implements StorageInterface, WithRestaurantExtensionInterf
 	 * @return mixed
 	 * @throws ExchangeException
 	 */
-	public function store($id, $data)
+	public function store($data)
 	{
 		throw new ExchangeException('ScheduleStorage not implemented');
 	}
