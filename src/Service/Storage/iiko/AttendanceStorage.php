@@ -3,28 +3,18 @@
 namespace iikoExchangeBundle\Service\Storage\iiko;
 
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
-use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
-use iikoExchangeBundle\ExtensionTrait\WithRestaurantExtensionTrait;
 
-abstract class AttendanceStorage implements StorageInterface, WithExchangeExtensionInterface, WithRestaurantExtensionInterface
+abstract class AttendanceStorage implements StorageInterface, WithExchangeExtensionInterface
 {
 	use WithExchangeExtensionTrait;
 
-	use WithRestaurantExtensionTrait
-	{
-		WithRestaurantExtensionTrait::jsonSerialize as restaurantJsonSerialize;
-	}
-	use ExchangeNodeTrait
-	{
-		ExchangeNodeTrait::jsonSerialize as nodeJsonSerialize;
-	}
+	use ExchangeNodeTrait;
 
-	public function jsonSerialize()
+	public function getCode(): string
 	{
-		return $this->nodeJsonSerialize() + $this->restaurantJsonSerialize();
+		return IIKO;
 	}
-
 }

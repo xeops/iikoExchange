@@ -3,30 +3,17 @@
 namespace iikoExchangeBundle\Service\Storage\iiko;
 
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
-use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
-use iikoExchangeBundle\ExtensionTrait\WithRestaurantExtensionTrait;
 
-class SalaryStorage implements StorageInterface, WithExchangeExtensionInterface, WithRestaurantExtensionInterface
+class SalaryStorage implements StorageInterface, WithExchangeExtensionInterface
 {
 	use WithExchangeExtensionTrait;
 
-	use WithRestaurantExtensionTrait
-	{
-		WithRestaurantExtensionTrait::jsonSerialize as restaurantJsonSerialize;
-	}
-	use ExchangeNodeTrait
-	{
-		ExchangeNodeTrait::jsonSerialize as nodeJsonSerialize;
-	}
 
-	public function jsonSerialize()
-	{
-		return $this->nodeJsonSerialize() + $this->restaurantJsonSerialize();
-	}
+	use ExchangeNodeTrait;
 
 	const STORAGE_SALARY = 'Salary';
 

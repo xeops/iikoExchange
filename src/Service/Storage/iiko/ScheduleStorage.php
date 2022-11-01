@@ -14,24 +14,13 @@ use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
 use iikoExchangeBundle\ExtensionTrait\WithRestaurantExtensionTrait;
 use Psr\Log\LoggerInterface;
 
-class ScheduleStorage implements StorageInterface, WithExchangeExtensionInterface, WithRestaurantExtensionInterface
+class ScheduleStorage implements StorageInterface, WithExchangeExtensionInterface
 {
 	use WithExchangeExtensionTrait;
 
-	use WithRestaurantExtensionTrait
-	{
-		WithRestaurantExtensionTrait::jsonSerialize as restaurantJsonSerialize;
-	}
 
-	use ExchangeNodeTrait
-	{
-		ExchangeNodeTrait::jsonSerialize as nodeJsonSerialize;
-	}
+	use ExchangeNodeTrait;
 
-	public function jsonSerialize()
-	{
-		return $this->nodeJsonSerialize() + $this->restaurantJsonSerialize();
-	}
 
 	/**
 	 * @param $externalId

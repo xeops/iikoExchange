@@ -8,6 +8,17 @@ class SalaryDto implements \JsonSerializable
 	protected float $salary;
 	protected \DateTime $startDate;
 
+	public static function newFromArray(array $data)
+	{
+		$r = new SalaryDto();
+
+		$r->employeeId = $data['employeeId'];
+		$r->salary = $data['salary'];
+		$r->startDate = new \DateTime($data['startDate']);
+
+		return $r;
+	}
+
 	/**
 	 * @return string
 	 */
