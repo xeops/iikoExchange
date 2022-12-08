@@ -232,12 +232,12 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 		];
 	}
 
-	public function getRedirectToLoginUrl(string $clientId, string $redirectUri): string
+	public function getRedirectToLoginUrl(string $clientId, string $redirectUri, string $state): string
 	{
 		return
 			rtrim($this->getBaseAuthorisationUrl(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR .
 			ltrim($this->getLoginPath(), DIRECTORY_SEPARATOR) .
-			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&scope=" . $this->getScope();
+			"?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code&state={$state}&scope=" . $this->getScope();
 	}
 
 	protected function getScope(): string

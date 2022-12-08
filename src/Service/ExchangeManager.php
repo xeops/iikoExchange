@@ -34,6 +34,7 @@ use iikoExchangeBundle\Exception\ConfigNotFoundException;
 use iikoExchangeBundle\Exception\EngineNotFoundDataException;
 use iikoExchangeBundle\Exception\ExchangeException;
 use iikoExchangeBundle\Exception\MappingNotFoundException;
+use iikoExchangeBundle\Exception\MappingNotIncludedException;
 use iikoExchangeBundle\Exception\StartUpParameterNotFound;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
@@ -372,6 +373,9 @@ class ExchangeManager
 
 			case MappingNotFoundException::class:
 				$additionalLoggerInfo['%identifiers%'] = implode(",", $exception->getIdentifiers());
+				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode());
+				break;
+			case MappingNotIncludedException::class:
 				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode());
 				break;
 		}

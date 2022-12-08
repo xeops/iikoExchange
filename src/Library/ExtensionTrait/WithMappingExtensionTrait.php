@@ -6,6 +6,7 @@ namespace iikoExchangeBundle\ExtensionTrait;
 
 use iikoExchangeBundle\Contract\Mapping\MappingInterface;
 use iikoExchangeBundle\Exception\MappingNotFoundException;
+use iikoExchangeBundle\Exception\MappingNotIncludedException;
 
 trait WithMappingExtensionTrait
 {
@@ -41,6 +42,10 @@ trait WithMappingExtensionTrait
 					return $value;
 				}
 			}
+		}
+		else
+		{
+			throw new MappingNotIncludedException($mappingCode);
 		}
 
 		throw new MappingNotFoundException($mappingCode, $identifiers);
@@ -81,7 +86,7 @@ trait WithMappingExtensionTrait
 	{
 		if (!array_key_exists($mappingCode, $this->getMappingValues()))
 		{
-			throw new MappingNotFoundException($mappingCode, []);
+			throw new MappingNotIncludedException($mappingCode, []);
 		}
 		$result = [];
 

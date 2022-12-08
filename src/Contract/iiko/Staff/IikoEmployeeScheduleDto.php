@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nyatM
- * Date: 24.05.2018
- * Time: 18:08
- */
+
 
 namespace iikoExchangeBundle\Contract\iiko\Staff;
 
@@ -15,7 +10,7 @@ namespace iikoExchangeBundle\Contract\iiko\Staff;
  * Class IikoEmployeeSchedule
  * @package IikoApiBundle\Model\Employee
  */
-class IikoEmployeeScheduleDto
+class IikoEmployeeScheduleDto implements \JsonSerializable
 {
 	/** @var  string */
 	protected $id = '';
@@ -58,57 +53,6 @@ class IikoEmployeeScheduleDto
 
 	}
 
-
-
-
-	/**
-	 * @param array $array
-	 * @return static
-	 */
-	public static function newFromArray(array $array)
-	{
-		$r = new static();
-		if (isset($array['id'])) {
-			$r->setId($array['id']);
-		}
-		if (isset($array['employeeId']) && is_string($array['employeeId'])) {
-			$r->setEmployeeId($array['employeeId']);
-		}
-		if (isset($array['roleId']) && is_string($array['roleId'])) {
-			$r->setRoleId($array['roleId']);
-		}
-		if (isset($array['nonPaidMinutes'])) {
-			$r->setNonPaidMinutes($array['nonPaidMinutes']);
-		}
-		if (isset($array['scheduleTypeCode']) && is_string($array['scheduleTypeCode'])) {
-			$r->setScheduleTypeCode($array['scheduleTypeCode']);
-		}
-		if (isset($array['dateFrom'])) {
-			if (is_int($array['dateFrom'])) {
-				$r->setDateFrom((new \DateTime())->setTimestamp($array['dateFrom']));
-			} else {
-				$r->setDateFrom(new \DateTime($array['dateFrom']));
-			}
-		}
-		if (isset($array['dateTo'])) {
-			if (is_int($array['dateTo'])) {
-				$r->setDateTo((new \DateTime())->setTimestamp($array['dateTo']));
-			} else {
-				$r->setDateTo(new \DateTime($array['dateTo']));
-			}
-		}
-		if (isset($array['departmentName']) && is_string($array['departmentName'])) {
-			$r->setDepartmentName($array['departmentName']);
-		}
-		if (isset($array['departmentId']) && is_string($array['departmentId'])) {
-			$r->setDepartmentId($array['departmentId']);
-		}
-		if (isset($array['paymentDetails']) && is_array($array['paymentDetails'])) {
-			$r->setPaymentDetails(IikoPaymentDetailsDto::newFromArray($array['paymentDetails']));
-		}
-		return $r;
-
-	}
 
 	/**
 	 * @return string
@@ -242,6 +186,7 @@ class IikoEmployeeScheduleDto
 	public function getDepartmentName()
 	{
 		return $this->departmentName;
+
 	}
 
 	/**
@@ -250,6 +195,7 @@ class IikoEmployeeScheduleDto
 	public function setDepartmentName($departmentName)
 	{
 		$this->departmentName = (string)$departmentName;
+		return $this;
 	}
 
 	/**
@@ -297,24 +243,5 @@ class IikoEmployeeScheduleDto
 		return $this->getRoleId() ? true : false;
 	}
 
-	/**
-	 * Форматировать сущнность для добавления в iiko
-	 * @return mixed
-	 */
-	public function toSaveIikoXml()
-	{
-		$root = new \SimpleXMLElement('<schedule></schedule>');
-		if ($this->getId()) {
-			$root->addChild('id', $this->getId());
-		}
-		$root->addChild('employeeId', $this->getEmployeeId());
-		$root->addChild('roleId', $this->getRoleId());
-		$root->addChild('dateFrom', $this->getDateFrom()->format('Y-m-d\TH:i:s'));
-		$root->addChild('dateTo', $this->getDateTo()->format('Y-m-d\TH:i:s'));
-		$root->addChild('scheduleTypeCode', $this->getScheduleTypeCode());
-		$root->addChild('nonPaidMinutes', $this->getNonPaidMinutes());
-		$root->addChild('departmentId', $this->getDepartmentId());
-		return $root->asXML();
-	}
 
 }
