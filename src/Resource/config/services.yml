@@ -33,6 +33,7 @@ services:
 
     exchange.options_sets:
         class: iikoExchangeBundle\Service\OptionSetDirectory
+        public: true
 
     exchange.option_set_manager:
         class: iikoExchangeBundle\Service\OptionSetManager
