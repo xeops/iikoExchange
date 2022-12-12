@@ -33,6 +33,10 @@ class OptionSetManager
 		{
 			return $optionSetService->getCollection($exchange, $restaurant);
 		}
+		if($optionSetService instanceof ConfigurableExtensionInterface)
+		{
+			$optionSetService->setConfigCollection($this->configStorage->getConfiguration($exchange, $exchange, $restaurant));
+		}
 		/** @var ExchangeNodeInterface|ConfigurableExtensionInterface|ConnectionInterface $connection */
 		$connection = $optionSetService->getConnection();
 

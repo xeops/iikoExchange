@@ -43,6 +43,7 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	const FIELD_ENGINES = 'engines';
 	const FIELD_SCHEDULES = 'schedules';
 	const FIELD_MAPPING = 'mapping';
+	const FIELD_GLOBAL_CONFIG = 'configuration';
 	const FIELD_REQUESTS = 'requests';
 
 

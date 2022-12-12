@@ -40,7 +40,7 @@ trait ConfigurableExtensionTrait
 		$this->config = $config;
 	}
 
-	protected function getConfigValue(string $configCode)
+	protected function getConfigValue(string $configCode, bool $save = false)
 	{
 		if (array_key_exists($configCode, $this->config))
 		{
@@ -56,12 +56,25 @@ trait ConfigurableExtensionTrait
 		}
 		if ($parameter === null)
 		{
+			if ($save)
+			{
+				return null;
+			}
 			throw new ConfigNotFoundException($configCode);
 		}
 		if (!array_key_exists($configCode, $this->config) && $parameter->getRequired() !== false && empty($parameter->getValue()))
 		{
+			if ($save)
+			{
+				return null;
+			}
 			throw new ConfigNotFoundException($configCode);
 		}
 		return $parameter->getValue();
+	}
+
+	public function exposeGlobalConfiguration(): array
+	{
+		return [];
 	}
 }

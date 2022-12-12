@@ -8,6 +8,7 @@ use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
+use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Extensions\WithPeriodExtensionInterface;
@@ -100,9 +101,9 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	}
 
 
-	public function jsonSerialize()
+	final public function jsonSerialize()
 	{
-		$requests = $mappings = [];
+		$requests = $mappings = $configs = [];
 
 		array_map(function (ExchangeEngine $engine) use (&$requests)
 		{
@@ -114,7 +115,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 		}, $this->getEngines());
 
 		$this->serialiseMappingExtension($this, $mappings);
-
+		$this->serialiseGlobalConfig($this, $configs);
 		return $this->nodeJsonSerialize() + [
 
 				static::FIELD_EXTRACTOR => $this->getExtractor(),
@@ -122,12 +123,32 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 				static::FIELD_LOADER => $this->getLoader(),
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),
+				static::FIELD_GLOBAL_CONFIG =>  array_values($configs),
 				static::FIELD_SCHEDULES => $this->getSchedules(),
 				static::FIELD_PREVIEW => $this->previewTemplate !== null,
 				WithPeriodExtensionInterface::FIELD_PERIOD => PeriodicalExtensionHelper::isNeedPeriod($this),
 				WithRestaurantExtensionInterface::FIELD_RESTAURANT => WithRestaurantExtensionHelper::isNeedRestaurant($this),
 				WithMultiRestaurantExtensionInterface::FIELD_BY_MULTI_STORE => WithRestaurantExtensionHelper::isNeedMultiRestaurant($this)
 			];
+	}
+
+	protected function serialiseGlobalConfig(ExchangeNodeInterface $exchangeNode, array &$configs)
+	{
+		if ($exchangeNode instanceof ConfigurableExtensionInterface)
+		{
+			foreach ($exchangeNode->exposeGlobalConfiguration() as $config)
+			{
+				if (array_key_exists($config->getCode(), $configs) && get_class($configs[$config->getCode()]) !== get_class($config))
+				{
+					throw new \Exception("Global config with code {$config->getCode()} already registered and has another class. Miss type");
+				}
+				$configs[$config->getCode()] = $config;
+			}
+		}
+		foreach ($exchangeNode->getChildNodes() as $childNode)
+		{
+			$this->serialiseGlobalConfig($childNode, $configs);
+		}
 	}
 
 	protected function serialiseMappingExtension(ExchangeNodeInterface $exchangeNode, array &$mappings)

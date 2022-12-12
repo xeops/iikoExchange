@@ -7,6 +7,7 @@ use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Application\Restaurant;
 use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
+use iikoExchangeBundle\Contract\Engine\ResponseProcessingEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
@@ -188,18 +189,30 @@ class ExchangeManager
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
 				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
 				$loader = ($engine->getLoader() ?: $exchange->getLoader());
-
+				$response = null;
 				if ($formatted instanceof \Iterator)
 				{
 					foreach ($formatted as $item)
 					{
 
-						$loader instanceof ConnectionInterface ? $loader->sendRequest($item) : $loader->store($item);
+						$loader instanceof ConnectionInterface ? ($response = $loader->sendRequest($item)) : $loader->store($item);
 					}
 				}
 				else
 				{
-					$loader instanceof ConnectionInterface ? $loader->sendRequest($formatted) : $loader->store($formatted);
+					$loader instanceof ConnectionInterface ? ($response = $loader->sendRequest($formatted)) : $loader->store($formatted);
+				}
+				if ($engine instanceof ResponseProcessingEngineInterface)
+				{
+					if (!($loader instanceof ConnectionInterface))
+					{
+						throw (new ExchangeException("Engine cannot process response from storage. Wrong configuration"))->setExchange($exchange);
+					}
+					if ($response === null)
+					{
+						throw (new ExchangeException("Engine cannot process null as response"))->setExchange($exchange);
+					}
+					$engine->processResponse($response);
 				}
 
 			}
@@ -225,7 +238,7 @@ class ExchangeManager
 		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
 
 		$extractor = $engine->getExtractor() ?: $exchange->getExtractor();
-		if($extractor instanceof ExtractorInterface)
+		if ($extractor instanceof ExtractorInterface)
 		{
 			return $extractor->extract($request);
 		}
@@ -245,7 +258,10 @@ class ExchangeManager
 	{
 		if ($node instanceof ConfigurableExtensionInterface)
 		{
-
+			if (count($node->exposeGlobalConfiguration()) > 0)
+			{
+				$node->setConfigCollection($this->configStorage->getConfiguration($exchange, $exchange, $restaurant));
+			}
 			$node->setConfigCollection($this->configStorage->getConfiguration($exchange, $node, $restaurant));
 		}
 		foreach ($node->getChildNodes() as $childNode)

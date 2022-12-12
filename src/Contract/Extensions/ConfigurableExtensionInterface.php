@@ -17,4 +17,8 @@ interface ConfigurableExtensionInterface
 	public function exposeConfiguration(): array;
 
 	public function setConfigCollection(array $config);
+	/**
+	 * @return ConfigItemInterface[]
+	 */
+	public function exposeGlobalConfiguration(): array;
 }
