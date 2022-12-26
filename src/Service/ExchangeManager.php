@@ -18,6 +18,8 @@ use iikoExchangeBundle\Contract\Extensions\WithMultiRestaurantExtensionInterface
 use iikoExchangeBundle\Contract\Extensions\WithRestaurantExtensionInterface;
 use iikoExchangeBundle\Contract\Formatter\IPreviewFormatter;
 use iikoExchangeBundle\Contract\iikoStorage\ExtractorInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
+use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Schedule\ScheduleInterface;
 use iikoExchangeBundle\Contract\Service\ExchangeConfigStorageInterface;
@@ -187,36 +189,43 @@ class ExchangeManager
 			{
 				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
-				$loader = ($engine->getLoader() ?: $exchange->getLoader());
-				$response = null;
-				if ($formatted instanceof \Iterator)
-				{
-					foreach ($formatted as $item)
-					{
-
-						$loader instanceof ConnectionInterface ? ($response = $loader->sendRequest($item)) : $loader->store($item);
-					}
-				}
-				else
-				{
-					$loader instanceof ConnectionInterface ? ($response = $loader->sendRequest($formatted)) : $loader->store($formatted);
-				}
-				if ($engine instanceof ResponseProcessingEngineInterface)
-				{
-					if (!($loader instanceof ConnectionInterface))
-					{
-						throw (new ExchangeException("Engine cannot process response from storage. Wrong configuration"))->setExchange($exchange);
-					}
-					if ($response === null)
-					{
-						throw (new ExchangeException("Engine cannot process null as response"))->setExchange($exchange);
-					}
-					$engine->processResponse($response);
-				}
-
+				$this->load($formatted, $engine, $exchange, $scheduleType);
 			}
 			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
+		}
+	}
+
+	protected function load($formatted, ExchangeEngineInterface $engine, ExchangeInterface $exchange, string $scheduleType)
+	{
+		$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
+		$loader = ($engine->getLoader() ?: $exchange->getLoader());
+
+
+		foreach ($formatted instanceof \Iterator ? $formatted : [$formatted] as $item)
+		{
+			$response = null;
+			if ($loader instanceof ConnectionInterface)
+			{
+				$response = $loader->sendRequest($item);
+			}
+			elseif ($loader instanceof StorageInterface)
+			{
+				$loader->store($item);
+				return;
+			}
+			else
+			{
+				throw new ExchangeException("Unknown type of loader");
+			}
+
+			if ($engine instanceof ResponseProcessingEngineInterface)
+			{
+				if ($response === null)
+				{
+					throw (new ExchangeException("Engine cannot process null as response"))->setExchange($exchange);
+				}
+				$engine->processResponse($response);
+			}
 		}
 	}
 
@@ -258,11 +267,14 @@ class ExchangeManager
 	{
 		if ($node instanceof ConfigurableExtensionInterface)
 		{
+			$configCollection = [];
 			if (count($node->exposeGlobalConfiguration()) > 0)
 			{
-				$node->setConfigCollection($this->configStorage->getConfiguration($exchange, $exchange, $restaurant));
+				$configCollection = array_merge($configCollection, $this->configStorage->getConfiguration($exchange, $exchange, $restaurant));
 			}
-			$node->setConfigCollection($this->configStorage->getConfiguration($exchange, $node, $restaurant));
+			$configCollection = array_merge($configCollection, $this->configStorage->getConfiguration($exchange, $node, $restaurant));
+
+			$node->setConfigCollection($configCollection);
 		}
 		foreach ($node->getChildNodes() as $childNode)
 		{

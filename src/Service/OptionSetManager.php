@@ -29,14 +29,16 @@ class OptionSetManager
 	{
 		$optionSetService = $this->optionSetDirectory->get($optionSetCode);
 
-		if ($optionSetService instanceof OptionSetConstants)
-		{
-			return $optionSetService->getCollection($exchange, $restaurant);
-		}
 		if($optionSetService instanceof ConfigurableExtensionInterface)
 		{
 			$optionSetService->setConfigCollection($this->configStorage->getConfiguration($exchange, $exchange, $restaurant));
 		}
+
+		if ($optionSetService instanceof OptionSetConstants)
+		{
+			return $optionSetService->getCollection($exchange, $restaurant);
+		}
+
 		/** @var ExchangeNodeInterface|ConfigurableExtensionInterface|ConnectionInterface $connection */
 		$connection = $optionSetService->getConnection();
 
