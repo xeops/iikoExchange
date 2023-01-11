@@ -224,7 +224,7 @@ class ExchangeManager
 				{
 					throw (new ExchangeException("Engine cannot process null as response"))->setExchange($exchange);
 				}
-				$engine->processResponse($response);
+				$engine->processResponse($response, $formatted);
 			}
 		}
 	}

@@ -6,5 +6,5 @@ use GuzzleHttp\Psr7\Response;
 
 interface ResponseProcessingEngineInterface
 {
-	public function processResponse(Response $response): void;
+	public function processResponse(Response $response, $formatted): void;
 }
