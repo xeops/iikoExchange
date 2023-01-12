@@ -21,6 +21,7 @@ services:
 
     exchange.storage.preview:
         class: iikoExchangeBundle\Service\Storage\DummyPreviewStorage
+        public: true
 
     exchange.connection.iiko:
         class: iikoExchangeBundle\Connection\iiko\iikoConnection
