@@ -37,6 +37,7 @@ services:
 
     exchange.option_set_manager:
         class: iikoExchangeBundle\Service\OptionSetManager
+        public: true
         arguments: [ '@logger', '@exchange.storage.config', '@exchange.options_sets' ]
     # connections
 
