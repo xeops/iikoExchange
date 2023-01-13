@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\ExtensionTrait;
 
 
+use iikoExchangeBundle\Contract\Extensions\WithMappingExtensionInterface;
 use iikoExchangeBundle\Contract\Mapping\MappingInterface;
 use iikoExchangeBundle\Exception\MappingNotFoundException;
 use iikoExchangeBundle\Exception\MappingNotIncludedException;
@@ -82,7 +83,7 @@ trait WithMappingExtensionTrait
 		return $this->mapping;
 	}
 
-	public function getUniqMappingIdentifiers(string $mappingCode, string $identifier)
+	public function getUniqMappingIdentifiers(string $mappingCode, string $identifier, int $filter = WithMappingExtensionInterface::ANY)
 	{
 		if (!array_key_exists($mappingCode, $this->getMappingValues()))
 		{
@@ -92,7 +93,16 @@ trait WithMappingExtensionTrait
 
 		foreach ($this->getMappingValues()[$mappingCode] as $item)
 		{
+			if (
+				($filter === WithMappingExtensionInterface::NOT_EXTENDED && count($item[MappingInterface::FIELD_IDENTIFIERS]) > 1) ||
+				($filter === WithMappingExtensionInterface::EXTENDED && count($item[MappingInterface::FIELD_IDENTIFIERS]) === 1)
+			)
+			{
+				continue;
+			}
+
 			$result[] = $item[MappingInterface::FIELD_IDENTIFIERS][$identifier];
+
 		}
 		return array_values(array_unique($result));
 	}

@@ -231,6 +231,7 @@ class ExchangeManager
 
 	protected function callRequest(ExchangeInterface $exchange, ExchangeEngineInterface $engine, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
 	{
+		$this->logger->info("Exchange. Call request", ['requestCode' => $request->getCode(), 'engineCode' => $engine->getCode(), 'exchangeCode' => $exchange->getCode()]);
 		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange) || $restaurant)
 		{
 			if (PeriodicalExtensionHelper::isNeedPeriod($request))
