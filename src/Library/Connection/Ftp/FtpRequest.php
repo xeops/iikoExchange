@@ -2,7 +2,7 @@
 
 namespace iikoExchangeBundle\Connection\Ftp;
 
-class FtpRequest implements \iikoExchangeBundle\Contract\Request\FtpRequestInterface
+class FtpRequest implements \iikoExchangeBundle\Contract\Request\FtpRequestInterface, \JsonSerializable
 {
 	private string $filePath;
 	private string $fileName;
@@ -39,5 +39,8 @@ class FtpRequest implements \iikoExchangeBundle\Contract\Request\FtpRequestInter
 		return $this->fileContent;
 	}
 
-
+	public function jsonSerialize()
+	{
+		return $this->fileContent;
+	}
 }

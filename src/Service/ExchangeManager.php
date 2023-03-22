@@ -101,15 +101,14 @@ class ExchangeManager
 
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exception' => $exception->getMessage()]);
 			$error = $this->getError($exchange, $exception);
-			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
+			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW || $scheduleType === ScheduleInterface::TYPE_ON_DEMAND)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
 				$this->previewStorage->clearData($exchange);
 			}
-			else
-			{
-				$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
-			}
+
+			$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
+
 			return false;
 
 		}
@@ -117,15 +116,12 @@ class ExchangeManager
 		{
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
 			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() . " on {$exception->getFile()}:{$exception->getLine()}" : 'SERVER_ERROR'))->setExchange($exchange);
-			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
+			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW || $scheduleType === ScheduleInterface::TYPE_ON_DEMAND)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
 				$this->previewStorage->clearData($exchange);
 			}
-			else
-			{
-				$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
-			}
+			$this->dispatcher->dispatch('exchange.error', new ExchangeErrorEvent($exchange, $error, $scheduleType));
 			return false;
 		}
 
@@ -189,7 +185,15 @@ class ExchangeManager
 			{
 				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
-				$this->load($formatted, $engine, $exchange, $scheduleType);
+				if($scheduleType === ScheduleInterface::TYPE_ON_DEMAND)
+				{
+
+					$this->previewStorage->saveData($exchange, $engine, $formatted instanceof \Iterator ? iterator_to_array($formatted) : $formatted);
+				}
+				else
+				{
+					$this->load($formatted, $engine, $exchange, $scheduleType);
+				}
 			}
 			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
 		}

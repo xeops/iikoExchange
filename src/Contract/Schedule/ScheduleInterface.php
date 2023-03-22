@@ -7,4 +7,5 @@ interface ScheduleInterface
 	const TYPE_MANUAL = 'manual';
 	const TYPE_SCHEDULE = 'schedule';
 	const TYPE_PREVIEW = 'preview';
+	const TYPE_ON_DEMAND ='on_demand';
 }
