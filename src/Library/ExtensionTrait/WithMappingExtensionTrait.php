@@ -28,7 +28,7 @@ trait WithMappingExtensionTrait
 		{
 			foreach ($this->getMappingValues()[$mappingCode] ?? [] as $item)
 			{
-				if (!array_diff_assoc(array_filter($item[MappingInterface::FIELD_IDENTIFIERS]), $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
+				if (!array_diff_assoc(array_filter($item[MappingInterface::FIELD_IDENTIFIERS], static fn($val) => !is_null($val)), $identifiers) && array_key_exists($valueCode, $item[MappingInterface::FIELD_VALUES]))
 				{
 					$value = $item[MappingInterface::FIELD_VALUES][$valueCode];
 
@@ -93,7 +93,7 @@ trait WithMappingExtensionTrait
 
 		foreach ($this->getMappingValues()[$mappingCode] as $item)
 		{
-			$ids = array_filter($item[MappingInterface::FIELD_IDENTIFIERS]);
+			$ids = array_map(static fn($val) => !is_null($val), $item[MappingInterface::FIELD_IDENTIFIERS]);
 			if (
 				($filter === WithMappingExtensionInterface::NOT_EXTENDED && count($ids) > 1) ||
 				($filter === WithMappingExtensionInterface::EXTENDED && count($ids) === 1)
