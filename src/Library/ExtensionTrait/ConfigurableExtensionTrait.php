@@ -12,6 +12,8 @@ trait ConfigurableExtensionTrait
 
 	protected ?array $exposedConfig = null;
 
+	protected ?array $globalConfig = null;
+
 	public function getConfiguration(): array
 	{
 		if (null === $this->exposedConfig)
@@ -19,6 +21,15 @@ trait ConfigurableExtensionTrait
 			$this->exposedConfig = $this->exposeConfiguration();
 		}
 		return $this->exposedConfig;
+	}
+
+	public function getGlobalConfiguration(): array
+	{
+		if (null === $this->globalConfig)
+		{
+			$this->globalConfig = $this->exposeGlobalConfiguration();
+		}
+		return $this->globalConfig;
 	}
 
 	public function exposeConfiguration(): array

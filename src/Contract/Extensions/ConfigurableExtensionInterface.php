@@ -11,6 +11,8 @@ interface ConfigurableExtensionInterface
 	const FIELD_CONFIGURATION = 'configuration';
 
 	public function getConfiguration() : array;
+
+	public function getGlobalConfiguration() : array;
 	/**
 	 * @return ConfigItemInterface[]
 	 */

@@ -355,6 +355,11 @@ class ExchangeManager
 				$configItem->setName($this->trans($configItem->getCode() . ".NAME", $exchange->getCode()));
 				$configItem->setDescription($this->trans($configItem->getCode() . ".DESCRIPTION", $exchange->getCode()));
 			}
+			foreach ($node->getGlobalConfiguration() ?? [] as $globalConfig)
+			{
+				$globalConfig->setName($this->trans($globalConfig->getCode() . ".NAME", $exchange->getCode()));
+				$globalConfig->setDescription($this->trans($globalConfig->getCode() . ".DESCRIPTION", $exchange->getCode()));
+			}
 		}
 		if ($node instanceof WithMappingExtensionInterface)
 		{

@@ -136,7 +136,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	{
 		if ($exchangeNode instanceof ConfigurableExtensionInterface)
 		{
-			foreach ($exchangeNode->exposeGlobalConfiguration() as $config)
+			foreach ($exchangeNode->getGlobalConfiguration() as $config)
 			{
 				if (array_key_exists($config->getCode(), $configs) && get_class($configs[$config->getCode()]) !== get_class($config))
 				{
