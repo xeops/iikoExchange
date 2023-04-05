@@ -51,7 +51,7 @@ trait ConfigurableExtensionTrait
 		$this->config = $config;
 	}
 
-	protected function getConfigValue(string $configCode, bool $save = false)
+	public function getConfigValue(string $configCode, bool $save = false)
 	{
 		if (array_key_exists($configCode, $this->config))
 		{

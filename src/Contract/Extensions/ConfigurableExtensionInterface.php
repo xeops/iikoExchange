@@ -23,4 +23,6 @@ interface ConfigurableExtensionInterface
 	 * @return ConfigItemInterface[]
 	 */
 	public function exposeGlobalConfiguration(): array;
+
+	public function getConfigValue(string $configCode, bool $save = false);
 }
