@@ -211,7 +211,6 @@ class ExchangeManager
 			elseif ($loader instanceof StorageInterface)
 			{
 				$loader->store($item);
-				return;
 			}
 			else
 			{
