@@ -26,8 +26,8 @@ class RestaurantSectionOptionSet extends BaseOptionSet
 			{
 				continue;
 			}
-			$result[] = new OptionSetItem($item['name'], $item['name']);
+			$result[$item['name']] = new OptionSetItem($item['name'], $item['name']);
 		}
-		return $result;
+		return array_unique($result);
 	}
 }
