@@ -94,6 +94,7 @@ class ExchangeManager
 		try
 		{
 			$this->runExchange($exchange, $scheduleType);
+			$this->dispatcher->dispatch('exchange.done', new ExchangeDoneEvent($exchange, $scheduleType));
 		}
 
 		catch (ExchangeException $exception)
@@ -129,7 +130,6 @@ class ExchangeManager
 			return false;
 		}
 
-		$this->dispatcher->dispatch('exchange.done', new ExchangeDoneEvent($exchange, $scheduleType));
 		return true;
 	}
 
