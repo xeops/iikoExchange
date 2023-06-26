@@ -15,6 +15,8 @@ class SftpConnection extends FtpConnection
 
 	const CODE = 'SFTP_CONNECTION';
 
+	protected bool $append = false;
+
 	/**
 	 * @param FtpRequestInterface $handle
 	 * @return Response
@@ -46,8 +48,13 @@ class SftpConnection extends FtpConnection
 				throw new ConnectionException('Cant change directory to ' . $request->getFilePath());
 			}
 		}
+		$mode = SFTP::SOURCE_STRING;
+		if ($this->append)
+		{
+			$mode |= SFTP::RESUME;
+		}
 
-		$isSend = $this->ftp->put($request->getFilePath() . $request->getFileName(), $request->getFileContent(), $this->ftp::SOURCE_STRING);
+		$isSend = $this->ftp->put($request->getFilePath() . $request->getFileName(), $request->getFileContent(), $mode);
 
 		$this->ftp->setTimeout(10);
 
@@ -64,12 +71,12 @@ class SftpConnection extends FtpConnection
 	{
 		$this->ftp = new SFTP($this->getConfigValue(self::CONFIG_HOST), $this->getConfigValue(self::CONFIG_PORT), 10);
 
-		if(!$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
+		if (!$this->ftp->login($this->getConfigValue(self::CONFIG_USERNAME), $this->getConfigValue(self::CONFIG_PASSWORD)))
 		{
 			throw new ConnectionException('Exchange connection failure: incorrect/unavailable server or wrong username/password. Please check connection settings.');
 		}
 
-		if(!$this->ftp->isConnected())
+		if (!$this->ftp->isConnected())
 		{
 			throw new ConnectionException('Exchange connection disconnected');
 		}
@@ -77,5 +84,12 @@ class SftpConnection extends FtpConnection
 		return $this->ftp;
 	}
 
+	/**
+	 * @param bool $append
+	 */
+	public function setAppend(bool $append): void
+	{
+		$this->append = $append;
+	}
 
 }
