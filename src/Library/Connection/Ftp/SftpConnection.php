@@ -49,7 +49,7 @@ class SftpConnection extends FtpConnection
 			}
 		}
 		$mode = SFTP::SOURCE_STRING;
-		if ($this->append)
+		if ($this->append || $request->isFileAppend())
 		{
 			$mode |= SFTP::RESUME;
 		}

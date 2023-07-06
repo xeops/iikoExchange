@@ -9,4 +9,6 @@ interface FtpRequestInterface
 	public function getFileName(): string;
 
 	public function getFileContent(): string;
+
+	public function isFileAppend(): bool;
 }

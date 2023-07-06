@@ -7,12 +7,14 @@ class FtpRequest implements \iikoExchangeBundle\Contract\Request\FtpRequestInter
 	private string $filePath;
 	private string $fileName;
 	private string $fileContent;
+	private bool $fileAppend;
 
-	public function __construct(string $filePath, string $fileName, string $fileContent)
+	public function __construct(string $filePath, string $fileName, string $fileContent, bool $fileAppend = false)
 	{
 		$this->filePath = $filePath;
 		$this->fileName = $fileName;
 		$this->fileContent = $fileContent;
+		$this->fileAppend = $fileAppend;
 	}
 
 	/**
@@ -39,5 +41,9 @@ class FtpRequest implements \iikoExchangeBundle\Contract\Request\FtpRequestInter
 		return $this->fileContent;
 	}
 
+	public function isFileAppend(): bool
+	{
+		return $this->fileAppend;
+	}
 
 }
