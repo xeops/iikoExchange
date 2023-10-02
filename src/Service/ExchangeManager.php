@@ -415,7 +415,7 @@ class ExchangeManager
 
 		$error = $this->translator->trans($message, array_merge($additionalLoggerInfo, [
 			"%exchange%" => $exchange->getName()
-		]), iikoExchangeBundle::BUNDLE_CODE);
+		]), iikoExchangeBundle::BUNDLE_CODE, $exchange->getLocale());
 
 		/** @var Restaurant|null $restaurant */
 		$restaurant = WithRestaurantExtensionHelper::extractRestaurant($exchange);
