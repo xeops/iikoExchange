@@ -400,15 +400,15 @@ class ExchangeManager
 		switch (get_class($exception))
 		{
 			case ConfigNotFoundException::class:
-				$additionalLoggerInfo['%config_code%'] = $this->translator->trans($exception->getConfigCode() . ".NAME", [], $exchange->getCode());
+				$additionalLoggerInfo['%config_code%'] = $this->translator->trans($exception->getConfigCode() . ".NAME", [], $exchange->getCode(), $exchange->getLocale());
 				break;
 
 			case MappingNotFoundException::class:
 				$additionalLoggerInfo['%identifiers%'] = implode(",", $exception->getIdentifiers());
-				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode());
+				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode(), $exchange->getLocale());
 				break;
 			case MappingNotIncludedException::class:
-				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode());
+				$additionalLoggerInfo["%mapping%"] = $this->translator->trans($exception->getMappingCode() . ".NAME", [], $exchange->getCode(), $exchange->getLocale());
 				break;
 		}
 
