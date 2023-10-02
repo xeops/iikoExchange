@@ -100,7 +100,7 @@ class ExchangeManager
 		catch (ExchangeException $exception)
 		{
 
-			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exception' => $exception->getMessage()]);
+			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
 			$error = $this->getError($exchange, $exception);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
