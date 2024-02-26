@@ -12,6 +12,7 @@ class ExchangeParameters implements ExchangeParametersInterface
 	protected ?Period $period = null;
 	protected ?Restaurant $restaurant = null;
 	protected ?array $restaurantCollection = [];
+	protected ?int $revision = null;
 
 	public function getPeriod(): ?Period
 	{
@@ -49,7 +50,8 @@ class ExchangeParameters implements ExchangeParametersInterface
 			'to' => $this->period ? $this->period->getDateTo()->format('Y-m-d H:i:s') : null,
 			'from' => $this->period ? $this->period->getDateFrom()->format('Y-m-d H:i:s') : null,
 			'restaurantId' => $this->restaurant ? $this->restaurant->getId() : null,
-			'restaurantName' => $this->restaurant ? $this->restaurant->getName() : null
+			'restaurantName' => $this->restaurant ? $this->restaurant->getName() : null,
+			'revision' => $this->getRevision()
 		];
 	}
 
@@ -65,4 +67,17 @@ class ExchangeParameters implements ExchangeParametersInterface
 	{
 		$this->restaurantCollection = $restaurantCollection;
 	}
+
+	public function getRevision(): ?int
+	{
+		return $this->revision;
+	}
+
+	public function setRevision(?int $revision): ExchangeParameters
+	{
+		$this->revision = $revision;
+		return $this;
+	}
+
+
 }

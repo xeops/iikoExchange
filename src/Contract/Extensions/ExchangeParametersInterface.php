@@ -12,4 +12,6 @@ interface ExchangeParametersInterface extends \JsonSerializable
 	public function getRestaurant(): ?Restaurant;
 
 	public function getRestaurantCollection(): ?array;
+
+	public function getRevision() : ?int;
 }

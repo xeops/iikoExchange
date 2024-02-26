@@ -7,6 +7,7 @@ use iikoExchangeBundle\Application\Period;
 use iikoExchangeBundle\Application\Restaurant;
 use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
+use iikoExchangeBundle\Contract\Engine\ExchangeGrabEngineInterface;
 use iikoExchangeBundle\Contract\Engine\ResponseProcessingEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
@@ -41,6 +42,7 @@ use iikoExchangeBundle\Exception\MappingNotIncludedException;
 use iikoExchangeBundle\Exception\StartUpParameterNotFound;
 use iikoExchangeBundle\ExtensionHelper\PeriodicalExtensionHelper;
 use iikoExchangeBundle\ExtensionHelper\WithRestaurantExtensionHelper;
+use iikoExchangeBundle\ExtensionHelper\WithRevisionExtensionHelper;
 use iikoExchangeBundle\iikoExchangeBundle;
 use iikoExchangeBundle\Library\Request\ExchangeDataCollection;
 use iikoExchangeBundle\Library\Request\iikoOlapRequest;
@@ -142,32 +144,49 @@ class ExchangeManager
 
 		foreach ($exchange->getEngines() as $engine)
 		{
-			/** @var ExchangeEngineInterface $engine */
-			foreach ($engine->getRequests() as $request)
+			if ($engine instanceof ExchangeGrabEngineInterface)
 			{
-				if ($engine instanceof WithMultiRestaurantExtensionInterface)
+				if ($scheduleType !== ScheduleInterface::TYPE_GRAB)
 				{
-					foreach ($engine->getRestaurantCollection() as $restaurant)
-					{
-						if (!$data->exist($request->getCode(), $restaurant))
-						{
-							if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
-							{
-								//TODO скрытый баг, когда 1 реквест используют раные движки, и настройки в таком случае просто затрутся и для след. движка будут не корректными
-								WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
-								$this->fillConfiguration($exchange, $request, $restaurant);
-								$this->fillMapping($exchange, $request, $restaurant);
-							}
+					continue;
+				}
+				$data->add($engine->getGrabber()->grabData(), $engine->getGrabber()->getCode());
+			}
+			else
+			{
+				if ($scheduleType === ScheduleInterface::TYPE_GRAB)
+				{
+					continue;
+				}
 
-							$data->add($this->callRequest($exchange, $engine, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
+				/** @var ExchangeEngineInterface $engine */
+				foreach ($engine->getRequests() as $request)
+				{
+					if ($engine instanceof WithMultiRestaurantExtensionInterface)
+					{
+						foreach ($engine->getRestaurantCollection() as $restaurant)
+						{
+							if (!$data->exist($request->getCode(), $restaurant))
+							{
+								if (WithRestaurantExtensionHelper::isNeedRestaurant($request))
+								{
+									//TODO скрытый баг, когда 1 реквест используют раные движки, и настройки в таком случае просто затрутся и для след. движка будут не корректными
+									WithRestaurantExtensionHelper::setRestaurantForExchangeNode($request, $restaurant);
+									$this->fillConfiguration($exchange, $request, $restaurant);
+									$this->fillMapping($exchange, $request, $restaurant);
+								}
+
+								$data->add($this->callRequest($exchange, $engine, $scheduleType, $request, $restaurant), $request->getCode(), $restaurant);
+							}
 						}
 					}
-				}
-				elseif (!$data->exist($request->getCode()))
-				{
-					$data->add($this->callRequest($exchange, $engine, $scheduleType, $request), $request->getCode());
+					elseif (!$data->exist($request->getCode()))
+					{
+						$data->add($this->callRequest($exchange, $engine, $scheduleType, $request), $request->getCode());
+					}
 				}
 			}
+
 
 			$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
 			$transformed = $engine->getTransformer()->transform($exchange, $engine, $data);
@@ -195,7 +214,15 @@ class ExchangeManager
 		}
 	}
 
-	protected function load($formatted, ExchangeEngineInterface $engine, ExchangeInterface $exchange, string $scheduleType)
+	/**
+	 * @param $formatted
+	 * @param ExchangeEngineInterface | ExchangeGrabEngineInterface $engine
+	 * @param ExchangeInterface $exchange
+	 * @param string $scheduleType
+	 * @return void
+	 * @throws ExchangeException
+	 */
+	protected function load($formatted, $engine, ExchangeInterface $exchange, string $scheduleType)
 	{
 		$this->dispatcher->dispatch('exchange.engine.load', new ExchangeEngineLoadEvent($exchange, $engine, $formatted, $scheduleType));
 		$loader = ($engine->getLoader() ?: $exchange->getLoader());
@@ -316,6 +343,15 @@ class ExchangeManager
 
 	private function setParams(ExchangeInterface $exchange, ExchangeParametersInterface $params): void
 	{
+		if (WithRevisionExtensionHelper::isNeedRevision($exchange))
+		{
+			if (is_null($params->getRevision()))
+			{
+				throw (new StartUpParameterNotFound())->setExchange($exchange);
+			}
+			WithRevisionExtensionHelper::setRevisionForExchangeNode($exchange, $params->getRevision());
+			
+		}
 		if (PeriodicalExtensionHelper::isNeedPeriod($exchange))
 		{
 			if (is_null($params->getPeriod()))

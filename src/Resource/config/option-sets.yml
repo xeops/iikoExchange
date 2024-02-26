@@ -5,6 +5,13 @@ services:
         tags:
             - { name: "exchange.options_set" }
 
+    exchange.option_set.iiko.restaurant_section_id:
+        class: iikoExchangeBundle\Library\OptionSet\RestaurantSectionIdOptionSet
+        arguments: [ '@exchange.connection.iiko' ]
+        tags:
+            - { name: "exchange.options_set" }
+
+
     exchange.option_set.system.timezone:
         class: iikoExchangeBundle\Library\OptionSet\TimeZoneOptionSet
         tags:

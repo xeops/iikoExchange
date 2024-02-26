@@ -45,4 +45,17 @@ class ExchangeDataCollection
 		}
 		return $this->collection->filter(fn($item) => $item['requestCode'] === $requestCode && $item['restaurant'] === null)->first()['data'];
 	}
+
+	/**
+	 * @return ArrayCollection
+	 */
+	public function getCollection(): ArrayCollection
+	{
+		return $this->collection;
+	}
+
+	public function getCollectionData()
+	{
+		return array_map(static fn(array $item) => $item['data'], $this->collection->toArray());
+	}
 }
