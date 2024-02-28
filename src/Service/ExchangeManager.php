@@ -187,8 +187,10 @@ class ExchangeManager
 				}
 			}
 
-
-			$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
+			if(!($engine instanceof ExchangeGrabEngineInterface))
+			{
+				$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
+			}
 			$transformed = $engine->getTransformer()->transform($exchange, $engine, $data);
 
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
@@ -206,11 +208,17 @@ class ExchangeManager
 			}
 			else
 			{
-				$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
+				if(!($engine instanceof ExchangeGrabEngineInterface))
+				{
+					$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
+				}
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
 				$this->load($formatted, $engine, $exchange, $scheduleType);
 			}
-			$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
+			if(!($engine instanceof ExchangeGrabEngineInterface))
+			{
+				$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
+			}
 		}
 	}
 

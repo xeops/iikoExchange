@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Event;
 
 
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
@@ -14,10 +15,6 @@ class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 {
 	const NAME = 'exchange.engine.sendRequest';
 
-	/**
-	 * @var ExchangeEngine
-	 */
-	private ExchangeEngine $engine;
 	/**
 	 * @var ExchangeRequestInterface
 	 */

@@ -4,11 +4,9 @@
 namespace iikoExchangeBundle\Event;
 
 
-use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
-use iikoExchangeBundle\Engine\ExchangeEngine;
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Exchange\Exchange;
 use iikoExchangeBundle\Format\Formatter;
-use Symfony\Component\EventDispatcher\Event;
 
 class ExchangeEngineFormatEvent extends BaseExchangeEvent
 {
@@ -17,11 +15,11 @@ class ExchangeEngineFormatEvent extends BaseExchangeEvent
 
 	private $data;
 	/**
-	 * @var ExchangeEngine
+	 * @var ExchangeEngineInterface
 	 */
-	private ExchangeEngine $engine;
+	private ExchangeEngineInterface $engine;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $engine, $data,  string $scheduleType)
+	public function __construct(Exchange $exchange, ExchangeEngineInterface $engine, $data,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->data = $data;
@@ -44,9 +42,9 @@ class ExchangeEngineFormatEvent extends BaseExchangeEvent
 	}
 
 	/**
-	 * @return ExchangeEngine
+	 * @return ExchangeEngineInterface
 	 */
-	public function getEngine(): ExchangeEngine
+	public function getEngine(): ExchangeEngineInterface
 	{
 		return $this->engine;
 	}

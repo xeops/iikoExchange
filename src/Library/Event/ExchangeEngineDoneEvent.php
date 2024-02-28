@@ -4,6 +4,7 @@
 namespace iikoExchangeBundle\Event;
 
 
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
 
@@ -12,11 +13,11 @@ class ExchangeEngineDoneEvent extends BaseExchangeEvent
 	const NAME = 'exchange.engine.done';
 
 	/**
-	 * @var ExchangeEngine
+	 * @var ExchangeEngineInterface
 	 */
-	private ExchangeEngine $exchangeEngine;
+	private ExchangeEngineInterface $exchangeEngine;
 
-	public function __construct(Exchange $exchange, ExchangeEngine $exchangeEngine, string $scheduleType)
+	public function __construct(Exchange $exchange, ExchangeEngineInterface $exchangeEngine, string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->exchangeEngine = $exchangeEngine;
@@ -24,9 +25,9 @@ class ExchangeEngineDoneEvent extends BaseExchangeEvent
 	}
 
 	/**
-	 * @return ExchangeEngine
+	 * @return ExchangeEngineInterface
 	 */
-	public function getExchangeEngine(): ExchangeEngine
+	public function getExchangeEngine(): ExchangeEngineInterface
 	{
 		return $this->exchangeEngine;
 	}
