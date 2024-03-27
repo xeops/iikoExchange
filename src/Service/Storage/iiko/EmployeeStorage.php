@@ -27,7 +27,12 @@ class EmployeeStorage implements StorageInterface, WithExchangeExtensionInterfac
 		return $this->nodeJsonSerialize();
 	}
 
-	public function store(StorageEntityInterface $storageEntity)
+	/**
+	 * @param StorageEntityInterface $storageEntity
+	 * @return mixed
+	 * @throws ExchangeException
+	 */
+	public function store($storageEntity)
 	{
 		throw new ExchangeException('Not implemented');
 	}

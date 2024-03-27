@@ -85,6 +85,8 @@ interface ExchangeInterface extends ExchangeNodeInterface
 	 */
 	public function setEngines(array $engines): ExchangeInterface;
 
+	public function addEngine(ExchangeEngineInterface $engine) : ExchangeInterface;
+
 	/**
 	 * @return ScheduleCron[]
 	 */

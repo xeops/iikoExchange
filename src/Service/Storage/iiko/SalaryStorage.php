@@ -17,7 +17,7 @@ class SalaryStorage implements StorageInterface, WithExchangeExtensionInterface
 
 	const STORAGE_SALARY = 'Salary';
 
-	public function store(StorageEntityInterface $storageEntity)
+	public function store($storageEntity)
 	{
 		throw new \Exception('Not implemented');
 	}

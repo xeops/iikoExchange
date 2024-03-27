@@ -5,11 +5,8 @@ namespace iikoExchangeBundle\Event;
 
 
 use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
-use iikoExchangeBundle\Contract\Event\ExchangeEventInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
-use iikoExchangeBundle\Engine\ExchangeEngine;
 use iikoExchangeBundle\Exchange\Exchange;
-use Symfony\Component\EventDispatcher\Event;
 
 class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 {
@@ -19,12 +16,14 @@ class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 	 * @var ExchangeRequestInterface
 	 */
 	private ExchangeRequestInterface $dataSourceRequest;
+	private ExchangeEngineInterface $engine;
 
-	public function __construct(Exchange $exchange, $dataSourceRequest,  string $scheduleType)
+	public function __construct(Exchange $exchange, ExchangeEngineInterface $engine, $dataSourceRequest,  string $scheduleType)
 	{
 		$this->exchange = $exchange;
 		$this->dataSourceRequest = $dataSourceRequest;
 		$this->scheduleType = $scheduleType;
+		$this->engine = $engine;
 	}
 
 
@@ -33,5 +32,12 @@ class ExchangeEngineSendRequestEvent extends BaseExchangeEvent
 		return $this->dataSourceRequest;
 	}
 
+	/**
+	 * @return ExchangeEngineInterface
+	 */
+	public function getEngine(): ExchangeEngineInterface
+	{
+		return $this->engine;
+	}
 
 }

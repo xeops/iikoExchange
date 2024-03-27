@@ -6,6 +6,7 @@ namespace iikoExchangeBundle\Exchange;
 
 use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
+use iikoExchangeBundle\Contract\Engine\ExchangeEngineInterface;
 use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
@@ -105,7 +106,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	{
 		$requests = $mappings = $configs = [];
 
-		array_map(function (ExchangeEngine $engine) use (&$requests)
+		array_map(function (ExchangeEngineInterface $engine) use (&$requests)
 		{
 			foreach ($engine->getRequests() as $request)
 			{
@@ -123,7 +124,7 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 				static::FIELD_LOADER => $this->getLoader(),
 				static::FIELD_ENGINES => $this->getEngines(),
 				static::FIELD_MAPPING => array_values($mappings),
-				static::FIELD_GLOBAL_CONFIG =>  array_values($configs),
+				static::FIELD_GLOBAL_CONFIG => array_values($configs),
 				static::FIELD_SCHEDULES => $this->getSchedules(),
 				static::FIELD_PREVIEW => $this->previewTemplate !== null,
 				WithPeriodExtensionInterface::FIELD_PERIOD => PeriodicalExtensionHelper::isNeedPeriod($this),
@@ -230,6 +231,12 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function setEngines(array $engines): ExchangeInterface
 	{
 		$this->engines = $engines;
+		return $this;
+	}
+
+	public function addEngine(ExchangeEngineInterface $engine): ExchangeInterface
+	{
+		$this->engines[] = $engine;
 		return $this;
 	}
 

@@ -31,7 +31,7 @@ class ExchangeEngineLoadEvent extends  BaseExchangeEvent
 	/**
 	 * @return ExchangeEngineInterface
 	 */
-	public function getExchangeEngine(): ExchangeEngineInterface
+	public function getEngine(): ExchangeEngineInterface
 	{
 		return $this->exchangeEngine;
 	}

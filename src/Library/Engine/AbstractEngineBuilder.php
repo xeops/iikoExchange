@@ -33,7 +33,7 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	}
 
 	/** @var ExchangeRequestInterface[] */
-	protected array $requests;
+	protected array $requests = [];
 	protected AbstractTransformer $transformer;
 	protected Formatter $formatter;
 	protected $loader = null;

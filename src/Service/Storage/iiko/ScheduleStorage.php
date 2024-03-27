@@ -28,7 +28,7 @@ class ScheduleStorage implements StorageInterface, WithExchangeExtensionInterfac
 	 * @return mixed
 	 * @throws ExchangeException
 	 */
-	public function store(StorageEntityInterface $storageEntity)
+	public function store($storageEntity)
 	{
 		throw new ExchangeException('ScheduleStorage not implemented');
 	}

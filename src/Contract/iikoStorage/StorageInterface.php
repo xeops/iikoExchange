@@ -6,7 +6,7 @@ use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 
 interface StorageInterface extends ExchangeNodeInterface
 {
-	public function store(StorageEntityInterface $storageEntity);
+	public function store($storageEntity);
 
 	public function getCode(): string;
 }

@@ -101,6 +101,10 @@ class ExchangeManager
 
 		catch (ExchangeException $exception)
 		{
+			if ($this->isDebug)
+			{
+				throw $exception;
+			}
 
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
 			$error = $this->getError($exchange, $exception);
@@ -118,8 +122,12 @@ class ExchangeManager
 		}
 		catch (\Exception|\Throwable $exception)
 		{
+			if ($this->isDebug)
+			{
+				throw $exception;
+			}
 			$this->logger->critical('Exchange exception', ['type' => get_class($exception), 'exchangeCode' => $exchange->getCode(), 'exchangeUniq' => $exchange->getUniq(), 'exchangeId' => $exchange->getId(), 'exception' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
-			$error = (new ExchangeException($this->isDebug ? $exception->getMessage() . " on {$exception->getFile()}:{$exception->getLine()}" : 'SERVER_ERROR'))->setExchange($exchange);
+			$error = (new ExchangeException('SERVER_ERROR'))->setExchange($exchange);
 			if ($scheduleType === ScheduleInterface::TYPE_PREVIEW)
 			{
 				$this->previewStorage->error($exchange, $error->getMessage());
@@ -187,7 +195,7 @@ class ExchangeManager
 				}
 			}
 
-			if(!($engine instanceof ExchangeGrabEngineInterface))
+			if (!($engine instanceof ExchangeGrabEngineInterface))
 			{
 				$this->dispatcher->dispatch('exchange.engine.transform', new ExchangeEngineTransformDataEvent($exchange, $engine, $scheduleType));
 			}
@@ -208,14 +216,14 @@ class ExchangeManager
 			}
 			else
 			{
-				if(!($engine instanceof ExchangeGrabEngineInterface))
+				if (!($engine instanceof ExchangeGrabEngineInterface))
 				{
 					$this->dispatcher->dispatch('exchange.engine.format', new ExchangeEngineFormatEvent($exchange, $engine, $transformed, $scheduleType));
 				}
 				$formatted = $engine->getFormatter()->getFormattedData($exchange, $transformed);
 				$this->load($formatted, $engine, $exchange, $scheduleType);
 			}
-			if(!($engine instanceof ExchangeGrabEngineInterface))
+			if (!($engine instanceof ExchangeGrabEngineInterface))
 			{
 				$this->dispatcher->dispatch('exchange.engine.dataDone', new ExchangeEngineDataDoneEvent($exchange, $engine, $scheduleType));
 			}
@@ -266,7 +274,7 @@ class ExchangeManager
 	protected function callRequest(ExchangeInterface $exchange, ExchangeEngineInterface $engine, string $scheduleType, ExchangeRequestInterface $request, ?Restaurant $restaurant = null)
 	{
 		$this->logger->info("Exchange. Call request", ['requestCode' => $request->getCode(), 'engineCode' => $engine->getCode(), 'exchangeCode' => $exchange->getCode()]);
-		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange) || $restaurant)
+		if (WithRestaurantExtensionHelper::isNeedRestaurant($exchange) || WithRestaurantExtensionHelper::isNeedMultiRestaurant($exchange) || $restaurant)
 		{
 			if (PeriodicalExtensionHelper::isNeedPeriod($request))
 			{
@@ -279,7 +287,7 @@ class ExchangeManager
 			}
 		}
 
-		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $request, $scheduleType));
+		$this->dispatcher->dispatch('exchange.engine.sendRequest', new ExchangeEngineSendRequestEvent($exchange, $engine, $request, $scheduleType));
 
 		$extractor = $engine->getExtractor() ?: $exchange->getExtractor();
 		if ($extractor instanceof ExtractorInterface)
@@ -358,7 +366,7 @@ class ExchangeManager
 				throw (new StartUpParameterNotFound())->setExchange($exchange);
 			}
 			WithRevisionExtensionHelper::setRevisionForExchangeNode($exchange, $params->getRevision());
-			
+
 		}
 		if (PeriodicalExtensionHelper::isNeedPeriod($exchange))
 		{
