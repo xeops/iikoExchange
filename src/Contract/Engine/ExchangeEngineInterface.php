@@ -71,4 +71,6 @@ interface ExchangeEngineInterface extends ExchangeNodeInterface
 	 * @return AbstractEngineBuilder
 	 */
 	public function setExtractor($extractor);
+
+	public function getEnabled(): ?bool;
 }

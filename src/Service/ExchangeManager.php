@@ -152,6 +152,10 @@ class ExchangeManager
 
 		foreach ($exchange->getEngines() as $engine)
 		{
+			if ($engine->getEnabled() === false)
+			{
+				continue;
+			}
 			if ($engine instanceof ExchangeGrabEngineInterface)
 			{
 				if ($scheduleType !== ScheduleInterface::TYPE_GRAB)

@@ -39,6 +39,8 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 	protected $loader = null;
 	protected $extractor = null;
 
+	protected ?bool $enabled = null;
+
 	public function __construct(string $code)
 	{
 		$this->code = $code;
@@ -159,6 +161,18 @@ abstract class AbstractEngineBuilder implements ExchangeEngineInterface, Configu
 		$this->extractor = $extractor;
 		return $this;
 	}
+
+	public function getEnabled(): ?bool
+	{
+		return $this->enabled;
+	}
+
+	public function setEnabled(?bool $enabled): AbstractEngineBuilder
+	{
+		$this->enabled = $enabled;
+		return $this;
+	}
+
 
 
 }
