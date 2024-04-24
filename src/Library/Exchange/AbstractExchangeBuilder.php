@@ -28,8 +28,16 @@ abstract class AbstractExchangeBuilder implements ExchangeInterface
 	public function __clone()
 	{
 		$this->generateUniq();
-		$this->loader = clone $this->loader;
-		$this->extractor = clone $this->extractor;
+
+		if($this->loader)
+		{
+			$this->loader = clone $this->loader;
+		}
+		if($this->extractor)
+		{
+			$this->extractor = clone $this->extractor;
+		}
+
 
 		foreach ($this->engines as $key => $engine)
 		{
