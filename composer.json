@@ -5,10 +5,10 @@
 	"require": {
 		"php": "^7.4",
 		"symfony/monolog-bundle": "^3.2",
-		"symfony/yaml": "3.2.*",
+		"symfony/yaml": "3.3.*",
 		"php-http/guzzle6-adapter": "^1.1",
 		"symfony/config": "~3.0",
-		"symfony/event-dispatcher": "3.2.*",
+		"symfony/event-dispatcher": "3.*",
 		"ext-json": "*",
 		"ext-simplexml": "*",
 		"ext-ftp": "*",
