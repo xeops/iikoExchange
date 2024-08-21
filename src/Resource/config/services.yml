@@ -1,4 +1,7 @@
 services:
+    _defaults:
+        public: true
+
     exchange.directory:
         class: iikoExchangeBundle\Service\ExchangeDirectory
 
