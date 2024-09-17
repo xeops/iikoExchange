@@ -19,10 +19,11 @@ trait WithMappingExtensionTrait
 	 * @param string $mappingCode
 	 * @param array|string|int|float $identifiers associative array, ex. ['PayType' => 'Visa', 'Tax Type' => 'Not Vat']
 	 * @param string $valueCode collection might have many values in each row, you should specify what value you want
+	 * @param string|array<mixed> $identifiersDecorated decorate identifiers
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function getMappingValue(string $mappingCode, array $identifiers, string $valueCode)
+	public function getMappingValue(string $mappingCode, array $identifiers, string $valueCode, $identifiersDecorated = null)
 	{
 		if (array_key_exists($mappingCode, $this->getMappingValues()))
 		{
@@ -48,7 +49,10 @@ trait WithMappingExtensionTrait
 		{
 			throw new MappingNotIncludedException($mappingCode);
 		}
-
+		if($identifiersDecorated)
+		{
+			throw new MappingNotFoundException($mappingCode, (array)$identifiersDecorated);
+		}
 		throw new MappingNotFoundException($mappingCode, $identifiers);
 	}
 
