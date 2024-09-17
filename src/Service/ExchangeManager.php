@@ -49,7 +49,7 @@ use iikoExchangeBundle\Library\Request\iikoOlapRequest;
 use iikoExchangeBundle\Library\Request\RequestResponseItem;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExchangeManager
 {
