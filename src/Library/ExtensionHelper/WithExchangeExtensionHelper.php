@@ -2,6 +2,7 @@
 
 namespace iikoExchangeBundle\ExtensionHelper;
 
+use iikoExchangeBundle\Contract\Exchange\ExchangeInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 
@@ -21,5 +22,16 @@ class WithExchangeExtensionHelper
 			}
 		}
 		return false;
+	}
+
+	public static function fillExchange(ExchangeNodeInterface $node, ExchangeInterface $exchange) : void
+	{
+		if($node instanceof WithExchangeExtensionInterface) {
+			$node->setExchange($exchange);
+		}
+		foreach ($node->getChildNodes() as $childNode)
+		{
+			static::fillExchange($childNode, $exchange);
+		}
 	}
 }

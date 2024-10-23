@@ -15,10 +15,12 @@ use iikoExchangeBundle\Configuration\ConfigType\ConfigItemPassword;
 use iikoExchangeBundle\Configuration\ConfigType\ConfigItemString;
 use iikoExchangeBundle\Connection\Connection;
 use iikoExchangeBundle\Contract\Connection\OAuth2ConnectionInterface;
+use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
 use iikoExchangeBundle\Contract\Request\ExchangeRequestInterface;
 use iikoExchangeBundle\Contract\Request\OAuth2RequestInterface;
 use iikoExchangeBundle\Contract\Service\ConnectionSessionStorage;
 use iikoExchangeBundle\Exception\ConnectionException;
+use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;
 use Monolog\Logger;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,8 +29,9 @@ use Psr\Log\LogLevel;
 use function GuzzleHttp\Psr7\modify_request;
 
 
-abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
+abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface, WithExchangeExtensionInterface
 {
+	use WithExchangeExtensionTrait;
 	protected ConnectionSessionStorage $sessionStorage;
 	protected LoggerInterface $logger;
 
@@ -218,6 +221,7 @@ abstract class OAuth2 extends Connection implements OAuth2ConnectionInterface
 	protected function getSessionKey(): string
 	{
 		return md5(json_encode([
+			$this->getExchange()->getId(),
 			$this->getConfigValue(self::CONFIG_CLIENT_ID),
 			$this->getConfigValue(self::CONFIG_CLIENT_SECRET),
 			$this->getConfigValue(self::CONFIG_REDIRECT_URI),
