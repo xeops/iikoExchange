@@ -298,6 +298,10 @@ class ExchangeManager
 		{
 			return $extractor->extract($request);
 		}
+		if (WithRestaurantExtensionHelper::isNeedRestaurant($extractor) && WithRestaurantExtensionHelper::isNeedMultiRestaurant($exchange) && $restaurant)
+		{
+			WithRestaurantExtensionHelper::setRestaurantForExchangeNode($extractor, $restaurant);
+		}
 		$response = $extractor->sendRequest($request);
 		if ($response->getStatusCode() !== 200 || is_null($response->getBody()))
 		{
