@@ -3,7 +3,6 @@
 namespace iikoExchangeBundle\Service\Storage\iiko;
 
 use iikoExchangeBundle\Contract\Extensions\WithExchangeExtensionInterface;
-use iikoExchangeBundle\Contract\iikoStorage\StorageEntityInterface;
 use iikoExchangeBundle\Contract\iikoStorage\StorageInterface;
 use iikoExchangeBundle\ExtensionTrait\ExchangeNodeTrait;
 use iikoExchangeBundle\ExtensionTrait\WithExchangeExtensionTrait;

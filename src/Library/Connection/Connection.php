@@ -3,7 +3,6 @@
 
 namespace iikoExchangeBundle\Connection;
 
-use GuzzleHttp\Psr7\Response;
 use iikoExchangeBundle\Contract\Connection\ConnectionInterface;
 use iikoExchangeBundle\Contract\ExchangeNodeInterface;
 use iikoExchangeBundle\Contract\Extensions\ConfigurableExtensionInterface;
@@ -31,13 +30,6 @@ abstract class Connection implements ExchangeNodeInterface, ConfigurableExtensio
 	{
 		return ['connection_type' => $this->getType()] + $this->nodeJsonSerialize() + $this->configJsonSerialize();
 	}
-
-	/**
-	 * @param mixed $request
-	 * @return Response
-	 */
-
-
 	public function exposeConfiguration(): array
 	{
 		return [];
